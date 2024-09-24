@@ -20,4 +20,4 @@ Papildomai (bus pildoma):
    
 
 ## Pasirinktų technologijų aprašymas
-Python su Sjango karkasu ir PostgreSQL
+Python su Django karkasu ir PostgreSQL
