@@ -1,4 +1,5 @@
 from django.db import models
+from django_filters.rest_framework import DjangoFilterBackend
 
 class Padalinys(models.Model):
     pavadinimas = models.TextField()
@@ -11,6 +12,8 @@ class Padalinys(models.Model):
 class Ansamblis(models.Model):
     pavadinimas = models.CharField(max_length=255)
     padalinys = models.ForeignKey(Padalinys, related_name='ansambliai', on_delete=models.CASCADE)
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['padalinys']
 
     def __str__(self):
         return self.pavadinimas

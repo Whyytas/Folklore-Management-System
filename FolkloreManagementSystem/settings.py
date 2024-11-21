@@ -30,6 +30,7 @@ ALLOWED_HOSTS = []
 REST_FRAMEWORK = {
     # your other DRF settings here
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
 }
 
 SPECTACULAR_SETTINGS = {
@@ -52,6 +53,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'apis',
     'drf_spectacular',
+    'django_filters',
 ]
 
 MIDDLEWARE = [
