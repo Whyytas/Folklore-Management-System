@@ -2,7 +2,7 @@
 ## Sistemos paskirtis
 Sistema skirta palengvinti folkloro ansamblio narių bei vadovų kasdienius organizacinius darbus t.y. koncertų, vakaronių veiklų planavimą, šokių, dainų saugojimą, koncertinių ar vakaronių programų dalinimasi, bendravimą
 
-Taikomosios srities objektai: padalinys -> ansamblis -> narys
+Taikomosios srities objektai: renginys -> kūrinys -> komentaras (?)
 
 ## Funkciniai reikalavimai
 1. Programa turės 4 aktorius: svečias, narys, vadovas, administratorius
