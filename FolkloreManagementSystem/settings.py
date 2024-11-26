@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -27,7 +28,25 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
+LOGIN_URL='/admin/'
 
+OAUTH2_PROVIDER = {
+    'ACCESS_TOKEN_EXPIRE_SECONDS': 3600,
+    'APPLICATION_MODEL': 'oauth2_provider.Application',
+    'SCOPES': {'read': 'Read scope', 'write': 'Write scope'},
+    'OAUTH2_VALIDATOR_CLASS': 'temp.validators.CustomOAuth2Validator',  # Correct path to validator
+}
+AUTH_USER_MODEL = 'temp.CustomUser'  # Replace 'temp' with your app name
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
+    ),
+
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+}
 # Application definition
 
 INSTALLED_APPS = [
@@ -37,6 +56,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'oauth2_provider',
+    'rest_framework',
+    'temp',
 ]
 
 MIDDLEWARE = [
@@ -76,8 +98,13 @@ WSGI_APPLICATION = 'FolkloreManagementSystem.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'allData',
+        'USER': 'adminas',
+        'PASSWORD': 'Slaptazodis1',
+        'HOST': 'folkloredata.postgres.database.azure.com',
+        'PORT': '5432',
+        'OPTIONS':{'sslmode':'require'},
     }
 }
 
