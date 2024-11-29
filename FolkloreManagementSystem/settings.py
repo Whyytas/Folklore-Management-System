@@ -28,25 +28,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-LOGIN_URL='/admin/'
-
-OAUTH2_PROVIDER = {
-    'ACCESS_TOKEN_EXPIRE_SECONDS': 3600,
-    'APPLICATION_MODEL': 'oauth2_provider.Application',
-    'SCOPES': {'read': 'Read scope', 'write': 'Write scope'},
-    'OAUTH2_VALIDATOR_CLASS': 'temp.validators.CustomOAuth2Validator',  # Correct path to validator
-}
-AUTH_USER_MODEL = 'temp.CustomUser'  # Replace 'temp' with your app name
-
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
-    ),
-
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
-    ),
-}
+SITE_ID = 2
 # Application definition
 
 INSTALLED_APPS = [
@@ -58,9 +40,26 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'oauth2_provider',
     'rest_framework',
-    'temp',
+    'users',
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
 ]
 
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        "SCOPE": ["profile", "email"],
+        "AUTH_PARAMS": {
+            'access_type': 'online',
+        }
+    }
+}
+CSRF_TRUSTED_ORIGINS = [
+    "https://folkloremanagement.azurewebsites.net",
+    "https://www.folkloremanagement.azurewebsites.net",  # Include any subdomain variations
+]
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -69,6 +68,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'allauth.account.middleware.AccountMiddleware'
 ]
 
 ROOT_URLCONF = 'FolkloreManagementSystem.urls'
@@ -99,7 +99,7 @@ WSGI_APPLICATION = 'FolkloreManagementSystem.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'allData',
+        'NAME': 'tempData',
         'USER': 'adminas',
         'PASSWORD': 'Slaptazodis1',
         'HOST': 'folkloredata.postgres.database.azure.com',
@@ -149,3 +149,11 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+)
+
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
