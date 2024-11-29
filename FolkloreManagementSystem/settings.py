@@ -26,7 +26,10 @@ SECRET_KEY = 'django-insecure-+_n6j3p7xr&pcxd1ujofrbs!k6hm^=ijg*6t#qgd5dm$_9*j50
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
-
+CSRF_TRUSTED_ORIGINS = [
+    "https://folkloremanagement.azurewebsites.net",
+    "https://www.folkloremanagement.azurewebsites.net",  # Include any subdomain variations
+]
 
 # Application definition
 
