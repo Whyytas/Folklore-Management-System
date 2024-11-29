@@ -29,7 +29,10 @@ DEBUG = True
 ALLOWED_HOSTS = ['*']
 
 LOGIN_URL='/admin/'
-
+CSRF_TRUSTED_ORIGINS = [
+    "https://folkloremanagement.azurewebsites.net",
+    "https://www.folkloremanagement.azurewebsites.net",  # Include any subdomain variations
+]
 OAUTH2_PROVIDER = {
     'ACCESS_TOKEN_EXPIRE_SECONDS': 3600,
     'APPLICATION_MODEL': 'oauth2_provider.Application',
