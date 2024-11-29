@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -28,7 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-SITE_ID = 2
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -38,28 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'oauth2_provider',
-    'rest_framework',
-    'users',
-    'django.contrib.sites',
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
-    'allauth.socialaccount.providers.google',
 ]
 
-SOCIALACCOUNT_PROVIDERS = {
-    'google': {
-        "SCOPE": ["profile", "email"],
-        "AUTH_PARAMS": {
-            'access_type': 'online',
-        }
-    }
-}
-CSRF_TRUSTED_ORIGINS = [
-    "https://folkloremanagement.azurewebsites.net",
-    "https://www.folkloremanagement.azurewebsites.net",  # Include any subdomain variations
-]
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -68,7 +47,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'allauth.account.middleware.AccountMiddleware'
 ]
 
 ROOT_URLCONF = 'FolkloreManagementSystem.urls'
@@ -98,13 +76,8 @@ WSGI_APPLICATION = 'FolkloreManagementSystem.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'tempData',
-        'USER': 'adminas',
-        'PASSWORD': 'Slaptazodis1',
-        'HOST': 'folkloredata.postgres.database.azure.com',
-        'PORT': '5432',
-        'OPTIONS':{'sslmode':'require'},
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
@@ -149,11 +122,3 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-AUTHENTICATION_BACKENDS = (
-    'django.contrib.auth.backends.ModelBackend',
-    'allauth.account.auth_backends.AuthenticationBackend',
-)
-
-LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/'
