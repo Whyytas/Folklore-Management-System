@@ -29,8 +29,10 @@ DEBUG = True
 ALLOWED_HOSTS = ['*']
 
 LOGIN_URL='/admin/'
+# CSRF trusted origins
 CSRF_TRUSTED_ORIGINS = [
-    '*'  # Include any subdomain variations
+    'http://localhost',
+    'https://*.azure.com'
 ]
 OAUTH2_PROVIDER = {
     'ACCESS_TOKEN_EXPIRE_SECONDS': 3600,
@@ -146,6 +148,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
