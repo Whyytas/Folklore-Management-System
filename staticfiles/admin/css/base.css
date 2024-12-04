@@ -97,7 +97,7 @@ body {
     margin: 0;
     padding: 0;
     font-size: 0.875rem;
-    font-family: var(--font-family-primary);
+    font-family: var(--font-family-primary), sans-serif;
     color: var(--body-fg);
     background: var(--body-bg);
 }
@@ -233,7 +233,7 @@ blockquote {
 }
 
 code, pre {
-    font-family: var(--font-family-monospace);
+    font-family: var(--font-family-monospace), sans-serif;
     color: var(--body-quiet-color);
     font-size: 0.75rem;
     overflow-x: auto;
