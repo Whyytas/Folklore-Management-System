@@ -39,7 +39,7 @@ OAUTH2_PROVIDER = {
     'SCOPES': {'read': 'Read scope', 'write': 'Write scope'},
     'OAUTH2_VALIDATOR_CLASS': 'temp.validators.CustomOAuth2Validator',  # Correct path to validator
 }
-AUTH_USER_MODEL = 'temp.CustomUser'  # Replace 'temp' with your app name
+AUTH_USER_MODEL = 'temp.CustomUser'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
