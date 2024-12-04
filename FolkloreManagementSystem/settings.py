@@ -26,13 +26,11 @@ SECRET_KEY = 'django-insecure-+_n6j3p7xr&pcxd1ujofrbs!k6hm^=ijg*6t#qgd5dm$_9*j50
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['folklore.azurewebsites.net']
 
 LOGIN_URL='/admin/'
 # CSRF trusted origins
-CSRF_TRUSTED_ORIGINS = [
-    'https://*.azurewebsites.net'
-]
+CSRF_TRUSTED_ORIGINS = ['https://folklore.azurewebsites.net']
 OAUTH2_PROVIDER = {
     'ACCESS_TOKEN_EXPIRE_SECONDS': 3600,
     'APPLICATION_MODEL': 'oauth2_provider.Application',
@@ -146,7 +144,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Default primary key field type
