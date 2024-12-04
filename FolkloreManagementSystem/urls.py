@@ -15,11 +15,14 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
+
 from django.urls import include, path
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from drf_spectacular.views import SpectacularAPIView
+import mainPage
+
 
 
 # schema_view = get_schema_view(
@@ -36,7 +39,8 @@ from drf_spectacular.views import SpectacularAPIView
 # )
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path('', include('apis.urls')),
+    path('', include('mainPage.urls')),
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+  path('o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
 ]
 

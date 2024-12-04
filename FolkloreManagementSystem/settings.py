@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -25,12 +26,28 @@ SECRET_KEY = 'django-insecure-+_n6j3p7xr&pcxd1ujofrbs!k6hm^=ijg*6t#qgd5dm$_9*j50
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['folklore.azurewebsites.net',
+                 'localhost',
+                 '127.0.0.1']
+
+LOGIN_URL='/admin/'
+# CSRF trusted origins
+CSRF_TRUSTED_ORIGINS = ['https://folklore.azurewebsites.net']
+OAUTH2_PROVIDER = {
+    'ACCESS_TOKEN_EXPIRE_SECONDS': 3600,
+    'APPLICATION_MODEL': 'oauth2_provider.Application',
+    'SCOPES': {'read': 'Read scope', 'write': 'Write scope'},
+    'OAUTH2_VALIDATOR_CLASS': 'temp.validators.CustomOAuth2Validator',  # Correct path to validator
+}
+AUTH_USER_MODEL = 'temp.CustomUser'
 
 REST_FRAMEWORK = {
-    # your other DRF settings here
+
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
+  'DEFAULT_AUTHENTICATION_CLASSES': (
+        'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
+    ),
 }
 
 SPECTACULAR_SETTINGS = {
@@ -41,6 +58,10 @@ SPECTACULAR_SETTINGS = {
     # OTHER SETTINGS
 }
 
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+}
 # Application definition
 
 INSTALLED_APPS = [
@@ -54,6 +75,9 @@ INSTALLED_APPS = [
     'apis',
     'drf_spectacular',
     'django_filters',
+    'oauth2_provider',
+    'temp',
+
 ]
 
 MIDDLEWARE = [
@@ -93,15 +117,14 @@ WSGI_APPLICATION = 'FolkloreManagementSystem.wsgi.application'
 
 DATABASES = {
     'default': {
-        # 'ENGINE': 'django.db.backends.sqlite3',
-        # 'NAME': BASE_DIR / 'db.sqlite3',
-
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'folklore1',
-        'USER': 'postgres',
-        'PASSWORD': 'admin',
-        'HOST': 'localhost',
-        'PORT': '5432'
+        'NAME': 'allData',
+        'USER': 'adminas',
+        'PASSWORD': 'Slaptazodis1',
+        'HOST': 'folkloredata.postgres.database.azure.com',
+        'PORT': '5432',
+        'OPTIONS':{'sslmode':'require'},
+
     }
 }
 
@@ -140,7 +163,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
