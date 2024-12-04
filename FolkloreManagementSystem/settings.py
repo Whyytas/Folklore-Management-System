@@ -31,8 +31,7 @@ ALLOWED_HOSTS = ['*']
 LOGIN_URL='/admin/'
 # CSRF trusted origins
 CSRF_TRUSTED_ORIGINS = [
-    'http://localhost',
-    'https://*.azure.com'
+    'https://*.azurewebsites.net'
 ]
 OAUTH2_PROVIDER = {
     'ACCESS_TOKEN_EXPIRE_SECONDS': 3600,
