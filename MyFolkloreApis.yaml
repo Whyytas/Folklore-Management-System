@@ -1,0 +1,289 @@
+openapi: 3.0.0
+info:
+  title: Padalinys, Ansamblis, and Narys API
+  version: 1.0.0
+  description: API for managing Padalinys, Ansamblis, and Narys resources.
+
+servers:
+  - url: http://127.0.0.1:8000
+
+paths:
+  /padaliniai/:
+    get:
+      summary: List all Padaliniai
+      responses:
+        '200':
+          description: A list of Padaliniai
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Padalinys'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '503':
+          description: Service Unavailable
+        '504':
+          description: Gateway Timeout
+
+    post:
+      summary: Create a new Padalinys
+      requestBody:
+        description: Padalinys object that needs to be added
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Padalinys'
+      responses:
+        '201':
+          description: Successfully created Padalinys
+        '400':
+          description: Bad request, validation error
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '503':
+          description: Service Unavailable
+        '504':
+          description: Gateway Timeout
+        '501':
+          description: Not Implemented
+
+  /padaliniai/{id}/:
+    get:
+      summary: Get details of a specific Padalinys
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the Padalinys
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Padalinys details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Padalinys'
+        '404':
+          description: Padalinys not found
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '503':
+          description: Service Unavailable
+        '504':
+          description: Gateway Timeout
+
+    delete:
+      summary: Delete a Padalinys
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID of the Padalinys
+      responses:
+        '204':
+          description: Successfully deleted
+        '404':
+          description: Padalinys not found
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '503':
+          description: Service Unavailable
+        '504':
+          description: Gateway Timeout
+        '501':
+          description: Not Implemented
+
+  /ansambliai/:
+    get:
+      summary: List all Ansambliai
+      responses:
+        '200':
+          description: A list of Ansambliai
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Ansamblis'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '503':
+          description: Service Unavailable
+        '504':
+          description: Gateway Timeout
+
+    post:
+      summary: Create a new Ansamblis
+      requestBody:
+        description: Ansamblis object that needs to be added
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Ansamblis'
+      responses:
+        '201':
+          description: Successfully created Ansamblis
+        '400':
+          description: Bad request, validation error
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '503':
+          description: Service Unavailable
+        '504':
+          description: Gateway Timeout
+        '501':
+          description: Not Implemented
+
+  /nariai/:
+    get:
+      summary: List all Nariai
+      responses:
+        '200':
+          description: A list of Nariai
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Narys'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '503':
+          description: Service Unavailable
+        '504':
+          description: Gateway Timeout
+
+    post:
+      summary: Create a new Narys
+      requestBody:
+        description: Narys object that needs to be added
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Narys'
+      responses:
+        '201':
+          description: Successfully created Narys
+        '400':
+          description: Bad request, validation error
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '503':
+          description: Service Unavailable
+        '504':
+          description: Gateway Timeout
+        '501':
+          description: Not Implemented
+
+  /nariai/{id}/:
+    get:
+      summary: Get details of a specific Narys
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the Narys
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Narys details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Narys'
+        '404':
+          description: Narys not found
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '503':
+          description: Service Unavailable
+        '504':
+          description: Gateway Timeout
+
+    delete:
+      summary: Delete a Narys
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID of the Narys
+      responses:
+        '204':
+          description: Successfully deleted
+        '404':
+          description: Narys not found
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '503':
+          description: Service Unavailable
+        '504':
+          description: Gateway Timeout
+        '501':
+          description: Not Implemented
+
+components:
+  schemas:
+    Padalinys:
+      type: object
+      properties:
+        id:
+          type: integer
+        pavadinimas:
+          type: string
+        adresas:
+          type: string
+        telNr:
+          type: integer
+
+    Ansamblis:
+      type: object
+      properties:
+        id:
+          type: integer
+        pavadinimas:
+          type: string
+        padalinys:
+          type: integer
+
+    Narys:
+      type: object
+      properties:
+        id:
+          type: integer
+        vardas:
+          type: string
+        pavarde:
+          type: string
+        ansamblis:
+          type: integer

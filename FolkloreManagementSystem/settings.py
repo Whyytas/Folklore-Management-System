@@ -42,9 +42,21 @@ OAUTH2_PROVIDER = {
 AUTH_USER_MODEL = 'temp.CustomUser'
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
+
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
+  'DEFAULT_AUTHENTICATION_CLASSES': (
         'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
     ),
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'MyFolkloreApis',
+    'DESCRIPTION': 'Lorem ipsum dolor sit amet',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    # OTHER SETTINGS
+}
 
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
@@ -59,9 +71,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'oauth2_provider',
     'rest_framework',
+    'apis',
+    'drf_spectacular',
+    'django_filters',
+    'oauth2_provider',
     'temp',
+
 ]
 
 MIDDLEWARE = [
@@ -108,6 +124,7 @@ DATABASES = {
         'HOST': 'folkloredata.postgres.database.azure.com',
         'PORT': '5432',
         'OPTIONS':{'sslmode':'require'},
+
     }
 }
 
