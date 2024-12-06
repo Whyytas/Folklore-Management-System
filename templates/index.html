@@ -1,0 +1,9 @@
+{% if padalinys_list %}
+    <ul>
+    {% for padalinys in padalinys_list %}
+        <li><a href="/apis/{{ padalinys.id }}/">{{ padalinys.pavadinimas }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>Padalinių nėra</p>
+{% endif %}

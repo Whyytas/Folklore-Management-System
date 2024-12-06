@@ -1,5 +1,9 @@
-from django.http import HttpResponse
-
+from django.shortcuts import render
+from apis.models import Padalinys
 
 def index(request):
-    return HttpResponse("Hello, world. You're at the mainPage index.")
+    padalinys_list = Padalinys.objects.all()  # Query all Padalinys objects
+    context = {
+        "padalinys_list": padalinys_list,
+    }
+    return render(request, "index.html", context)
