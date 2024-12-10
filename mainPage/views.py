@@ -7,3 +7,4 @@ def index(request):
         "padalinys_list": padalinys_list,
     }
     return render(request, "index.html", context)
+

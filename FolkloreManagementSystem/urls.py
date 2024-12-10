@@ -35,7 +35,7 @@ import mainPage
 #         license=openapi.License(name="BSD License"),
 #     ),
 #     public=True,
-#     permission_classes=(permissions.AllowAny,),
+#     permission_classes=(permissions.py.AllowAny,),
 # )
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -43,5 +43,6 @@ urlpatterns = [
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
   path('o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
     path('', include("temp.urls")),
+    path('', include("apis.urls")),
 ]
 

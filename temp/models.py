@@ -8,3 +8,6 @@ class CustomUser(AbstractUser):
         ('moderator', 'Moderator'),
     ]
     role = models.CharField(max_length=50, choices=ROLE_CHOICES, default='user')
+
+    def __str__(self):
+        return self.username
