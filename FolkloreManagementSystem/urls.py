@@ -21,28 +21,16 @@ from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from drf_spectacular.views import SpectacularAPIView
-import mainPage
+from mainPage.views import welcome
 
 
-
-# schema_view = get_schema_view(
-#     openapi.Info(
-#         title="My API",
-#         default_version='v1',
-#         description="API documentation",
-#         terms_of_service="https://www.google.com/policies/terms/",
-#         contact=openapi.Contact(email="vitile@ktu.lt"),
-#         license=openapi.License(name="BSD License"),
-#     ),
-#     public=True,
-#     permission_classes=(permissions.py.AllowAny,),
-# )
 urlpatterns = [
+    path('', welcome, name='welcome'),  # Root URL points to the welcome page
     path("admin/", admin.site.urls),
-    path('', include('mainPage.urls')),
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
-  path('o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
+    path('o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
     path('', include("temp.urls")),
     path('', include("apis.urls")),
+    path('', include('mainPage.urls')),  # Include app-specific URLs
 ]
 

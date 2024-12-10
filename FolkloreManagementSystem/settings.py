@@ -30,7 +30,10 @@ ALLOWED_HOSTS = ['folklore.azurewebsites.net',
                  'localhost',
                  '127.0.0.1']
 
-LOGIN_URL='/admin/'
+#LOGIN_URL='/admin/'
+LOGIN_REDIRECT_URL = '/'
+#LOGOUT_REDIRECT_URL = '/login/'  # Redirect to login after logout
+
 # CSRF trusted origins
 CSRF_TRUSTED_ORIGINS = ['https://folklore.azurewebsites.net']
 OAUTH2_PROVIDER = {

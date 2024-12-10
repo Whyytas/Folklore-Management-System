@@ -11,5 +11,4 @@ router.register(r'nariai', NarysViewSet)
 urlpatterns = [
     path('', include(router.urls)),
     path('api-auth/', include('rest_framework.urls')),
-    path('logout/', LogoutView.as_view(), name='logout'),
 ]
