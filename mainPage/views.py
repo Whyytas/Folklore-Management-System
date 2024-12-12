@@ -2,6 +2,8 @@ from django.contrib.auth.views import LoginView
 from django.urls import reverse_lazy
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
+from apis.models import Padalinys, Ansamblis, Narys
+
 class CustomLoginView(LoginView):
     template_name = '../templates/login.html'  # Path to your login template
     redirect_authenticated_user = True  # Redirect authenticated users
@@ -12,7 +14,20 @@ class CustomLoginView(LoginView):
 
 @login_required
 def home(request):
-    return render(request, 'home.html')
+    """
+    Home page view that displays content based on the user's role.
+    """
+    user_role = getattr(request.user, 'role', None)
+
+    # Default context for all users
+    context = {
+        'user_role': user_role,
+        'ansambliai': Ansamblis.objects.all() if user_role in ['admin', 'moderator', 'user'] else None,
+        'padaliniai': Padalinys.objects.all() if user_role in ['admin', 'moderator', 'user'] else None,
+        'nariai': Narys.objects.all() if user_role in ['admin', 'moderator'] else None,
+    }
+
+    return render(request, 'home.html', context)
 
 from django.contrib.auth import logout
 from django.shortcuts import redirect

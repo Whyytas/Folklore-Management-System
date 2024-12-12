@@ -5,72 +5,113 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <style>
+        /* General Body Styling */
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #007BFF, #6C63FF);
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
-        }
-
-        .login-container {
-            background: #fff;
-            padding: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 400px;
-        }
-
-        .login-container h1 {
-            text-align: center;
-            margin-bottom: 1.5rem;
             color: #333;
         }
 
+        /* Login Container */
+        .login-container {
+            background: #fff;
+            padding: 2rem 2.5rem;
+            border-radius: 10px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 100%;
+            max-width: 380px;
+        }
+
+        /* Title */
+        .login-container h1 {
+            font-size: 1.8rem;
+            margin-bottom: 1.2rem;
+            color: #333;
+        }
+
+        /* Form Styling */
         .login-container form {
             display: flex;
             flex-direction: column;
+            align-items: center; /* Center align form elements */
+            gap: 1rem;
         }
 
-        .login-container label {
-            font-weight: bold;
-            margin-bottom: 0.5rem;
-        }
-
+        /* Labels and Inputs */
         .login-container input[type="text"],
         .login-container input[type="password"] {
-            padding: 0.8rem;
-            margin-bottom: 1rem;
-            border: 1px solid #ccc;
-            border-radius: 4px;
+            padding: 0.9rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            width: 100%; /* Full width for better alignment */
+            max-width: 300px; /* Restrict max width */
         }
 
+        .login-container input:focus {
+            outline: none;
+            border-color: #007BFF;
+            box-shadow: 0 0 4px rgba(0, 123, 255, 0.3);
+        }
+
+        /* Buttons */
         .login-container button {
             background-color: #007BFF;
-            color: #fff;
-            padding: 0.8rem;
+            color: white;
+            padding: 0.9rem;
             border: none;
-            border-radius: 4px;
-            cursor: pointer;
+            border-radius: 5px;
             font-size: 1rem;
+            cursor: pointer;
+            width: 100%; /* Full width for better alignment */
+            max-width: 300px; /* Restrict max width */
+            transition: background-color 0.3s ease;
         }
 
         .login-container button:hover {
             background-color: #0056b3;
         }
 
+        /* Error Message Styling */
         .login-container .error {
-            color: red;
+            color: #E74C3C;
+            background: #FDEDEC;
+            padding: 0.8rem;
+            border-radius: 5px;
+            font-size: 0.9rem;
             margin-bottom: 1rem;
+        }
+
+        .login-container .error p {
+            margin: 0;
+        }
+
+        /* Additional Links */
+        .login-container .links {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .login-container .links a {
+            color: #007BFF;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .login-container .links a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
     <div class="login-container">
-        <h1>Login</h1>
+        <h1>Welcome Back</h1>
         {% if form.errors %}
             <div class="error">
                 {% for field in form %}

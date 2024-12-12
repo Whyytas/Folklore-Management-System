@@ -21,7 +21,7 @@ from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from drf_spectacular.views import SpectacularAPIView
-from mainPage.views import welcome
+from mainPage.views import welcome, home, custom_logout, CustomLoginView
 
 
 urlpatterns = [
@@ -32,5 +32,9 @@ urlpatterns = [
     path('', include("temp.urls")),
     path('', include("apis.urls")),
     path('', include('mainPage.urls')),  # Include app-specific URLs
+
+    path('home/', home, name='home'),  # Home page
+    path('login/', CustomLoginView.as_view(), name='login'),  # Login page
+    path('logout/', custom_logout, name='logout'),  # Logout pag
 ]
 
