@@ -7,15 +7,15 @@ from apis.models import Padalinys, Ansamblis, Narys
 class CustomLoginView(LoginView):
     template_name = '../templates/login.html'  # Path to your login template
     redirect_authenticated_user = True  # Redirect authenticated users
-    success_url = reverse_lazy('home')  # Redirect URL after successful login
+    success_url = reverse_lazy('main')  # Redirect URL after successful login
 
     def get_success_url(self):
         return self.success_url or super().get_success_url()
 
 @login_required
-def home(request):
+def main(request):
     """
-    Home page view that displays content based on the user's role.
+    main page view that displays content based on the user's role.
     """
     user_role = getattr(request.user, 'role', None)
 
@@ -27,7 +27,7 @@ def home(request):
         'nariai': Narys.objects.all() if user_role in ['admin', 'moderator'] else None,
     }
 
-    return render(request, 'home.html', context)
+    return render(request, 'main.html', context)
 
 from django.contrib.auth import logout
 from django.shortcuts import redirect
@@ -48,3 +48,55 @@ def welcome(request):
     if request.user.is_authenticated:
         return redirect('home')  # Redirect authenticated users to home
     return render(request, 'welcome.html')  # Render the welcome page for unauthenticated users
+
+from django.shortcuts import render, get_object_or_404
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from apis.models import Padalinys
+import json
+
+def manage_padaliniai(request, id=None):
+    """
+    Handle all CRUD operations for Padaliniai.
+    """
+    if request.method == "GET":
+        # Fetch and render all Padaliniai
+        padaliniai = Padalinys.objects.all()
+        return render(request, 'padaliniai.html', {'padaliniai': padaliniai})
+
+    elif request.method == "POST" and id is None:
+        # Create new Padalinys
+        try:
+            data = json.loads(request.body)
+            Padalinys.objects.create(
+                pavadinimas=data["pavadinimas"],
+                adresas=data["adresas"],
+                telNr=data["telNr"],
+            )
+            return JsonResponse({"success": True, "message": "Padalinys created successfully."})
+        except Exception as e:
+            return JsonResponse({"success": False, "error": str(e)})
+
+    elif request.method == "PUT" and id:
+        # Update existing Padalinys
+        try:
+            padalinys = get_object_or_404(Padalinys, id=id)
+            data = json.loads(request.body)
+            padalinys.pavadinimas = data.get("pavadinimas", padalinys.pavadinimas)
+            padalinys.adresas = data.get("adresas", padalinys.adresas)
+            padalinys.telNr = data.get("telNr", padalinys.telNr)
+            padalinys.save()
+            return JsonResponse({"success": True, "message": "Padalinys updated successfully."})
+        except Exception as e:
+            return JsonResponse({"success": False, "error": str(e)})
+
+    elif request.method == "DELETE" and id:
+        # Delete an existing Padalinys
+        try:
+            padalinys = get_object_or_404(Padalinys, id=id)
+            padalinys.delete()
+            return JsonResponse({"success": True, "message": "Padalinys deleted successfully."})
+        except Exception as e:
+            return JsonResponse({"success": False, "error": str(e)})
+
+    return JsonResponse({"success": False, "error": "Invalid HTTP method or missing ID."})

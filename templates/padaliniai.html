@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Padaliniai</title>
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    table-layout: fixed; /* Fixed layout for even columns */
+}
+
+table th, table td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+    word-wrap: break-word; /* Allow text to break into new lines */
+}
+
+table th {
+    background-color: #007BFF;
+    color: white;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 100%;
+    margin: 0 auto 20px auto;
+}
+
+input {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+.btn {
+    padding: 8px 12px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 8px; /* Add spacing between buttons */
+}
+
+.btn-danger {
+    background-color: #E74C3C;
+    margin-right: 0; /* Remove margin for the last button */
+}
+
+.btn:hover {
+    background-color: #0056b3;
+}
+
+.btn-danger:hover {
+    background-color: #C0392B;
+}
+
+
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        max-width: 400px;
+        margin: 0 auto 20px auto;
+    }
+
+    input {
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+
+    @media screen and (max-width: 768px) {
+        table, thead, tbody, th, td, tr {
+            display: block;
+        }
+
+        thead {
+            display: none; /* Hide table headers on mobile */
+        }
+
+        tr {
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: white;
+        }
+
+        td {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px;
+        }
+
+        td::before {
+            content: attr(data-label); /* Add labels for each cell */
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-right: 10px;
+            color: #007BFF;
+        }
+    }
+}
+    </style>
+    <script>
+        async function createPadalinys() {
+            const formData = new FormData(document.getElementById('padalinysForm'));
+
+            const response = await fetch('/padaliniai/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({
+                    pavadinimas: formData.get('pavadinimas'),
+                    adresas: formData.get('adresas'),
+                    telNr: formData.get('telNr'),
+                }),
+            });
+
+            if (response.ok) location.reload();
+            else alert('Failed to create Padalinys');
+        }
+
+        async function updatePadalinys(id) {
+            const row = document.getElementById(`row-${id}`);
+    const pavadinimas = row.querySelector(".pavadinimas").textContent;
+    const adresas = row.querySelector(".adresas").textContent;
+    const telNr = row.querySelector(".telNr").textContent;
+
+    const response = await fetch(`/padaliniai/${id}/`, {  // Include id in the URL
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': '{{ csrf_token }}',
+        },
+        body: JSON.stringify({
+            pavadinimas: pavadinimas,
+            adresas: adresas,
+            telNr: telNr,
+        }),
+    });
+
+    if (response.ok) {
+        alert("Padalinys updated successfully!");
+        location.reload();
+    } else {
+        alert("Failed to update Padalinys.");
+    }
+}
+
+
+    async function deletePadalinys(id) {
+    try {
+        const response = await fetch(`/padaliniai/${id}/`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}',
+            },
+        });
+
+        const contentType = response.headers.get("Content-Type");
+        if (contentType && contentType.includes("application/json")) {
+            const result = await response.json();
+            if (response.ok) {
+                alert(result.message || "Padalinys deleted successfully!");
+                location.reload();
+            } else {
+                alert(`Failed to delete Padalinys: ${result.error || "Unknown error"}`);
+            }
+        } else {
+            alert("Server returned an unexpected response.");
+            console.error("Unexpected response:", await response.text());
+        }
+    } catch (err) {
+        console.error("Delete request failed:", err);
+        alert("An error occurred while deleting Padalinys.");
+    }
+}
+
+
+
+    </script>
+</head>
+<body>
+    <h1>Manage Padaliniai</h1>
+
+    <form id="padalinysForm" onsubmit="event.preventDefault(); createPadalinys();">
+        <input type="text" name="pavadinimas" placeholder="Name" required>
+        <input type="text" name="adresas" placeholder="Address" required>
+        <input type="number" name="telNr" placeholder="Phone Number" required>
+        <button type="submit" class="btn">Create</button>
+    </form>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Address</th>
+                <th>Phone</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+    {% for padalinys in padaliniai %}
+    <tr id="row-{{ padalinys.id }}">
+        <td data-label="Name" contenteditable="true" class="pavadinimas">{{ padalinys.pavadinimas }}</td>
+        <td data-label="Address" contenteditable="true" class="adresas">{{ padalinys.adresas }}</td>
+        <td data-label="Phone" contenteditable="true" class="telNr">{{ padalinys.telNr }}</td>
+        <td data-label="Actions">
+            <button class="btn" onclick="updatePadalinys({{ padalinys.id }})">Update</button>
+            <button class="btn btn-danger" onclick="deletePadalinys({{ padalinys.id }})">Delete</button>
+        </td>
+    </tr>
+    {% endfor %}
+</tbody>
+    </table>
+</body>
+</html>

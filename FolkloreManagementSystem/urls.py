@@ -21,20 +21,24 @@ from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from drf_spectacular.views import SpectacularAPIView
-from mainPage.views import welcome, home, custom_logout, CustomLoginView
+from mainPage.views import welcome, main, custom_logout, CustomLoginView, manage_padaliniai
 
 
 urlpatterns = [
     path('', welcome, name='welcome'),  # Root URL points to the welcome page
     path("admin/", admin.site.urls),
-    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
-    path('o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
-    path('', include("temp.urls")),
-    path('', include("apis.urls")),
-    path('', include('mainPage.urls')),  # Include app-specific URLs
-
-    path('home/', home, name='home'),  # Home page
+    #path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+    #path('o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
+    #path('', include("apis.urls")),
+    path('main/', include('mainPage.urls')),  # Include app-specific URLs
+    #path('home/', home, name='home'),  # Home page
     path('login/', CustomLoginView.as_view(), name='login'),  # Login page
     path('logout/', custom_logout, name='logout'),  # Logout pag
+
+    path('', welcome, name='welcome'),
+
+    #APIS
+    path('padaliniai/<int:id>/', manage_padaliniai, name='padaliniai-detail'),
+    path('padaliniai/', manage_padaliniai, name='padaliniai'),
 ]
 
