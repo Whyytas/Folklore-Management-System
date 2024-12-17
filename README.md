@@ -49,6 +49,7 @@ Pasiekite sistemą adresu: `http://127.0.0.1:8000` arba `http://localhost:8000`
 ![Model](https://github.com/user-attachments/assets/aec81acb-0418-49ed-9fcf-cfde3581e21c)
 
 ## API specifikacija
+- https://folklore.azurewebsites.net/swagger/
 - Lokaliai http://localhost:8000/swagger/
 - .yaml failas projekte
 
