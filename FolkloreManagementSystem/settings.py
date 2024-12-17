@@ -20,7 +20,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 import os
+
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),  # Your regular static folder
@@ -37,9 +39,9 @@ ALLOWED_HOSTS = ['folklore.azurewebsites.net',
                  'localhost',
                  '127.0.0.1']
 
-#LOGIN_URL='/admin/'
+# LOGIN_URL='/admin/'
 LOGIN_REDIRECT_URL = '/'
-#LOGOUT_REDIRECT_URL = '/login/'  # Redirect to login after logout
+# LOGOUT_REDIRECT_URL = '/login/'  # Redirect to login after logout
 
 # CSRF trusted origins
 CSRF_TRUSTED_ORIGINS = ['https://folklore.azurewebsites.net']
@@ -55,10 +57,10 @@ REST_FRAMEWORK = {
 
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
-  'DEFAULT_AUTHENTICATION_CLASSES': (
+    'DEFAULT_AUTHENTICATION_CLASSES': (
         'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
     ),
-'DEFAULT_PERMISSION_CLASSES': (
+    'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',  # Require authentication
     ),
 }
@@ -88,7 +90,7 @@ INSTALLED_APPS = [
     'django_filters',
     'oauth2_provider',
     'temp',
-
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
@@ -122,7 +124,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'FolkloreManagementSystem.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
@@ -134,11 +135,10 @@ DATABASES = {
         'PASSWORD': 'Slaptazodis1',
         'HOST': 'folkloredata.postgres.database.azure.com',
         'PORT': '5432',
-        'OPTIONS':{'sslmode':'require'},
+        'OPTIONS': {'sslmode': 'require'},
 
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -158,7 +158,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
@@ -169,13 +168,6 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
-
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.1/howto/static-files/
-
-STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field

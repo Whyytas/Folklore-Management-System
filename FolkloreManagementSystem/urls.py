@@ -30,9 +30,8 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     #path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     #path('o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
-    #path('', include("apis.urls")),
+    path('', include("apis.urls")),
     path('main/', include('mainPage.urls')),  # Include app-specific URLs
-    #path('home/', home, name='home'),  # Home page
     path('login/', CustomLoginView.as_view(), name='login'),  # Login page
     path('logout/', custom_logout, name='logout'),  # Logout pag
 

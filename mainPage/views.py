@@ -4,6 +4,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from apis.models import Padalinys, Ansamblis, Narys
 
+
 class CustomLoginView(LoginView):
     template_name = '../templates/login.html'  # Path to your login template
     redirect_authenticated_user = True  # Redirect authenticated users
@@ -11,6 +12,7 @@ class CustomLoginView(LoginView):
 
     def get_success_url(self):
         return self.success_url or super().get_success_url()
+
 
 @login_required
 def main(request):
@@ -29,8 +31,10 @@ def main(request):
 
     return render(request, 'main.html', context)
 
+
 from django.contrib.auth import logout
 from django.shortcuts import redirect
+
 
 def custom_logout(request):
     """
@@ -39,6 +43,7 @@ def custom_logout(request):
     logout(request)  # Log out the user
     return redirect('login')  # Redirect to the login page
 
+
 def welcome(request):
     """
     Welcome page view.
@@ -46,14 +51,16 @@ def welcome(request):
     Otherwise, redirect to the login page.
     """
     if request.user.is_authenticated:
-        return redirect('home')  # Redirect authenticated users to home
+        return redirect('main')  # Redirect authenticated users to home
     return render(request, 'welcome.html')  # Render the welcome page for unauthenticated users
+
 
 from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from apis.models import Padalinys
 import json
+
 
 def manage_padaliniai(request, id=None):
     """
@@ -101,8 +108,10 @@ def manage_padaliniai(request, id=None):
 
     return JsonResponse({"success": False, "error": "Invalid HTTP method or missing ID."})
 
+
 from django.shortcuts import render
 from apis.models import Ansamblis, Padalinys
+
 
 def manage_ansambliai(request, id=None):
     """
@@ -153,6 +162,7 @@ def manage_ansambliai(request, id=None):
             return JsonResponse({"success": False, "error": str(e)})
 
     return JsonResponse({"success": False, "error": "Invalid HTTP method or missing ID."})
+
 
 def manage_nariai(request, id=None):
     """
