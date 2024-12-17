@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,12 +22,46 @@
         }
 
         header {
-            background-color: #007BFF;
+            position: relative;
             color: white;
-            padding: 1rem 2rem;
             text-align: center;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 2rem 0;
+            background-image: url("{% static 'Pictures/Juosta1.jpg' %}");
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            height: 300px; /* Ensure the header has height */
+            overflow: hidden; /* Prevent content overflow */
         }
+
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.3); /* Dark overlay on the picture */
+            z-index: 1; /* Place below the text */
+        }
+
+        .header-background {
+            position: relative;
+            z-index: 2; /* Ensure text is above the overlay */
+            background: rgba(0, 0, 0, 0.5); /* Darker text background */
+            padding: 1rem; /* Add padding to text background */
+            display: inline-block; /* Fit content width */
+            margin: 0 auto;
+            border-radius: 0; /* Remove rounded edges completely */
+        }
+
+        .header-background h1, .header-background p {
+            margin: 0;
+            color: #fff; /* Keep text white */
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8); /* Improved text shadow */
+            font-size: 1.8rem;
+        }
+
 
         header h1 {
             margin-bottom: 0.5rem;
@@ -130,8 +165,12 @@
 
         /* Animations */
         @keyframes fadeIn {
-            0% { opacity: 0; }
-            100% { opacity: 1; }
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
         }
 
         @keyframes fadeInUp {
@@ -171,8 +210,10 @@
 </head>
 <body>
 <header>
-    <h1>Welcome, {{ user.username }}!</h1>
-    <p>Your role: <strong>{{ user_role }}</strong></p>
+    <div class="header-background">
+        <h1>Welcome, {{ user.username }}!</h1>
+        <p>Your role: <strong>{{ user_role }}</strong></p>
+    </div>
 </header>
 
 <main>
