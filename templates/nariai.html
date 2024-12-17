@@ -20,7 +20,7 @@
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 20px;
-            table-layout: fixed; /* Fixed layout */
+            table-layout: fixed;
         }
 
         table th, table td {
@@ -33,28 +33,6 @@
         table th {
             background-color: #007BFF;
             color: white;
-        }
-
-        .btn {
-            padding: 8px 12px;
-            background-color: #007BFF;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-right: 8px;
-        }
-
-        .btn-danger {
-            background-color: #E74C3C;
-        }
-
-        .btn:hover {
-            background-color: #0056b3;
-        }
-
-        .btn-danger:hover {
-            background-color: #C0392B;
         }
 
         form {
@@ -70,6 +48,66 @@
             border: 1px solid #ddd;
             border-radius: 4px;
             font-size: 14px;
+        }
+
+        .btn {
+            padding: 8px 12px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 8px;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .btn-danger {
+            background-color: #E74C3C;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+
+        .btn-danger:hover {
+            background-color: #C0392B;
+        }
+
+        /* Responsive Table */
+        @media screen and (max-width: 768px) {
+            table, thead, tbody, th, td, tr {
+                display: block;
+            }
+
+            thead {
+                display: none; /* Hide table headers on mobile */
+            }
+
+            tr {
+                margin-bottom: 10px;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+                background-color: white;
+            }
+
+            td {
+                display: flex;
+                justify-content: space-between;
+                padding: 8px;
+            }
+
+            td::before {
+                content: attr(data-label);
+                font-weight: bold;
+                text-transform: uppercase;
+                margin-right: 10px;
+                color: #007BFF;
+            }
+
+            select {
+                width: 100%;
+            }
         }
     </style>
     <script>
@@ -158,9 +196,9 @@
         <tbody>
             {% for narys in nariai %}
             <tr id="row-{{ narys.id }}">
-                <td contenteditable="true" class="vardas">{{ narys.vardas }}</td>
-                <td contenteditable="true" class="pavarde">{{ narys.pavarde }}</td>
-                <td>
+                <td data-label="Name" contenteditable="true" class="vardas">{{ narys.vardas }}</td>
+                <td data-label="Surname" contenteditable="true" class="pavarde">{{ narys.pavarde }}</td>
+                <td data-label="Ansamblis">
                     <select class="ansamblis">
                         {% for ansamblis in ansambliai %}
                             <option value="{{ ansamblis.id }}" {% if ansamblis.id == narys.ansamblis.id %}selected{% endif %}>
@@ -169,7 +207,7 @@
                         {% endfor %}
                     </select>
                 </td>
-                <td>
+                <td data-label="Actions">
                     <button class="btn" onclick="updateNarys({{ narys.id }})">Update</button>
                     <button class="btn btn-danger" onclick="deleteNarys({{ narys.id }})">Delete</button>
                 </td>

@@ -20,41 +20,19 @@
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 20px;
-            table-layout: fixed; /* Fixed layout */
+            table-layout: fixed;
         }
 
         table th, table td {
             padding: 10px;
             border: 1px solid #ddd;
             text-align: left;
-            word-wrap: break-word; /* Ensure text wraps */
+            word-wrap: break-word;
         }
 
         table th {
             background-color: #007BFF;
             color: white;
-        }
-
-        .btn {
-            padding: 8px 12px;
-            background-color: #007BFF;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-right: 8px;
-        }
-
-        .btn-danger {
-            background-color: #E74C3C;
-        }
-
-        .btn:hover {
-            background-color: #0056b3;
-        }
-
-        .btn-danger:hover {
-            background-color: #C0392B;
         }
 
         form {
@@ -72,7 +50,31 @@
             font-size: 14px;
         }
 
-        /* Responsive styles */
+        .btn {
+            padding: 8px 12px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 8px;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .btn-danger {
+            background-color: #E74C3C;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+
+        .btn-danger:hover {
+            background-color: #C0392B;
+        }
+
+        /* Responsive Table */
         @media screen and (max-width: 768px) {
             table, thead, tbody, th, td, tr {
                 display: block;
@@ -101,6 +103,10 @@
                 text-transform: uppercase;
                 margin-right: 10px;
                 color: #007BFF;
+            }
+
+            select {
+                width: 100%;
             }
         }
     </style>
@@ -170,7 +176,7 @@
 <body>
     <h1>Manage Ansambliai</h1>
 
-    <!-- Form to create a new Ansamblis -->
+    <!-- Form to Create New Ansamblis -->
     <form id="ansamblisForm" onsubmit="event.preventDefault(); createAnsamblis();">
         <input type="text" name="pavadinimas" placeholder="Ansamblis Name" required>
         <select name="padalinys" required>
@@ -182,7 +188,7 @@
         <button type="submit" class="btn">Create</button>
     </form>
 
-    <!-- Table to display and manage Ansambliai -->
+    <!-- Table for CRUD Operations -->
     <table>
         <thead>
             <tr>
@@ -194,8 +200,8 @@
         <tbody>
             {% for ansamblis in ansambliai %}
             <tr id="row-{{ ansamblis.id }}">
-                <td contenteditable="true" class="pavadinimas">{{ ansamblis.pavadinimas }}</td>
-                <td>
+                <td data-label="Name" contenteditable="true" class="pavadinimas">{{ ansamblis.pavadinimas }}</td>
+                <td data-label="Padalinys">
                     <select class="padalinys">
                         {% for padalinys in padaliniai %}
                             <option value="{{ padalinys.id }}" {% if padalinys.id == ansamblis.padalinys.id %}selected{% endif %}>
@@ -204,7 +210,7 @@
                         {% endfor %}
                     </select>
                 </td>
-                <td>
+                <td data-label="Actions">
                     <button class="btn" onclick="updateAnsamblis({{ ansamblis.id }})">Update</button>
                     <button class="btn btn-danger" onclick="deleteAnsamblis({{ ansamblis.id }})">Delete</button>
                 </td>
