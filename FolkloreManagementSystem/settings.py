@@ -28,7 +28,7 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),  # Your regular static folder
     os.path.join(BASE_DIR, 'static/Pictures'),  # Add your Pictures directory
 ]
-
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-+_n6j3p7xr&pcxd1ujofrbs!k6hm^=ijg*6t#qgd5dm$_9*j50'
 
@@ -101,6 +101,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'FolkloreManagementSystem.urls'
