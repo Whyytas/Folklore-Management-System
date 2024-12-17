@@ -21,7 +21,8 @@ from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from drf_spectacular.views import SpectacularAPIView
-from mainPage.views import welcome, main, custom_logout, CustomLoginView, manage_padaliniai, manage_ansambliai
+from mainPage.views import (welcome, main, custom_logout, CustomLoginView,
+                            manage_padaliniai, manage_ansambliai, manage_nariai)
 
 
 urlpatterns = [
@@ -42,5 +43,7 @@ urlpatterns = [
     path('padaliniai/', manage_padaliniai, name='padaliniai'),
     path('ansambliai/<int:id>/', manage_ansambliai, name='ansambliai-detail'),
     path('ansambliai/', manage_ansambliai, name='ansambliai'),
+    path('nariai/<int:id>/', manage_nariai, name='nariai-detail'),
+    path('nariai/', manage_nariai, name='nariai'),
 ]
 

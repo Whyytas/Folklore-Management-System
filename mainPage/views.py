@@ -153,3 +153,55 @@ def manage_ansambliai(request, id=None):
             return JsonResponse({"success": False, "error": str(e)})
 
     return JsonResponse({"success": False, "error": "Invalid HTTP method or missing ID."})
+
+def manage_nariai(request, id=None):
+    """
+    Handle all CRUD operations for Nariai.
+    """
+    if request.method == "GET":
+        # Fetch and render all Nariai and Ansambliai
+        nariai = Narys.objects.select_related('ansamblis').all()
+        ansambliai = Ansamblis.objects.all()
+        return render(request, 'nariai.html', {
+            'nariai': nariai,
+            'ansambliai': ansambliai
+        })
+
+    elif request.method == "POST" and id is None:
+        # Create a new Narys
+        try:
+            data = json.loads(request.body)
+            ansamblis = get_object_or_404(Ansamblis, id=data["ansamblis"])
+            Narys.objects.create(
+                vardas=data["vardas"],
+                pavarde=data["pavarde"],
+                ansamblis=ansamblis
+            )
+            return JsonResponse({"success": True, "message": "Narys created successfully."})
+        except Exception as e:
+            return JsonResponse({"success": False, "error": str(e)})
+
+    elif request.method == "PUT" and id:
+        # Update an existing Narys
+        try:
+            narys = get_object_or_404(Narys, id=id)
+            data = json.loads(request.body)
+            narys.vardas = data.get("vardas", narys.vardas)
+            narys.pavarde = data.get("pavarde", narys.pavarde)
+            if "ansamblis" in data:
+                narys.ansamblis = get_object_or_404(Ansamblis, id=data["ansamblis"])
+            narys.save()
+            return JsonResponse({"success": True, "message": "Narys updated successfully."})
+        except Exception as e:
+            return JsonResponse({"success": False, "error": str(e)})
+
+    elif request.method == "DELETE" and id:
+        # Delete an existing Narys
+        try:
+            narys = get_object_or_404(Narys, id=id)
+            narys.delete()
+            return JsonResponse({"success": True, "message": "Narys deleted successfully."})
+        except Exception as e:
+            return JsonResponse({"success": False, "error": str(e)})
+
+    return JsonResponse({"success": False, "error": "Invalid HTTP method or missing ID."})
