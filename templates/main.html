@@ -5,42 +5,81 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Main Page</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+        /* General Reset */
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+            line-height: 1.6;
         }
 
         header {
             background-color: #007BFF;
             color: white;
-            padding: 1rem;
+            padding: 1rem 2rem;
             text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            font-size: 1.1rem;
         }
 
         main {
             margin: 2rem auto;
-            max-width: 800px;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             padding: 1.5rem;
+            max-width: 1100px;
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         h1 {
-            margin-top: 0;
             text-align: center;
+            margin-bottom: 1.5rem;
         }
 
         .section {
             margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: #f1f8ff;
+            border: 1px solid #cce5ff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
         }
 
         .section h2 {
             margin-bottom: 1rem;
-            border-bottom: 1px solid #ddd;
+            font-size: 1.4rem;
+            color: #007BFF;
+            border-bottom: 2px solid #007BFF;
             padding-bottom: 0.5rem;
+        }
+
+        .section ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .section li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .section li:last-child {
+            border-bottom: none;
         }
 
         .btn {
@@ -50,104 +89,141 @@
             color: white;
             text-decoration: none;
             border-radius: 4px;
-            font-size: 0.9rem;
+            font-size: 1rem;
+            margin-top: 1rem;
+            transition: background-color 0.3s ease;
         }
 
         .btn:hover {
             background-color: #0056b3;
         }
 
+        .icon {
+            margin-right: 0.5rem;
+        }
+
         footer {
             margin-top: 2rem;
+            margin-bottom: 3rem; /* Adds more space at the bottom of the page */
             text-align: center;
-            color: #888;
+            color: #555;
+        }
+
+        footer a {
+            color: #007BFF;
+            text-decoration: none;
+            display: inline-block;
+            margin-bottom: 1.5rem; /* Adds space after the button */
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            main {
+                margin: 1rem;
+                padding: 1rem;
+            }
+
+            .section {
+                padding: 1rem;
+            }
         }
     </style>
 </head>
 <body>
-    <header>
-        <h1>Welcome, {{ user.username }}!</h1>
-        <p>Your role: <strong>{{ user_role }}</strong></p>
-    </header>
-    <main>
-        {% if user_role == 'admin' %}
-            <div class="section">
-                <h2>Padaliniai</h2>
-                <ul>
-                    {% for padalinys in padaliniai %}
-                        <li>{{ padalinys.pavadinimas }}</li>
-                    {% endfor %}
-                </ul>
-                <a class="btn" href="/padaliniai">Manage Padaliniai</a>
-            </div>
-            <div class="section">
-                <h2>Ansambliai</h2>
-                <ul>
-                    {% for ansamblis in ansambliai %}
-                        <li>{{ ansamblis.pavadinimas }}</li>
-                    {% endfor %}
-                </ul>
-                <a class="btn" href="/ansambliai">Manage Ansambliai</a>
-            </div>
-            <div class="section">
-                <h2>Nariai</h2>
-                <ul>
-                    {% for narys in nariai %}
-                        <li>{{ narys.vardas }} {{ narys.pavarde }}</li>
-                    {% endfor %}
-                </ul>
-                <a class="btn" href="/nariai">Manage Nariai</a>
-            </div>
-        {% elif user_role == 'moderator' %}
-            <div class="section">
-                <h2>Padaliniai</h2>
-                <ul>
-                    {% for padalinys in padaliniai %}
-                        <li>{{ padalinys.pavadinimas }}</li>
-                    {% endfor %}
-                </ul>
-                <a class="btn" href="#">Manage Padaliniai</a>
-            </div>
-            <div class="section">
-                <h2>Ansambliai</h2>
-                <ul>
-                    {% for ansamblis in ansambliai %}
-                        <li>{{ ansamblis.pavadinimas }}</li>
-                    {% endfor %}
-                </ul>
-            </div>
-            <div class="section">
-                <h2>Nariai</h2>
-                <ul>
-                    {% for narys in nariai %}
-                        <li>{{ narys.vardas }} {{ narys.pavarde }}</li>
-                    {% endfor %}
-                </ul>
-                <a class="btn" href="#">Manage Nariai</a>
-            </div>
-        {% elif user_role == 'user' %}
-            <div class="section">
-                <h2>Padaliniai</h2>
-                <ul>
-                    {% for padalinys in padaliniai %}
-                        <li>{{ padalinys.pavadinimas }}</li>
-                    {% endfor %}
-                </ul>
-            </div>
-            <div class="section">
-                <h2>Ansambliai</h2>
-                <ul>
-                    {% for ansamblis in ansambliai %}
-                        <li>{{ ansamblis.pavadinimas }}</li>
-                    {% endfor %}
-                </ul>
-            </div>
-        {% else %}
-            <p>You do not have permissions to view this content.</p>
-        {% endif %}
-    </main>
-    <footer>
-        <a href="{% url 'logout' %}" class="btn">Logout</a>
-    </footer>
+<header>
+    <h1>Welcome, {{ user.username }}!</h1>
+    <p>Your role: <strong>{{ user_role }}</strong></p>
+</header>
+
+<main>
+    {% if user_role == 'admin' %}
+        <div class="section">
+            <h2>📂 Manage Padaliniai</h2>
+            <ul>
+                {% for padalinys in padaliniai %}
+                    <li>{{ padalinys.pavadinimas }}</li>
+                {% endfor %}
+            </ul>
+            <a class="btn" href="/padaliniai">
+                <span class="icon">⚙️</span>Manage Padaliniai
+            </a>
+        </div>
+        <div class="section">
+            <h2>🎵 Manage Ansambliai</h2>
+            <ul>
+                {% for ansamblis in ansambliai %}
+                    <li>{{ ansamblis.pavadinimas }}</li>
+                {% endfor %}
+            </ul>
+            <a class="btn" href="/ansambliai">
+                <span class="icon">⚙️</span>Manage Ansambliai
+            </a>
+        </div>
+        <div class="section">
+            <h2>👥 Manage Nariai</h2>
+            <ul>
+                {% for narys in nariai %}
+                    <li>{{ narys.vardas }} {{ narys.pavarde }}</li>
+                {% endfor %}
+            </ul>
+            <a class="btn" href="/nariai">
+                <span class="icon">⚙️</span>Manage Nariai
+            </a>
+        </div>
+    {% elif user_role == 'moderator' %}
+        <div class="section">
+            <h2>📂 Padaliniai</h2>
+            <ul>
+                {% for padalinys in padaliniai %}
+                    <li>{{ padalinys.pavadinimas }}</li>
+                {% endfor %}
+            </ul>
+            <a class="btn" href="/padaliniai">Manage Padaliniai</a>
+        </div>
+        <div class="section">
+            <h2>🎵 Ansambliai</h2>
+            <ul>
+                {% for ansamblis in ansambliai %}
+                    <li>{{ ansamblis.pavadinimas }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="section">
+            <h2>👥 Nariai</h2>
+            <ul>
+                {% for narys in nariai %}
+                    <li>{{ narys.vardas }} {{ narys.pavarde }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% elif user_role == 'user' %}
+        <div class="section">
+            <h2>📂 Padaliniai</h2>
+            <ul>
+                {% for padalinys in padaliniai %}
+                    <li>{{ padalinys.pavadinimas }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="section">
+            <h2>🎵 Ansambliai</h2>
+            <ul>
+                {% for ansamblis in ansambliai %}
+                    <li>{{ ansamblis.pavadinimas }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% else %}
+        <p>You do not have permissions to view this content.</p>
+    {% endif %}
+</main>
+
+<footer>
+    <a href="{% url 'logout' %}" class="btn" style="margin-bottom: 2rem;">Logout</a>
+</footer>
 </body>
 </html>
