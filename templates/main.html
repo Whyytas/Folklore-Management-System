@@ -17,6 +17,7 @@
             background-color: #f9f9f9;
             color: #333;
             line-height: 1.6;
+            overflow-x: hidden;
         }
 
         header {
@@ -29,10 +30,12 @@
 
         header h1 {
             margin-bottom: 0.5rem;
+            animation: slideInDown 0.8s ease-out;
         }
 
         header p {
             font-size: 1.1rem;
+            animation: fadeIn 1s ease-in;
         }
 
         main {
@@ -42,11 +45,9 @@
             background: #ffffff;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        h1 {
-            text-align: center;
-            margin-bottom: 1.5rem;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 1s forwards ease-in-out;
         }
 
         .section {
@@ -56,6 +57,10 @@
             border: 1px solid #cce5ff;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 1s forwards ease-in-out;
+            animation-delay: 0.3s;
         }
 
         .section h2 {
@@ -91,11 +96,12 @@
             border-radius: 4px;
             font-size: 1rem;
             margin-top: 1rem;
-            transition: background-color 0.3s ease;
+            transition: background-color 0.3s, transform 0.3s;
         }
 
         .btn:hover {
             background-color: #0056b3;
+            transform: scale(1.05);
         }
 
         .icon {
@@ -104,20 +110,50 @@
 
         footer {
             margin-top: 2rem;
-            margin-bottom: 3rem; /* Adds more space at the bottom of the page */
             text-align: center;
             color: #555;
+            animation: fadeIn 1.5s ease-in-out;
         }
 
         footer a {
             color: #007BFF;
             text-decoration: none;
             display: inline-block;
-            margin-bottom: 1.5rem; /* Adds space after the button */
+            margin-bottom: 3rem;
+            transition: transform 0.3s;
         }
 
         footer a:hover {
             text-decoration: underline;
+            transform: scale(1.1);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        @keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInDown {
+            0% {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
         }
 
         /* Responsive Design */
