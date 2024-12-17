@@ -100,3 +100,56 @@ def manage_padaliniai(request, id=None):
             return JsonResponse({"success": False, "error": str(e)})
 
     return JsonResponse({"success": False, "error": "Invalid HTTP method or missing ID."})
+
+from django.shortcuts import render
+from apis.models import Ansamblis, Padalinys
+
+def manage_ansambliai(request, id=None):
+    """
+    Handle all CRUD operations for Ansambliai.
+    """
+    if request.method == "GET":
+        # Fetch and render all Ansambliai and Padaliniai
+        ansambliai = Ansamblis.objects.select_related('padalinys').all()
+        padaliniai = Padalinys.objects.all()
+        return render(request, 'ansambliai.html', {
+            'ansambliai': ansambliai,
+            'padaliniai': padaliniai
+        })
+
+    elif request.method == "POST" and id is None:
+        # Create a new Ansamblis
+        try:
+            data = json.loads(request.body)
+            padalinys = get_object_or_404(Padalinys, id=data["padalinys"])
+            Ansamblis.objects.create(
+                pavadinimas=data["pavadinimas"],
+                padalinys=padalinys
+            )
+            return JsonResponse({"success": True, "message": "Ansamblis created successfully."})
+        except Exception as e:
+            return JsonResponse({"success": False, "error": str(e)})
+
+    elif request.method == "PUT" and id:
+        # Update an existing Ansamblis
+        try:
+            ansamblis = get_object_or_404(Ansamblis, id=id)
+            data = json.loads(request.body)
+            ansamblis.pavadinimas = data.get("pavadinimas", ansamblis.pavadinimas)
+            if "padalinys" in data:
+                ansamblis.padalinys = get_object_or_404(Padalinys, id=data["padalinys"])
+            ansamblis.save()
+            return JsonResponse({"success": True, "message": "Ansamblis updated successfully."})
+        except Exception as e:
+            return JsonResponse({"success": False, "error": str(e)})
+
+    elif request.method == "DELETE" and id:
+        # Delete an existing Ansamblis
+        try:
+            ansamblis = get_object_or_404(Ansamblis, id=id)
+            ansamblis.delete()
+            return JsonResponse({"success": True, "message": "Ansamblis deleted successfully."})
+        except Exception as e:
+            return JsonResponse({"success": False, "error": str(e)})
+
+    return JsonResponse({"success": False, "error": "Invalid HTTP method or missing ID."})
