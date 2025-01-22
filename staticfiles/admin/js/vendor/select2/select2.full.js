@@ -2084,15 +2084,15 @@ S2.define('select2/selection/search',[
     var disableInputEvents = msie && msie <= 11;
 
     // Workaround for browsers which do not support the `input` event
-    // This will prevent double-triggering of events for browsers which support
-    // both the `keyup` and `input` events.
+    // This will prevent double-triggering of Renginiai for browsers which support
+    // both the `keyup` and `input` Renginiai.
     this.$selection.on(
       'input.searchcheck',
       '.select2-search--inline',
       function (evt) {
         // IE will trigger the `input` event when a placeholder is used on a
         // search box. To get around this issue, we are forced to ignore all
-        // `input` events in IE and keep using `keyup`.
+        // `input` Renginiai in IE and keep using `keyup`.
         if (disableInputEvents) {
           self.$selection.off('input.search input.searchcheck');
           return;
@@ -2109,7 +2109,7 @@ S2.define('select2/selection/search',[
       function (evt) {
         // IE will trigger the `input` event when a placeholder is used on a
         // search box. To get around this issue, we are forced to ignore all
-        // `input` events in IE and keep using `keyup`.
+        // `input` Renginiai in IE and keep using `keyup`.
         if (disableInputEvents && evt.type === 'input') {
           self.$selection.off('input.search input.searchcheck');
           return;
@@ -2117,7 +2117,7 @@ S2.define('select2/selection/search',[
 
         var key = evt.which;
 
-        // We can freely ignore events from modifier keys
+        // We can freely ignore Renginiai from modifier keys
         if (key == KEYS.SHIFT || key == KEYS.CTRL || key == KEYS.ALT) {
           return;
         }
@@ -2228,7 +2228,7 @@ S2.define('select2/selection/eventRelay',[
     decorated.call(this, container, $container);
 
     container.on('*', function (name, params) {
-      // Ignore events that should not be relayed
+      // Ignore Renginiai that should not be relayed
       if ($.inArray(name, relayEvents) === -1) {
         return;
       }
@@ -2243,7 +2243,7 @@ S2.define('select2/selection/eventRelay',[
 
       self.$element.trigger(evt);
 
-      // Only handle preventable events if it was one
+      // Only handle preventable Renginiai if it was one
       if ($.inArray(name, preventableEvents) === -1) {
         return;
       }
@@ -4109,8 +4109,8 @@ S2.define('select2/dropdown/search',[
     });
 
     // Workaround for browsers which do not support the `input` event
-    // This will prevent double-triggering of events for browsers which support
-    // both the `keyup` and `input` events.
+    // This will prevent double-triggering of Renginiai for browsers which support
+    // both the `keyup` and `input` Renginiai.
     this.$search.on('input', function (evt) {
       // Unbind the duplicated `keyup` event
       $(this).off('keyup');
@@ -5410,7 +5410,7 @@ S2.define('select2/core',[
 
     this.results.position(this.$results, this.$dropdown);
 
-    // Bind events
+    // Bind Renginiai
 
     var self = this;
 
@@ -5738,7 +5738,7 @@ S2.define('select2/core',[
     var changed = false;
     var self = this;
 
-    // Ignore any mutation events raised for elements that aren't options or
+    // Ignore any mutation Renginiai raised for elements that aren't options or
     // optgroups. This handles the case when the select element is destroyed
     if (
       evt && evt.target && (
@@ -5749,7 +5749,7 @@ S2.define('select2/core',[
     }
 
     if (!mutations) {
-      // If mutation events aren't supported, then we can only assume that the
+      // If mutation Renginiai aren't supported, then we can only assume that the
       // change affected the selections
       changed = true;
     } else if (mutations.addedNodes && mutations.addedNodes.length > 0) {
@@ -5790,8 +5790,8 @@ S2.define('select2/core',[
   };
 
   /**
-   * Override the trigger method to automatically trigger pre-events when
-   * there are events that can be prevented.
+   * Override the trigger method to automatically trigger pre-Renginiai when
+   * there are Renginiai that can be prevented.
    */
   Select2.prototype.trigger = function (name, args) {
     var actualTrigger = Select2.__super__.trigger;
@@ -5889,7 +5889,7 @@ S2.define('select2/core',[
   };
 
   Select2.prototype.focus = function (data) {
-    // No need to re-trigger focus events if we are already focused
+    // No need to re-trigger focus Renginiai if we are already focused
     if (this.hasFocus()) {
       return;
     }

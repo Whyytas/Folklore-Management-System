@@ -97,7 +97,7 @@ var insertionQ = (function () {
         }
     }
 
-    //aggregates multiple insertion events into a common parent
+    //aggregates multiple insertion Renginiai into a common parent
     function catchInsertions(selector, callback) {
         var insertions = [];
         //throttle summary

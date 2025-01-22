@@ -49,9 +49,9 @@ OAUTH2_PROVIDER = {
     'ACCESS_TOKEN_EXPIRE_SECONDS': 3600,
     'APPLICATION_MODEL': 'oauth2_provider.Application',
     'SCOPES': {'read': 'Read scope', 'write': 'Write scope'},
-    'OAUTH2_VALIDATOR_CLASS': 'temp.validators.CustomOAuth2Validator',  # Correct path to validator
+    'OAUTH2_VALIDATOR_CLASS': 'Initial.validators.CustomOAuth2Validator',  # Correct path to validator
 }
-AUTH_USER_MODEL = 'temp.CustomUser'
+AUTH_USER_MODEL = 'Initial.CustomUser'
 
 REST_FRAMEWORK = {
 
@@ -85,12 +85,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'apis',
     'drf_spectacular',
     'django_filters',
     'oauth2_provider',
-    'temp',
+    'Initial',
     'drf_yasg',
+    'Padaliniai',
 ]
 
 MIDDLEWARE = [

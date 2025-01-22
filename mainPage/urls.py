@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import manage_padaliniai, main
+from .views import  main
 
 urlpatterns = [
 

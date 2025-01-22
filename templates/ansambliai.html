@@ -15,68 +15,6 @@
             margin: 0 auto 20px auto;
         }
     </style>
-    <script>
-        async function createAnsamblis() {
-            const formData = new FormData(document.getElementById('ansamblisForm'));
-
-            const response = await fetch('/ansambliai/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': '{{ csrf_token }}'
-                },
-                body: JSON.stringify({
-                    pavadinimas: formData.get('pavadinimas'),
-                    padalinys: formData.get('padalinys'),
-                }),
-            });
-
-            if (response.ok) window.location.reload();
-            else alert('Failed to create Ansamblis');
-        }
-
-        async function updateAnsamblis(id) {
-            const row = document.getElementById(`row-${id}`);
-            const pavadinimas = row.querySelector('.pavadinimas').textContent;
-            const padalinys = row.querySelector('.padalinys').value;
-
-            const response = await fetch(`/ansambliai/${id}/`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': '{{ csrf_token }}',
-                },
-                body: JSON.stringify({
-                    pavadinimas: pavadinimas,
-                    padalinys: padalinys,
-                }),
-            });
-
-            if (response.ok) {
-                alert('Ansamblis updated successfully!');
-                window.location.reload();
-            } else {
-                alert('Failed to update Ansamblis.');
-            }
-        }
-
-        async function deleteAnsamblis(id) {
-            const response = await fetch(`/ansambliai/${id}/`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': '{{ csrf_token }}',
-                },
-            });
-
-            if (response.ok) {
-                alert('Ansamblis deleted successfully!');
-                window.location.reload();
-            } else {
-                alert('Failed to delete Ansamblis.');
-            }
-        }
-    </script>
 </head>
 <body>
     <h1>Manage Ansambliai</h1>
@@ -97,28 +35,19 @@
     <table>
         <thead>
             <tr>
+                <th>ID</th>
                 <th>Name</th>
-                <th>Padalinys</th>
-                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
             {% for ansamblis in ansambliai %}
-            <tr id="row-{{ ansamblis.id }}">
-                <td data-label="Name" contenteditable="true" class="pavadinimas">{{ ansamblis.pavadinimas }}</td>
-                <td data-label="Padalinys">
-                    <select class="padalinys">
-                        {% for padalinys in padaliniai %}
-                            <option value="{{ padalinys.id }}" {% if padalinys.id == ansamblis.padalinys.id %}selected{% endif %}>
-                                {{ padalinys.pavadinimas }}
-                            </option>
-                        {% endfor %}
-                    </select>
-                </td>
-                <td data-label="Actions">
-                    <button class="btn" onclick="updateAnsamblis({{ ansamblis.id }})">Update</button>
-                    <button class="btn btn-danger" onclick="deleteAnsamblis({{ ansamblis.id }})">Delete</button>
-                </td>
+            <tr>
+                <td>{{ ansamblis.id }}</td>
+                <td>{{ ansamblis.name }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="2">No ensembles available.</td>
             </tr>
             {% endfor %}
         </tbody>

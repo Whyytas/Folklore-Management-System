@@ -1,6 +1,6 @@
 from django.shortcuts import render
 
-# Hardcoded ensembles and events
+# Hardcoded ensembles and Renginiai
 ENSEMBLES = [
     {"id": 1, "name": "Folk Ensemble A"},
     {"id": 2, "name": "Folk Ensemble B"},
@@ -19,13 +19,13 @@ EVENTS = [
 
 def events_list(request):
     """
-    Render the events list with ensemble selection.
+    Render the Renginiai list with ensemble selection.
     """
     selected_ensemble_id = request.GET.get('ensemble_id')
     filtered_events = EVENTS
 
     if selected_ensemble_id:
-        # Filter events by ensemble
+        # Filter Renginiai by ensemble
         filtered_events = [event for event in EVENTS if event["ensemble_id"] == int(selected_ensemble_id)]
 
     # Add ensemble name to each event
@@ -36,7 +36,7 @@ def events_list(request):
 
     context = {
         "ensembles": ENSEMBLES,
-        "events": filtered_events,
+        "Renginiai": filtered_events,
         "selected_ensemble_id": selected_ensemble_id,
     }
     return render(request, "events.html", context)
