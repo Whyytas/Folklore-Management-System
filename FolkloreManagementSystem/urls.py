@@ -30,5 +30,10 @@ urlpatterns = [
     path('ansambliai/', include('Ansambliai.urls')),
     path('nariai/', include('Nariai.urls')),
     path('renginiai/', include('Renginiai.urls')),
+    path('kuriniai/', include('Kuriniai.urls')),
+    path('programos/', include('Programos.urls')),
+    path('instrumentai/', include('Instrumentai.urls')),
+    path('padaliniai/', include('Padaliniai.urls')),
+    path('paskyra/', include('Paskyra.urls')),
 ]
 
