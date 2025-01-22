@@ -44,5 +44,6 @@ urlpatterns = [
     path('ansambliai/', manage_ansambliai, name='ansambliai'),
     path('nariai/<int:id>/', manage_nariai, name='nariai-detail'),
     path('nariai/', manage_nariai, name='nariai'),
+    path('events/', include('events.urls')),
 ]
 

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Events</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .ensemble-filter {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .ensemble-filter select {
+            padding: 8px;
+            font-size: 16px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        table th {
+            background-color: #007BFF;
+            color: white;
+        }
+
+        table tr:hover {
+            background-color: #f1f1f1;
+        }
+    </style>
+</head>
+<body>
+    <h1>Būsimi renginiai</h1>
+
+    <div class="ensemble-filter">
+        <form method="get" action="">
+            <label for="ensemble">Filter by Ensemble:</label>
+            <select name="ensemble_id" id="ensemble" onchange="this.form.submit()">
+                <option value="">-- Visi ansambliai --</option>
+                {% for ensemble in ensembles %}
+                    <option value="{{ ensemble.id }}" {% if ensemble.id|stringformat:"s" == selected_ensemble_id %}selected{% endif %}>
+                        {{ ensemble.name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </form>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Ansamblis</th>
+                <th>Pavadinimas</th>
+                <th>Adresas</th>
+                <th>Data</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for event in events %}
+                <tr>
+                    <td>{{ event.ensemble_name }}</td>
+                    <td>{{ event.name }}</td>
+                    <td>{{ event.address }}</td>
+                    <td>{{ event.date }}</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="4">No events found for the selected ensemble.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

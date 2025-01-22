@@ -5,302 +5,225 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Main Page</title>
-    <style>
-        /* General Reset */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<style>
+    /* General Reset */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f9f9f9;
-            color: #333;
-            line-height: 1.6;
-            overflow-x: hidden;
+    nav {
+        position: fixed;
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 250px;
+        background-color: #007BFF;
+        display: flex;
+        flex-direction: column;
+        padding: 1rem;
+        box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        z-index: 10;
+    }
+
+    .nav-logo {
+        text-align: center;
+        margin-bottom: 1rem;
+    }
+
+    .nav-logo img {
+        max-width: 100px;
+        height: auto;
+        margin-bottom: 0.5rem;
+    }
+
+    .nav-title {
+        font-size: 1.2rem;
+        color: white;
+        text-align: center;
+        margin-bottom: 1rem;
+        font-weight: bold;
+    }
+
+    .nav-separator {
+        border-top: 1px solid white;
+        margin: 1rem 0;
+    }
+
+    .nav-links {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+    .nav-links li {
+        margin-bottom: 1rem;
+    }
+
+    .nav-links a {
+        text-decoration: none;
+        color: white;
+        font-size: 1rem;
+        padding: 0.5rem 1rem;
+        display: block;
+        border-radius: 4px;
+        transition: background-color 0.3s ease-in-out;
+    }
+
+    .nav-links a:hover {
+        background-color: #0056b3;
+    }
+
+    .btn-logout {
+        background-color: #E74C3C;
+    }
+
+    .btn-logout:hover {
+        background-color: #C0392B;
+    }
+
+    .nav-spacer {
+        flex-grow: 1;
+    }
+
+    body {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+    }
+
+    header {
+        position: relative;
+        margin-left: 250px; /* Align header with nav */
+        width: calc(100% - 250px); /* Ensure header spans the rest of the page */
+        color: white;
+        text-align: center;
+        padding: 2rem 0;
+        background-image: url("{% static 'Pictures/Juosta1.jpg' %}");
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+        height: 300px;
+    }
+
+    header::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.3);
+        z-index: 1;
+    }
+
+    .header-background {
+        position: relative;
+        z-index: 2;
+        background: rgba(0, 0, 0, 0.5);
+        padding: 1rem;
+        display: inline-block;
+        margin: 0 auto;
+    }
+
+    .header-background h1, .header-background p {
+        margin: 0;
+        color: #fff;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+        font-size: 1.8rem;
+    }
+
+    main {
+        margin-left: 250px; /* Align main with nav */
+        padding: 1.5rem;
+        background: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        flex-grow: 1;
+    }
+
+    footer {
+        margin-left: 250px; /* Align footer with nav */
+        padding: 1rem;
+        background-color: #f9f9f9;
+        text-align: center;
+        color: #555;
+        box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    footer a {
+        color: #007BFF;
+        text-decoration: none;
+        display: inline-block;
+        margin-bottom: 3rem;
+        transition: transform 0.3s;
+    }
+
+    footer a:hover {
+        text-decoration: underline;
+        transform: scale(1.1);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        nav {
+            width: 200px;
         }
 
         header {
-            position: relative;
-            color: white;
-            text-align: center;
-            padding: 2rem 0;
-            background-image: url("{% static 'Pictures/Juosta1.jpg' %}");
-            background-size: cover;
-            background-repeat: no-repeat;
-            background-position: center;
-            height: 300px; /* Ensure the header has height */
-            overflow: hidden; /* Prevent content overflow */
+            margin-left: 200px;
+            width: calc(100% - 200px);
         }
 
-        header::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.3); /* Dark overlay on the picture */
-            z-index: 1; /* Place below the text */
+        main, footer {
+            margin-left: 200px;
         }
+    }
+</style>
 
-        .header-background {
-            position: relative;
-            z-index: 2; /* Ensure text is above the overlay */
-            background: rgba(0, 0, 0, 0.5); /* Darker text background */
-            padding: 1rem; /* Add padding to text background */
-            display: inline-block; /* Fit content width */
-            margin: 0 auto;
-            border-radius: 0; /* Remove rounded edges completely */
-        }
-
-        .header-background h1, .header-background p {
-            margin: 0;
-            color: #fff; /* Keep text white */
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8); /* Improved text shadow */
-            font-size: 1.8rem;
-        }
-
-
-        header h1 {
-            margin-bottom: 0.5rem;
-            animation: slideInDown 0.8s ease-out;
-        }
-
-        header p {
-            font-size: 1.1rem;
-            animation: fadeIn 1s ease-in;
-        }
-
-        main {
-            margin: 2rem auto;
-            padding: 1.5rem;
-            max-width: 1100px;
-            background: #ffffff;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            opacity: 0;
-            transform: translateY(20px);
-            animation: fadeInUp 1s forwards ease-in-out;
-        }
-
-        .section {
-            margin-bottom: 2rem;
-            padding: 1.5rem;
-            background: #f1f8ff;
-            border: 1px solid #cce5ff;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-            opacity: 0;
-            transform: translateY(20px);
-            animation: fadeInUp 1s forwards ease-in-out;
-            animation-delay: 0.3s;
-        }
-
-        .section h2 {
-            margin-bottom: 1rem;
-            font-size: 1.4rem;
-            color: #007BFF;
-            border-bottom: 2px solid #007BFF;
-            padding-bottom: 0.5rem;
-        }
-
-        .section ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .section li {
-            padding: 0.5rem 0;
-            border-bottom: 1px solid #ddd;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .section li:last-child {
-            border-bottom: none;
-        }
-
-        .btn {
-            display: inline-block;
-            padding: 0.5rem 1rem;
-            background-color: #007BFF;
-            color: white;
-            text-decoration: none;
-            border-radius: 4px;
-            font-size: 1rem;
-            margin-top: 1rem;
-            transition: background-color 0.3s, transform 0.3s;
-        }
-
-        .btn:hover {
-            background-color: #0056b3;
-            transform: scale(1.05);
-        }
-
-        .icon {
-            margin-right: 0.5rem;
-        }
-
-        footer {
-            margin-top: 2rem;
-            text-align: center;
-            color: #555;
-            animation: fadeIn 1.5s ease-in-out;
-        }
-
-        footer a {
-            color: #007BFF;
-            text-decoration: none;
-            display: inline-block;
-            margin-bottom: 3rem;
-            transition: transform 0.3s;
-        }
-
-        footer a:hover {
-            text-decoration: underline;
-            transform: scale(1.1);
-        }
-
-        /* Animations */
-        @keyframes fadeIn {
-            0% {
-                opacity: 0;
-            }
-            100% {
-                opacity: 1;
-            }
-        }
-
-        @keyframes fadeInUp {
-            0% {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            100% {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes slideInDown {
-            0% {
-                transform: translateY(-50px);
-                opacity: 0;
-            }
-            100% {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            main {
-                margin: 1rem;
-                padding: 1rem;
-            }
-
-            .section {
-                padding: 1rem;
-            }
-        }
-    </style>
 </head>
 <body>
-<header>
-    <div class="header-background">
-        <h1>Welcome, {{ user.username }}!</h1>
-        <p>Your role: <strong>{{ user_role }}</strong></p>
-    </div>
-</header>
+    <nav>
+        <div class="nav-logo">
+            <img src="{% static 'Pictures/logo.png' %}" alt="Logo">
+            <div class="nav-title">Folkloro ansamblių valdymo sistema</div>
+        </div>
+        <div class="nav-separator"></div>
+        <ul class="nav-links">
+            <li><a href="/renginiai">Renginiai</a></li>
+            <li><a href="/kūriniai">Kūriniai</a></li>
+            <li><a href="/programos">Programos</a></li>
+            <li><a href="/kalendorius">Kalendorius</a></li>
+            <li><a href="/padaliniai">Padaliniai</a></li>
+            <li><a href="/instrumentai">Instrumentai</a></li>
+            <li><a href="/mano_paskyra">Paskyrų valdymas</a></li>
 
-<main>
-    {% if user_role == 'admin' %}
-        <div class="section">
-            <h2>📂 Manage Padaliniai</h2>
-            <ul>
-                {% for padalinys in padaliniai %}
-                    <li>{{ padalinys.pavadinimas }}</li>
-                {% endfor %}
-            </ul>
-            <a class="btn" href="/padaliniai">
-                <span class="icon">⚙️</span>Manage Padaliniai
-            </a>
-        </div>
-        <div class="section">
-            <h2>🎵 Manage Ansambliai</h2>
-            <ul>
-                {% for ansamblis in ansambliai %}
-                    <li>{{ ansamblis.pavadinimas }}</li>
-                {% endfor %}
-            </ul>
-            <a class="btn" href="/ansambliai">
-                <span class="icon">⚙️</span>Manage Ansambliai
-            </a>
-        </div>
-        <div class="section">
-            <h2>👥 Manage Nariai</h2>
-            <ul>
-                {% for narys in nariai %}
-                    <li>{{ narys.vardas }} {{ narys.pavarde }}</li>
-                {% endfor %}
-            </ul>
-            <a class="btn" href="/nariai">
-                <span class="icon">⚙️</span>Manage Nariai
-            </a>
-        </div>
-    {% elif user_role == 'moderator' %}
-        <div class="section">
-            <h2>📂 Padaliniai</h2>
-            <ul>
-                {% for padalinys in padaliniai %}
-                    <li>{{ padalinys.pavadinimas }}</li>
-                {% endfor %}
-            </ul>
-            <a class="btn" href="/padaliniai">Manage Padaliniai</a>
-        </div>
-        <div class="section">
-            <h2>🎵 Ansambliai</h2>
-            <ul>
-                {% for ansamblis in ansambliai %}
-                    <li>{{ ansamblis.pavadinimas }}</li>
-                {% endfor %}
-            </ul>
-        </div>
-        <div class="section">
-            <h2>👥 Nariai</h2>
-            <ul>
-                {% for narys in nariai %}
-                    <li>{{ narys.vardas }} {{ narys.pavarde }}</li>
-                {% endfor %}
-            </ul>
-        </div>
-    {% elif user_role == 'user' %}
-        <div class="section">
-            <h2>📂 Padaliniai</h2>
-            <ul>
-                {% for padalinys in padaliniai %}
-                    <li>{{ padalinys.pavadinimas }}</li>
-                {% endfor %}
-            </ul>
-        </div>
-        <div class="section">
-            <h2>🎵 Ansambliai</h2>
-            <ul>
-                {% for ansamblis in ansambliai %}
-                    <li>{{ ansamblis.pavadinimas }}</li>
-                {% endfor %}
-            </ul>
-        </div>
-    {% else %}
-        <p>You do not have permissions to view this content.</p>
-    {% endif %}
-</main>
+            <li class="nav-spacer"></li>
+            <div class="nav-separator"></div>
+            <li><a href="/paskyros">Mano Paskyra</a></li>
+            <li><a href="{% url 'logout' %}" class="btn btn-logout">Logout</a></li>
+        </ul>
+    </nav>
 
-<footer>
-    <a href="{% url 'logout' %}" class="btn" style="margin-bottom: 2rem;">Logout</a>
-</footer>
+    <header>
+        <div class="header-background">
+            <h1>Sveiki, {{ user.username }}!</h1>
+            <p>Jūsų rolė: <strong>{{ user_role }}</strong></p>
+        </div>
+    </header>
+
+    <main>
+        <h2>Kažkas gražaus</h2>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Folkloro Ansamblių Sistema</p>
+    </footer>
 </body>
 </html>
