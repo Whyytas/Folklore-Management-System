@@ -1,52 +1,16 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <title>Welcome</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+        body{
             display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
         }
 
-        .welcome-container {
-            text-align: center;
-            background: #fff;
-            padding: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .welcome-container h1 {
-            font-size: 2rem;
-            margin-bottom: 1rem;
-            color: #333;
-        }
-
-        .welcome-container p {
-            margin-bottom: 1.5rem;
-            color: #666;
-        }
-
-        .welcome-container a {
-            display: inline-block;
-            padding: 0.8rem 1.5rem;
-            background-color: #007BFF;
-            color: #fff;
-            text-decoration: none;
-            border-radius: 4px;
-            font-size: 1rem;
-        }
-
-        .welcome-container a:hover {
-            background-color: #0056b3;
-        }
     </style>
 </head>
 <body>

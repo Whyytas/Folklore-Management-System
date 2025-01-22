@@ -1,50 +1,13 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <title>Events</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-        }
 
-        h1 {
-            text-align: center;
-        }
-
-        .ensemble-filter {
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .ensemble-filter select {
-            padding: 8px;
-            font-size: 16px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        table th, table td {
-            border: 1px solid #ddd;
-            padding: 10px;
-            text-align: left;
-        }
-
-        table th {
-            background-color: #007BFF;
-            color: white;
-        }
-
-        table tr:hover {
-            background-color: #f1f1f1;
-        }
     </style>
 </head>
 <body>

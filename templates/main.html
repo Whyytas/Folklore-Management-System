@@ -3,190 +3,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Main Page</title>
-<style>
-    /* General Reset */
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
+    <style>
 
-    nav {
-        position: fixed;
-        left: 0;
-        top: 0;
-        height: 100%;
-        width: 250px;
-        background-color: #007BFF;
-        display: flex;
-        flex-direction: column;
-        padding: 1rem;
-        box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-        z-index: 10;
-    }
-
-    .nav-logo {
-        text-align: center;
-        margin-bottom: 1rem;
-    }
-
-    .nav-logo img {
-        max-width: 100px;
-        height: auto;
-        margin-bottom: 0.5rem;
-    }
-
-    .nav-title {
-        font-size: 1.2rem;
-        color: white;
-        text-align: center;
-        margin-bottom: 1rem;
-        font-weight: bold;
-    }
-
-    .nav-separator {
-        border-top: 1px solid white;
-        margin: 1rem 0;
-    }
-
-    .nav-links {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-    }
-
-    .nav-links li {
-        margin-bottom: 1rem;
-    }
-
-    .nav-links a {
-        text-decoration: none;
-        color: white;
-        font-size: 1rem;
-        padding: 0.5rem 1rem;
-        display: block;
-        border-radius: 4px;
-        transition: background-color 0.3s ease-in-out;
-    }
-
-    .nav-links a:hover {
-        background-color: #0056b3;
-    }
-
-    .btn-logout {
-        background-color: #E74C3C;
-    }
-
-    .btn-logout:hover {
-        background-color: #C0392B;
-    }
-
-    .nav-spacer {
-        flex-grow: 1;
-    }
-
-    body {
-        display: flex;
-        flex-direction: column;
-        min-height: 100vh;
-        font-family: Arial, sans-serif;
-        background-color: #f4f4f4;
-    }
-
-    header {
-        position: relative;
-        margin-left: 250px; /* Align header with nav */
-        width: calc(100% - 250px); /* Ensure header spans the rest of the page */
-        color: white;
-        text-align: center;
-        padding: 2rem 0;
-        background-image: url("{% static 'Pictures/Juosta1.jpg' %}");
-        background-size: cover;
-        background-repeat: no-repeat;
-        background-position: center;
-        height: 300px;
-    }
-
-    header::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.3);
-        z-index: 1;
-    }
-
-    .header-background {
-        position: relative;
-        z-index: 2;
-        background: rgba(0, 0, 0, 0.5);
-        padding: 1rem;
-        display: inline-block;
-        margin: 0 auto;
-    }
-
-    .header-background h1, .header-background p {
-        margin: 0;
-        color: #fff;
-        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
-        font-size: 1.8rem;
-    }
-
-    main {
-        margin-left: 250px; /* Align main with nav */
-        padding: 1.5rem;
-        background: #ffffff;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        flex-grow: 1;
-    }
-
-    footer {
-        margin-left: 250px; /* Align footer with nav */
-        padding: 1rem;
-        background-color: #f9f9f9;
-        text-align: center;
-        color: #555;
-        box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
-    }
-
-    footer a {
-        color: #007BFF;
-        text-decoration: none;
-        display: inline-block;
-        margin-bottom: 3rem;
-        transition: transform 0.3s;
-    }
-
-    footer a:hover {
-        text-decoration: underline;
-        transform: scale(1.1);
-    }
-
-    /* Responsive Design */
-    @media (max-width: 768px) {
-        nav {
-            width: 200px;
-        }
-
-        header {
-            margin-left: 200px;
-            width: calc(100% - 200px);
-        }
-
-        main, footer {
-            margin-left: 200px;
-        }
-    }
-</style>
-
+    </style>
 </head>
 <body>
     <nav>
@@ -200,9 +22,11 @@
             <li><a href="/kūriniai">Kūriniai</a></li>
             <li><a href="/programos">Programos</a></li>
             <li><a href="/kalendorius">Kalendorius</a></li>
-            <li><a href="/padaliniai">Padaliniai</a></li>
             <li><a href="/instrumentai">Instrumentai</a></li>
-            <li><a href="/mano_paskyra">Paskyrų valdymas</a></li>
+            <li><a href="/padaliniai">Padalinių valdymas</a></li>
+            <li><a href="/nariai">Narių valdymas</a></li>
+            <li><a href="/ansambliai">Ansamblių valdymas</a></li>
+
 
             <li class="nav-spacer"></li>
             <div class="nav-separator"></div>
