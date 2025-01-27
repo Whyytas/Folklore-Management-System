@@ -16,7 +16,7 @@
     <div class="ensemble-filter">
         <form method="get" action="">
             <label for="ensemble">Filter by Ensemble:</label>
-            <select name="ensemble_id" id="ensemble" onchange="this.form.submit()">
+            <select name="ensemble_id" id="ensembleEvents" onchange="this.form.submit()">
                 <option value="">-- Visi ansambliai --</option>
                 {% for ensemble in ensembles %}
                     <option value="{{ ensemble.id }}" {% if ensemble.id|stringformat:"s" == selected_ensemble_id %}selected{% endif %}>

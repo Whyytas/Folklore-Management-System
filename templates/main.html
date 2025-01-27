@@ -38,7 +38,15 @@
     <header>
         <div class="header-background">
             <h1>Sveiki, {{ user.username }}!</h1>
-            <p>Jūsų rolė: <strong>{{ user_role }}</strong></p>
+{#            <form action="">#}
+                <label for="ansamblis">Pasirinkti ansamblį:</label>
+                <select name="ansamblis" id="ansamblis">
+                    <option value="1">Folk Ensemble A</option>
+                    <option value="2">Folk Ensemble B</option>
+                    <option value="3">Folk Ensemble C</option>
+                </select>
+{#            </form>#}
+
         </div>
     </header>
 

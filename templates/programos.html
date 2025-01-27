@@ -9,19 +9,27 @@
 </head>
 <body>
     <h1>Programos</h1>
-
+    <form id="programosForm" onsubmit="event.preventDefault(); createPrograma();">
+        <input type="text" name="pavadinimas" placeholder="Name" required>
+        <button type="submit" class="btn">Create</button>
+    </form>
     <table>
         <thead>
             <tr>
                 <th>ID</th>
                 <th>Name</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
             {% for programa in programos %}
             <tr>
                 <td>{{ programa.id }}</td>
-                <td>{{ programa.name }}</td>
+                <td data-label="Name" contenteditable="true" class="pavadinimas">{{ programa.name }}</td>
+                <td data-label="Actions">
+                    <button class="btn" onclick="updatePrograma({{ Programa.id }})">Update</button>
+                    <button class="btn btn-danger" onclick="deletePrograma({{ Programa.id }})">Delete</button>
+                </td>
             </tr>
             {% empty %}
             <tr>

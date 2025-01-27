@@ -36,8 +36,7 @@ def events_list(request):
 
     context = {
         "ensembles": ENSEMBLES,
-        "Renginiai": filtered_events,
+        "events": filtered_events,  # Update key to match template variable
         "selected_ensemble_id": selected_ensemble_id,
     }
     return render(request, "events.html", context)
-

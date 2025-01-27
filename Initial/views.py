@@ -18,7 +18,7 @@ def custom_logout(request):
     Custom logout view that supports both GET and POST requests.
     """
     logout(request)  # Log out the user
-    return redirect('login')  # Redirect to the login page
+    return redirect('/')  # Redirect to the login page
 
 
 def welcome(request):
