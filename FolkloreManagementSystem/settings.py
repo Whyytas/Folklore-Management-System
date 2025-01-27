@@ -91,6 +91,7 @@ INSTALLED_APPS = [
     'Initial',
     'drf_yasg',
     'Padaliniai',
+    'bootstrap5'
 ]
 
 MIDDLEWARE = [
