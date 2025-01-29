@@ -26,7 +26,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),  # Your regular static folder
-    os.path.join(BASE_DIR, 'static/Pictures'),  # Add your Pictures directory
 ]
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # SECURITY WARNING: keep the secret key used in production secret!
@@ -91,7 +90,6 @@ INSTALLED_APPS = [
     'Initial',
     'drf_yasg',
     'Padaliniai',
-    'bootstrap5'
 ]
 
 MIDDLEWARE = [
