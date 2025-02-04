@@ -170,7 +170,16 @@
                             <input type="text" id="search-box" class="form-control" placeholder="Ieškoti kūrinių..."
                                    onkeyup="filterKuriniai()">
                             <div class="kuriniai-selection" id="kuriniai-list"></div>
-                            <div class="pagination" id="pagination-controls"></div>
+                            <div class="d-flex justify-content-center mt-2">
+                                <button id="prev-page" class="btn btn-outline-primary mx-1"
+                                        onclick="changePage(-1, event)">« Ankstesnis
+                                </button>
+                                <span id="page-info" class="align-self-center mx-2"></span>
+                                <button id="next-page" class="btn btn-outline-primary mx-1"
+                                        onclick="changePage(1, event)">Kitas »
+                                </button>
+                            </div>
+
                         </div>
 
                         <button type="button" class="btn btn-danger btn-lg" onclick="addPrograma()">Pridėti programą
@@ -185,6 +194,7 @@
 
 {% block javascripts %}
     <script>
+
         let allKuriniai = [
             {id: 1, name: "Dzūkų daina", type: "Daina"},
             {id: 2, name: "Suvalkų šokis", type: "Šokis"},
@@ -214,29 +224,29 @@
             paginatedItems.forEach(kurinys => {
                 let isChecked = selectedKuriniai.has(kurinys.id) ? "checked" : "";
                 kuriniaiList.innerHTML += `<label>
-                    <input type="checkbox" class="checkbox-large" value="${kurinys.id}" ${isChecked}
-                        onclick="toggleSelection(${kurinys.id})"> ${kurinys.name} (${kurinys.type})
-                </label>`;
+            <input type="checkbox" class="checkbox-large" value="${kurinys.id}" ${isChecked}
+                onclick="toggleSelection(${kurinys.id})"> ${kurinys.name} (${kurinys.type})
+        </label>`;
             });
 
-            renderPagination();
+            updatePagination();
         }
 
-        function renderPagination() {
-            const paginationControls = document.getElementById("pagination-controls");
-            paginationControls.innerHTML = "";
+        function updatePagination() {
             let totalPages = Math.ceil(filteredKuriniai.length / itemsPerPage);
-
-            for (let i = 1; i <= totalPages; i++) {
-                let button = `<button class="${i === currentPage ? "active" : ""}" onclick="changePage(${i})">${i}</button>`;
-                paginationControls.innerHTML += button;
-            }
+            document.getElementById("page-info").innerText = `Puslapis ${currentPage} iš ${totalPages}`;
+            document.getElementById("prev-page").disabled = currentPage === 1;
+            document.getElementById("next-page").disabled = currentPage === totalPages || totalPages === 0;
         }
 
-        function changePage(page) {
-            currentPage = page;
+        function changePage(step, event) {
+            if (event) event.preventDefault(); // Prevent form submission
+
+            let totalPages = Math.ceil(filteredKuriniai.length / itemsPerPage);
+            currentPage = Math.max(1, Math.min(currentPage + step, totalPages));
             renderKuriniai();
         }
+
 
         function filterKuriniai() {
             let query = document.getElementById("search-box").value.toLowerCase();
@@ -259,7 +269,7 @@
             let table = document.getElementById("table-body");
             let rowCount = document.querySelectorAll("#programos-table tbody tr").length + 1;
             let pavadinimas = document.getElementById("pavadinimas").value;
-            let tipas = document.getElementById("tipas").value; // Get selected Tipas
+            let tipas = document.getElementById("tipas").value;
 
             if (pavadinimas.trim() === "" || tipas.trim() === "" || selectedKuriniai.size === 0) {
                 alert("Prašome užpildyti visus laukelius!");
@@ -271,7 +281,7 @@
         <td>${pavadinimas}</td>
         <td>${tipas}</td>
         <td class="td-actions text-right">
-            <button type="button" class="btn btn-info">
+            <button type="button" class="btn btn-info" onclick="toggleKuriniai(${rowCount})">
                 <i class="material-icons">expand_more</i>
             </button>
             <button type="button" class="btn btn-danger">
