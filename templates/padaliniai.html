@@ -1,128 +1,187 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-    <title>Manage Padaliniai</title>
+{% extends "layouts/base.html" %}
+
+{% block title %} Padaliniai {% endblock %}
+
+{% block stylesheets %}
     <style>
-
-    </style>
-    <script>
-        async function createPadalinys() {
-            const formData = new FormData(document.getElementById('padalinysForm'));
-
-            const response = await fetch('/padaliniai/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': '{{ csrf_token }}'
-                },
-                body: JSON.stringify({
-                    pavadinimas: formData.get('pavadinimas'),
-                    adresas: formData.get('adresas'),
-                    telNr: formData.get('telNr'),
-                }),
-            });
-
-            if (response.ok) location.reload();
-            else alert('Failed to create Padalinys');
+        .form-control {
+            margin-bottom: 10px;
         }
+    </style>
+{% endblock stylesheets %}
 
-        async function updatePadalinys(id) {
-            const row = document.getElementById(`row-${id}`);
-    const pavadinimas = row.querySelector(".pavadinimas").textContent;
-    const adresas = row.querySelector(".adresas").textContent;
-    const telNr = row.querySelector(".telNr").textContent;
+{% block content %}
 
-    const response = await fetch(`/padaliniai/${id}/`, {  // Include id in the URL
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': '{{ csrf_token }}',
-        },
-        body: JSON.stringify({
-            pavadinimas: pavadinimas,
-            adresas: adresas,
-            telNr: telNr,
-        }),
-    });
+    <div class="row">
+        <!-- Padaliniai Table -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header card-header-info">
+                    <h4 class="card-title">Padalinių sąrašas</h4>
+                </div>
+                <div class="card-body">
+                    <table class="table" id="padaliniai-table">
+                        <
+                        <thead>
+                        <tr>
+                            <th class="text-center">ID</th>
+                            <th>Pavadinimas</th>
+                            <th>Adresas</th>
+                            <th>Telefono nr.</th>
+                            <th class="text-right">Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody id="table-body">
+                        <!-- Example Padaliniai Rows -->
+                        </tbody>
 
-    if (response.ok) {
-        alert("Padalinys updated successfully!");
-        location.reload();
-    } else {
-        alert("Failed to update Padalinys.");
-    }
-}
+                    </table>
+                </div>
+            </div>
+        </div>
 
+        <!-- Form to Add a New Padalinys -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header card-header-danger">
+                    <h4 class="card-title">Pridėti naują padalinį</h4>
+                    <p class="category">Įveskite informaciją apie padalinį</p>
+                </div>
+                <div class="card-body">
+                    <form id="add-form">
+                        <div class="form-group">
+                            <label>Pavadinimas</label>
+                            <input type="text" id="pavadinimas" class="form-control" required
+                                   placeholder="Padalinio pavadinimas">
+                        </div>
 
-    async function deletePadalinys(id) {
-    try {
-        const response = await fetch(`/padaliniai/${id}/`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': '{{ csrf_token }}',
-            },
+                        <div class="form-group">
+                            <label>Adresas</label>
+                            <input type="text" id="adresas" class="form-control" required
+                                   placeholder="Padalinio adresas">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Telefono nr.</label>
+                            <input type="tel" id="telefonas" class="form-control" required
+                                   placeholder="Telefono numeris">
+                        </div>
+
+                        <button type="button" class="btn btn-danger btn-lg" onclick="addPadalinys()">Pridėti padalinį
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block javascripts %}
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            generateExamplePadaliniai();
         });
 
-        const contentType = response.headers.get("Content-Type");
-        if (contentType && contentType.includes("application/json")) {
-            const result = await response.json();
-            if (response.ok) {
-                alert(result.message || "Padalinys deleted successfully!");
-                location.reload();
-            } else {
-                alert(`Failed to delete Padalinys: ${result.error || "Unknown error"}`);
-            }
-        } else {
-            alert("Server returned an unexpected response.");
-            console.error("Unexpected response:", await response.text());
+        function generateExamplePadaliniai() {
+            let table = document.getElementById("table-body");
+
+            let examplePadaliniai = [
+                {
+                    id: 1,
+                    pavadinimas: "Vilniaus skyrius",
+                    adresas: "Gedimino pr. 1, Vilnius",
+                    telefonas: "+370 600 12345"
+                },
+                {id: 2, pavadinimas: "Kauno padalinys", adresas: "Laisvės al. 10, Kaunas", telefonas: "+370 612 98765"},
+                {
+                    id: 3,
+                    pavadinimas: "Klaipėdos filialas",
+                    adresas: "Taikos pr. 20, Klaipėda",
+                    telefonas: "+370 655 67890"
+                }
+            ];
+
+            examplePadaliniai.forEach(padalinys => {
+                let row = `<tr>
+            <td class="text-center">${padalinys.id}</td>
+            <td>${padalinys.pavadinimas}</td>
+            <td>${padalinys.adresas}</td>
+            <td>${padalinys.telefonas}</td>
+            <td class="td-actions text-right">
+                <button type="button" class="btn btn-info" onclick="toggleMap(${padalinys.id}, '${padalinys.adresas}')">
+                    <i class="material-icons">map</i> Žemėlapis
+                </button>
+                <button type="button" class="btn btn-success">
+                    <i class="material-icons">edit</i>
+                </button>
+                <button type="button" class="btn btn-danger" onclick="deletePadalinys(this)">
+                    <i class="material-icons">close</i>
+                </button>
+            </td>
+        </tr>
+        <tr id="map-row-${padalinys.id}" class="map-row" style="display: none;">
+            <td colspan="5">
+                <iframe id="map-${padalinys.id}" width="100%" height="300" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+            </td>
+        </tr>`;
+
+                table.innerHTML += row;
+            });
         }
-    } catch (err) {
-        console.error("Delete request failed:", err);
-        alert("An error occurred while deleting Padalinys.");
-    }
-}
 
+        function toggleMap(padalinysId, adresas) {
+            let mapRow = document.getElementById(`map-row-${padalinysId}`);
+            let mapFrame = document.getElementById(`map-${padalinysId}`);
 
+            if (mapRow.style.display === "none") {
+                let googleMapsUrl = `https://www.google.com/maps/embed/v1/place?key=AIzaSyAX8QZHAYYSdEozYqHwH2XytcmrOG055Bo&q=${encodeURIComponent(adresas)}`;
+                mapFrame.src = googleMapsUrl;
+                mapRow.style.display = "table-row";
+            } else {
+                mapRow.style.display = "none";
+            }
+        }
 
+        function addPadalinys() {
+            let table = document.getElementById("table-body");
+            let rowCount = document.querySelectorAll("#padaliniai-table tbody tr").length + 1;
+
+            let pavadinimas = document.getElementById("pavadinimas").value;
+            let adresas = document.getElementById("adresas").value;
+            let telefonas = document.getElementById("telefonas").value;
+
+            if (pavadinimas.trim() === "" || adresas.trim() === "" || telefonas.trim() === "") {
+                alert("Prašome užpildyti visus laukelius!");
+                return;
+            }
+
+            let row = `<tr>
+                <td class="text-center">${rowCount}</td>
+                <td>${pavadinimas}</td>
+                <td>${adresas}</td>
+                <td>${telefonas}</td>
+                <td class="td-actions text-right">
+                    <button type="button" class="btn btn-success">
+                        <i class="material-icons">edit</i>
+                    </button>
+                    <button type="button" class="btn btn-danger" onclick="deletePadalinys(this)">
+                        <i class="material-icons">close</i>
+                    </button>
+                </td>
+            </tr>`;
+
+            table.innerHTML += row;
+
+            // Clear form inputs
+            document.getElementById("pavadinimas").value = "";
+            document.getElementById("adresas").value = "";
+            document.getElementById("telefonas").value = "";
+        }
+
+        function deletePadalinys(btn) {
+            let row = btn.closest("tr");
+            row.remove();
+        }
     </script>
-</head>
-<body>
-    <h1>Manage Padaliniai</h1>
-
-    <form id="padalinysForm" onsubmit="event.preventDefault(); createPadalinys();">
-        <input type="text" name="pavadinimas" placeholder="Name" required>
-        <input type="text" name="adresas" placeholder="Address" required>
-        <input type="number" name="telNr" placeholder="Phone Number" required>
-        <button type="submit" class="btn">Create</button>
-    </form>
-
-    <table>
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Address</th>
-                <th>Phone</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-    {% for padalinys in padaliniai %}
-    <tr id="row-{{ padalinys.id }}">
-        <td data-label="Name" contenteditable="true" class="pavadinimas">{{ padalinys.pavadinimas }}</td>
-        <td data-label="Address" contenteditable="true" class="adresas">{{ padalinys.adresas }}</td>
-        <td data-label="Phone" contenteditable="true" class="telNr">{{ padalinys.telNr }}</td>
-        <td data-label="Actions">
-            <button class="btn" onclick="updatePadalinys({{ padalinys.id }})">Update</button>
-            <button class="btn btn-danger" onclick="deletePadalinys({{ padalinys.id }})">Delete</button>
-        </td>
-    </tr>
-    {% endfor %}
-</tbody>
-    </table>
-</body>
-</html>
+{% endblock javascripts %}
