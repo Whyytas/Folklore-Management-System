@@ -20,17 +20,6 @@ def custom_logout(request):
     logout(request)  # Log out the user
     return redirect('/')  # Redirect to the login page
 
-
-def welcome(request):
-    """
-    Welcome page view.
-    If the user is authenticated, redirect them to the home page.
-    Otherwise, redirect to the login page.
-    """
-    if request.user.is_authenticated:
-        return redirect('main')  # Redirect authenticated users to home
-    return render(request, 'welcome.html')
-
 class CustomLoginView(LoginView):
     template_name = '../templates/login.html'  # Path to your login template
     redirect_authenticated_user = True  # Redirect authenticated users

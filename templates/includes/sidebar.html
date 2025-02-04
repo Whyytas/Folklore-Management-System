@@ -1,73 +1,80 @@
-    <div class="sidebar" data-color="purple" data-background-color="white" data-image="/static/assets/img/sidebar-1.jpg">
-      <div class="logo">
+<div class="sidebar" data-color="purple" data-background-color="white" data-image="/static/assets/img/sidebar-1.jpg">
+    <div class="logo">
         <a target="_blank" rel="noopener noreferrer"
            href="https://appseed.us/admin-dashboards/django-dashboard-material" class="simple-text logo-normal">
-          Folkloro valdymas
+            Folkloro valdymas
         </a>
-      </div>
-      <div class="sidebar-wrapper">
-        <ul class="nav">
-        {% if request.user.is_authenticated %}
-
-          <li class="nav-item {% if 'index' in segment %} active {% endif %}">
-            <a class="nav-link" href="/">
-              <i class="material-icons">dashboard</i>
-              <p>Pagrindinis</p>
-            </a>
-          </li>
-          <li class="nav-item {% if 'page-user' in segment %} active {% endif %}">
-            <a class="nav-link" href="/page-user.html">
-              <i class="material-icons">music_note</i>
-              <p>Kūriniai</p>
-            </a>
-          </li>
-          <li class="nav-item {% if 'ui-tables' in segment %} active {% endif %}">
-            <a class="nav-link" href="/ui-tables.html">
-              <i class="material-icons">format_list_bulleted</i>
-              <p>Programos</p>
-            </a>
-          </li>
-          <li class="nav-item {% if 'ui-typography' in segment %} active {% endif %}">
-            <a class="nav-link" href="/ui-typography.html">
-              <i class="material-icons">calendar_month</i>
-              <p>Kalendorius</p>
-            </a>
-          </li>
-          <li class="nav-item {% if 'ui-icons' in segment %} active {% endif %}">
-            <a class="nav-link" href="/ui-icons.html">
-              <i class="material-icons">piano</i>
-              <p>Instrumentai</p>
-            </a>
-          </li>
-          <li class="nav-item {% if 'ui-maps' in segment %} active {% endif %}">
-            <a class="nav-link" href="/ui-maps.html">
-              <i class="material-icons">domain</i>
-              <p>Padaliniai</p>
-            </a>
-          </li>
-          <li class="nav-item {% if 'ui-notifications' in segment %} active {% endif %}">
-            <a class="nav-link" href="/ui-notifications.html">
-              <i class="material-icons">group</i>
-              <p>Nariai</p>
-            </a>
-          </li>
-          
-          <li class="nav-item ">
-            <a class="nav-link" href="/page-rtl-support.html">
-              <i class="material-icons">groups</i>
-              <p>Ansambliai</p>
-            </a>
-          </li>
-
-          <li class="nav-item ">
-            <a class="nav-link" href="{% url 'logout' %}" >
-              <i class="material-icons">directions_run</i>
-              <p>Atsijungti</p>
-            </a>
-          </li>
-
-        {% endif %}
-        </ul>
-      </div>
-
     </div>
+    <div class="sidebar-wrapper">
+        <ul class="nav">
+            {% if request.user.is_authenticated %}
+
+                <li class="nav-item {% if 'index' in segment %} active {% endif %}">
+                    <a class="nav-link" href="/">
+                        <i class="material-icons">dashboard</i>
+                        <p>Pagrindinis</p>
+                    </a>
+                </li>
+                <li class="nav-item {% if 'page-user' in segment %} active {% endif %}">
+                    <a class="nav-link" href="/kuriniai/">
+                        <i class="material-icons">music_note</i>
+                        <p>Kūriniai</p>
+                    </a>
+                </li>
+                <li class="nav-item {% if 'ui-tables' in segment %} active {% endif %}">
+                    <a class="nav-link" href="/programos/">
+                        <i class="material-icons">format_list_bulleted</i>
+                        <p>Programos</p>
+                    </a>
+                </li>
+                <li class="nav-item {% if 'ui-maps' in segment %} active {% endif %}">
+                    <a class="nav-link" href="/renginiai">
+                        <i class="material-icons">event</i>
+                        <p>Renginiai</p>
+                    </a>
+                </li>
+                <li class="nav-item {% if 'ui-icons' in segment %} active {% endif %}">
+                    <a class="nav-link" href="/instrumentai/">
+                        <i class="material-icons">piano</i>
+                        <p>Instrumentai</p>
+                    </a>
+                </li>
+                <li class="nav-item {% if 'ui-maps' in segment %} active {% endif %}">
+                    <a class="nav-link" href="/padaliniai/">
+                        <i class="material-icons">domain</i>
+                        <p>Padaliniai</p>
+                    </a>
+                </li>
+                <li class="nav-item {% if 'ui-notifications' in segment %} active {% endif %}">
+                    <a class="nav-link" href="/nariai/">
+                        <i class="material-icons">group</i>
+                        <p>Nariai</p>
+                    </a>
+                </li>
+
+                <li class="nav-item ">
+                    <a class="nav-link" href="/ansambliai/">
+                        <i class="material-icons">groups</i>
+                        <p>Ansambliai</p>
+                    </a>
+                </li>
+
+            {% else %}
+                <li class="nav-item {% if 'ui-maps' in segment %} active {% endif %}">
+                    <a class="nav-link" href="/renginiai">
+                        <i class="material-icons">event</i>
+                        <p>Renginiai</p>
+                    </a>
+                </li>
+
+                <li class="nav-item {% if 'ui-maps' in segment %} active {% endif %}">
+                    <a class="nav-link" href="/">
+                        <i class="material-icons">login</i>
+                        <p>Prisijungti</p>
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+
+</div>

@@ -16,15 +16,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
-from Initial.views import (welcome, custom_logout, CustomLoginView,)
+from Initial.views import (custom_logout, CustomLoginView,)
 
 
 urlpatterns = [
-    path('', welcome, name='welcome'),  # Root URL points to the welcome page
     path("admin/", admin.site.urls),
 
     path('main/', include('mainPage.urls')),  # Include app-specific URLs
-    path('login/', CustomLoginView.as_view(), name='login'),  # Login page
+    path('', CustomLoginView.as_view(), name='login'),  # Login page
     path('logout/', custom_logout, name='logout'),  # Logout pag
 
     path('ansambliai/', include('Ansambliai.urls')),
