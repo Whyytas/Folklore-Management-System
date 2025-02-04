@@ -2,61 +2,86 @@
 
 {% block title %} UI Tables {% endblock %}
 
-<!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}
     <style>
         .form-control {
             margin-bottom: 10px;
         }
-        .kuriniai-row {
-            background: #f8f9fa;
-            display: none; /* Hide Kūriniai initially */
-        }
-        .kuriniai-number {
-            text-align: center;
-            font-weight: bold;
-        }
+
         .kuriniai-selection {
             background: #f3f3f3;
             padding: 15px;
             border-radius: 10px;
-            max-height: 200px;
+            max-height: 300px;
             overflow-y: auto;
+            position: relative;
         }
+
         .kuriniai-selection label {
             display: block;
             font-size: 18px;
             margin-bottom: 5px;
         }
+
         .checkbox-large {
             width: 20px;
             height: 20px;
             margin-right: 10px;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        .pagination button {
+            margin: 2px;
+            padding: 5px 10px;
+            border: 1px solid #ddd;
+            background-color: #fff;
+            cursor: pointer;
+        }
+
+        .pagination button.active {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .kuriniai-row {
+            background: #f8f9fa;
+            display: none;
+        }
+
+        .kuriniai-number {
+            text-align: center;
+            font-weight: bold;
         }
     </style>
 {% endblock stylesheets %}
 
 {% block content %}
 
-<div class="row">
-    <!-- Programos Table -->
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-header card-header-info">
-                <h4 class="card-title">Programų sąrašas</h4>
-            </div>
-            <div class="card-body">
-                <table class="table" id="programos-table">
-                    <thead>
-                    <tr>
-                        <th class="text-center">ID</th>
-                        <th>Pavadinimas</th>
-                        <th>Tipas</th>
-                        <th class="text-right">Actions</th>
-                    </tr>
-                    </thead>
-                    <tbody id="table-body">
-                        <!-- Example Program -->
+    <div class="row">
+
+
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header card-header-info">
+                    <h4 class="card-title">Programų sąrašas</h4>
+                </div>
+                <div class="card-body">
+                    <table class="table" id="programos-table">
+                        <thead>
+                        <tr>
+                            <th class="text-center">ID</th>
+                            <th>Pavadinimas</th>
+                            <th>Tipas</th>
+                            <th class="text-right">Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody id="table-body">
+                        <!-- Example Programs -->
                         <tr>
                             <td class="text-center">1</td>
                             <td>Kalėdinė vakaronė</td>
@@ -73,7 +98,6 @@
                                 </button>
                             </td>
                         </tr>
-                        <!-- Kūriniai Rows (Initially Hidden) -->
                         <tr class="kuriniai-row kuriniai-1">
                             <td class="kuriniai-number">1.</td>
                             <td>Dzūkų daina</td>
@@ -86,60 +110,181 @@
                             <td>Šokis</td>
                             <td></td>
                         </tr>
-                    </tbody>
-                </table>
+                        <tr>
+                            <td class="text-center">2</td>
+                            <td>Vasaros Rasų šventė</td>
+                            <td>Rasoms</td>
+                            <td class="td-actions text-right">
+                                <button type="button" class="btn btn-info" onclick="toggleKuriniai(2)">
+                                    <i class="material-icons">expand_more</i>
+                                </button>
+                                <button type="button" class="btn btn-success">
+                                    <i class="material-icons">edit</i>
+                                </button>
+                                <button type="button" class="btn btn-danger" onclick="deleteProgram(this, 2)">
+                                    <i class="material-icons">close</i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr class="kuriniai-row kuriniai-2">
+                            <td class="kuriniai-number">1.</td>
+                            <td>Kapelos melodija</td>
+                            <td>Kapela</td>
+                            <td></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
-    </div>
 
-    <!-- Form to Add a New Programa -->
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-header card-header-danger">
-                <h4 class="card-title">Pridėti naują programą</h4>
-                <p class="category">Įveskite informaciją apie programą</p>
-            </div>
-            <div class="card-body">
-                <form id="add-form">
-                    <div class="form-group">
-                        <label>Pavadinimas</label>
-                        <input type="text" id="pavadinimas" class="form-control" required placeholder="Programos pavadinimas">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Tipas</label>
-                        <select id="tipas" class="form-control" required>
-                            <option value="Adventui">Adventui</option>
-                            <option value="Rasoms">Rasoms</option>
-                            <option value="Lygiadieniui">Lygiadieniui</option>
-                            <option value="Vakaronei">Vakaronei</option>
-                            <option value="Kaledoms">Kaledoms</option>
-                            <option value="Velykoms">Velykoms</option>
-                            <option value="Susidainavimams">Susidainavimams</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label><strong>Pridėti kūrinius:</strong></label>
-                        <div class="kuriniai-selection">
-                            <label><input type="checkbox" class="checkbox-large" value="Dzūkų daina|Daina"> Dzūkų daina</label>
-                            <label><input type="checkbox" class="checkbox-large" value="Suvalkų šokis|Šokis"> Suvalkų šokis</label>
-                            <label><input type="checkbox" class="checkbox-large" value="Kapelos melodija|Kapela"> Kapelos melodija</label>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header card-header-danger">
+                    <h4 class="card-title">Pridėti naują programą</h4>
+                    <p class="category">Įveskite informaciją apie programą</p>
+                </div>
+                <div class="card-body">
+                    <form id="add-form">
+                        <div class="form-group">
+                            <label>Pavadinimas</label>
+                            <input type="text" id="pavadinimas" class="form-control" required
+                                   placeholder="Programos pavadinimas">
                         </div>
-                    </div>
+                        <div class="form-group">
+                            <label>Tipas</label>
+                            <select id="tipas" class="form-control" required>
+                                <option value="Adventui">Adventui</option>
+                                <option value="Rasoms">Rasoms</option>
+                                <option value="Lygiadieniui">Lygiadieniui</option>
+                                <option value="Vakaronei">Vakaronei</option>
+                                <option value="Kaledoms">Kaledoms</option>
+                                <option value="Velykoms">Velykoms</option>
+                                <option value="Susidainavimams">Susidainavimams</option>
+                            </select>
+                        </div>
 
-                    <button type="button" class="btn btn-danger btn-lg" onclick="addPrograma()">Pridėti programą</button>
-                </form>
+
+                        <div class="form-group">
+                            <label><strong>Pridėti kūrinius:</strong></label>
+                            <input type="text" id="search-box" class="form-control" placeholder="Ieškoti kūrinių..."
+                                   onkeyup="filterKuriniai()">
+                            <div class="kuriniai-selection" id="kuriniai-list"></div>
+                            <div class="pagination" id="pagination-controls"></div>
+                        </div>
+
+                        <button type="button" class="btn btn-danger btn-lg" onclick="addPrograma()">Pridėti programą
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
 {% endblock content %}
 
-<!-- Specific Page JS goes HERE  -->
 {% block javascripts %}
     <script>
+        let allKuriniai = [
+            {id: 1, name: "Dzūkų daina", type: "Daina"},
+            {id: 2, name: "Suvalkų šokis", type: "Šokis"},
+            {id: 3, name: "Kapelos melodija", type: "Kapela"},
+            {id: 4, name: "Lietuvių liaudies daina", type: "Daina"},
+            {id: 5, name: "Žemaičių šokis", type: "Šokis"},
+            {id: 6, name: "Senovinė kapela", type: "Kapela"},
+            {id: 7, name: "Etnografinė daina", type: "Daina"},
+            {id: 8, name: "Aukštaičių šokis", type: "Šokis"},
+            {id: 9, name: "Kapelos improvizacija", type: "Kapela"},
+            {id: 10, name: "Vilniaus folkloras", type: "Daina"},
+            {id: 11, name: "Tradicinis šokis", type: "Šokis"}
+        ];
+
+        let filteredKuriniai = [...allKuriniai];
+        let selectedKuriniai = new Set();
+        let currentPage = 1;
+        const itemsPerPage = 5;
+
+        function renderKuriniai() {
+            const kuriniaiList = document.getElementById("kuriniai-list");
+            kuriniaiList.innerHTML = "";
+
+            let start = (currentPage - 1) * itemsPerPage;
+            let paginatedItems = filteredKuriniai.slice(start, start + itemsPerPage);
+
+            paginatedItems.forEach(kurinys => {
+                let isChecked = selectedKuriniai.has(kurinys.id) ? "checked" : "";
+                kuriniaiList.innerHTML += `<label>
+                    <input type="checkbox" class="checkbox-large" value="${kurinys.id}" ${isChecked}
+                        onclick="toggleSelection(${kurinys.id})"> ${kurinys.name} (${kurinys.type})
+                </label>`;
+            });
+
+            renderPagination();
+        }
+
+        function renderPagination() {
+            const paginationControls = document.getElementById("pagination-controls");
+            paginationControls.innerHTML = "";
+            let totalPages = Math.ceil(filteredKuriniai.length / itemsPerPage);
+
+            for (let i = 1; i <= totalPages; i++) {
+                let button = `<button class="${i === currentPage ? "active" : ""}" onclick="changePage(${i})">${i}</button>`;
+                paginationControls.innerHTML += button;
+            }
+        }
+
+        function changePage(page) {
+            currentPage = page;
+            renderKuriniai();
+        }
+
+        function filterKuriniai() {
+            let query = document.getElementById("search-box").value.toLowerCase();
+
+            if (query === "") {
+                filteredKuriniai = [...allKuriniai]; // Reset to all Kūriniai
+            } else {
+                filteredKuriniai = allKuriniai.filter(k => k.name.toLowerCase().includes(query));
+            }
+
+            currentPage = 1;
+            renderKuriniai();
+        }
+
+        function toggleSelection(id) {
+            selectedKuriniai.has(id) ? selectedKuriniai.delete(id) : selectedKuriniai.add(id);
+        }
+
+        function addPrograma() {
+            let table = document.getElementById("table-body");
+            let rowCount = document.querySelectorAll("#programos-table tbody tr").length + 1;
+            let pavadinimas = document.getElementById("pavadinimas").value;
+            let tipas = document.getElementById("tipas").value; // Get selected Tipas
+
+            if (pavadinimas.trim() === "" || tipas.trim() === "" || selectedKuriniai.size === 0) {
+                alert("Prašome užpildyti visus laukelius!");
+                return;
+            }
+
+            let programRow = `<tr>
+        <td class="text-center">${rowCount}</td>
+        <td>${pavadinimas}</td>
+        <td>${tipas}</td>
+        <td class="td-actions text-right">
+            <button type="button" class="btn btn-info">
+                <i class="material-icons">expand_more</i>
+            </button>
+            <button type="button" class="btn btn-danger">
+                <i class="material-icons">close</i>
+            </button>
+        </td>
+    </tr>`;
+
+            table.innerHTML += programRow;
+            selectedKuriniai.clear();
+            renderKuriniai();
+        }
+
         function toggleKuriniai(programId) {
             let kuriniaiRows = document.querySelectorAll(`.kuriniai-${programId}`);
             let btn = document.querySelector(`button[onclick="toggleKuriniai(${programId})"] i`);
@@ -147,55 +292,14 @@
             kuriniaiRows.forEach(row => {
                 if (row.style.display === "none" || row.style.display === "") {
                     row.style.display = "table-row";
-                    btn.innerHTML = "expand_less"; // Collapse icon
+                    btn.innerHTML = "expand_less";
                 } else {
                     row.style.display = "none";
-                    btn.innerHTML = "expand_more"; // Expand icon
+                    btn.innerHTML = "expand_more";
                 }
             });
         }
 
-        function addPrograma() {
-            let table = document.getElementById("table-body");
-            let rowCount = document.querySelectorAll("tbody tr:not(.kuriniai-row)").length + 1;
-
-            let pavadinimas = document.getElementById("pavadinimas").value;
-            let tipas = document.getElementById("tipas").value;
-            let selectedKuriniai = [...document.querySelectorAll(".kuriniai-selection input:checked")].map(checkbox => checkbox.value);
-
-            if (pavadinimas.trim() === "" || selectedKuriniai.length === 0) {
-                alert("Prašome užpildyti visus laukelius!");
-                return;
-            }
-
-            let programRow = `<tr>
-                                <td class="text-center">${rowCount}</td>
-                                <td>${pavadinimas}</td>
-                                <td>${tipas}</td>
-                                <td class="td-actions text-right">
-                                    <button type="button" class="btn btn-info" onclick="toggleKuriniai(${rowCount})">
-                                        <i class="material-icons">expand_more</i>
-                                    </button>
-                                    <button type="button" class="btn btn-success">
-                                        <i class="material-icons">edit</i>
-                                    </button>
-                                    <button type="button" class="btn btn-danger" onclick="deleteProgram(this, ${rowCount})">
-                                        <i class="material-icons">close</i>
-                                    </button>
-                                </td>
-                              </tr>`;
-
-            table.innerHTML += programRow;
-
-            selectedKuriniai.forEach((kurinys, index) => {
-                let [name, type] = kurinys.split("|");
-                table.innerHTML += `<tr class="kuriniai-row kuriniai-${rowCount}">
-                                        <td class="kuriniai-number">${index + 1}.</td>
-                                        <td>${name}</td>
-                                        <td>${type}</td>
-                                        <td></td>
-                                    </tr>`;
-            });
-        }
+        renderKuriniai();
     </script>
 {% endblock javascripts %}

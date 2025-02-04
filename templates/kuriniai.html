@@ -28,6 +28,7 @@
                         <th>Pavadinimas</th>
                         <th>Tipas</th>
                         <th>Trukmė</th>
+                        <th>Video</th>
                         <th class="text-right">Actions</th>
                     </tr>
                     </thead>
@@ -37,34 +38,7 @@
                             <td>Dzūkų daina</td>
                             <td>Daina</td>
                             <td>3:45</td>
-                            <td class="td-actions text-right">
-                                <button type="button" class="btn btn-success">
-                                    <i class="material-icons">edit</i>
-                                </button>
-                                <button type="button" class="btn btn-danger" onclick="deleteRow(this)">
-                                    <i class="material-icons">close</i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="text-center">2</td>
-                            <td>Suvalkų šokis</td>
-                            <td>Šokis</td>
-                            <td>2:30</td>
-                            <td class="td-actions text-right">
-                                <button type="button" class="btn btn-success">
-                                    <i class="material-icons">edit</i>
-                                </button>
-                                <button type="button" class="btn btn-danger" onclick="deleteRow(this)">
-                                    <i class="material-icons">close</i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="text-center">3</td>
-                            <td>Kapelos melodija</td>
-                            <td>Kapela</td>
-                            <td>4:00</td>
+                            <td><a href="https://www.youtube.com/watch?v=EXAMPLE1" target="_blank" class="btn btn-primary btn-sm">Watch 🎵</a></td>
                             <td class="td-actions text-right">
                                 <button type="button" class="btn btn-success">
                                     <i class="material-icons">edit</i>
@@ -96,7 +70,7 @@
 
                     <div class="form-group">
                         <label>Tipas</label>
-                        <label for="tipas"></label><select id="tipas" class="form-control" required>
+                        <select id="tipas" class="form-control" required>
                             <option value="Šokis">Šokis</option>
                             <option value="Kapela">Kapela</option>
                             <option value="Daina">Daina</option>
@@ -106,6 +80,11 @@
                     <div class="form-group">
                         <label>Trukmė</label>
                         <input type="text" id="trukme" class="form-control" required placeholder="00:00">
+                    </div>
+
+                    <div class="form-group">
+                        <label>YouTube URL</label>
+                        <input type="url" id="youtube-url" class="form-control" placeholder="https://www.youtube.com/watch?v=EXAMPLE">
                     </div>
 
                     <button type="button" class="btn btn-danger" onclick="addKurinys()">Pridėti kūrinį</button>
@@ -127,10 +106,24 @@
             let pavadinimas = document.getElementById("pavadinimas").value;
             let tipas = document.getElementById("tipas").value;
             let trukme = document.getElementById("trukme").value;
+            let youtubeUrl = document.getElementById("youtube-url").value.trim();
 
             if (pavadinimas.trim() === "" || trukme.trim() === "") {
                 alert("Prašome užpildyti visus laukelius!");
                 return;
+            }
+
+            // Validate YouTube URL (optional)
+            let youtubeLink = "";
+            if (youtubeUrl !== "") {
+                let youtubeRegex = /^(https?:\/\/)?(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/)([A-Za-z0-9_-]{11})/;
+                if (!youtubeRegex.test(youtubeUrl)) {
+                    alert("Įveskite teisingą YouTube nuorodą!");
+                    return;
+                }
+                youtubeLink = `<a href="${youtubeUrl}" target="_blank" class="btn btn-primary btn-sm">Watch 🎵</a>`;
+            } else {
+                youtubeLink = "—"; // Show dash if no link provided
             }
 
             let row = `<tr>
@@ -138,6 +131,7 @@
                             <td>${pavadinimas}</td>
                             <td>${tipas}</td>
                             <td>${trukme}</td>
+                            <td>${youtubeLink}</td>
                             <td class="td-actions text-right">
                                 <button type="button" class="btn btn-success">
                                     <i class="material-icons">edit</i>
@@ -153,6 +147,7 @@
             // Clear input fields after adding
             document.getElementById("pavadinimas").value = "";
             document.getElementById("trukme").value = "";
+            document.getElementById("youtube-url").value = "";
         }
 
         function deleteRow(btn) {
