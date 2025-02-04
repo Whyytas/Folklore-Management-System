@@ -39,4 +39,4 @@ def events_list(request):
         "events": filtered_events,  # Update key to match template variable
         "selected_ensemble_id": selected_ensemble_id,
     }
-    return render(request, "events.html", context)
+    return render(request, "renginiai.html", context)
