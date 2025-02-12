@@ -1,0 +1,134 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} UI Tables {% endblock %}
+
+<!-- Specific Page CSS -->
+{% block stylesheets %}
+<style>
+    .form-control {
+        margin-bottom: 10px;
+    }
+</style>
+{% endblock stylesheets %}
+
+{% block content %}
+
+    <!-- Form to Add a New Kūrinys -->
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header card-header-danger">
+                <h4 class="card-title">Pridėti naują kūrinį</h4>
+                <p class="category">Įveskite informaciją apie kūrinį</p>
+            </div>
+            <div class="card-body">
+                <form id="add-form">
+                    <div class="form-group">
+                        <label>Pavadinimas</label>
+                        <input type="text" id="pavadinimas" class="form-control" required placeholder="Kūrinio pavadinimas">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Tipas</label>
+                        <select id="tipas" class="form-control" required>
+                            <option value="Šokis">Šokis</option>
+                            <option value="Kapela">Kapela</option>
+                            <option value="Daina">Daina</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Trukmė</label>
+                        <input type="text" id="trukme" class="form-control" required placeholder="00:00">
+                    </div>
+
+                    <div class="form-group">
+                        <label>YouTube URL</label>
+                        <input type="url" id="youtube-url" class="form-control" placeholder="https://www.youtube.com/watch?v=EXAMPLE">
+                    </div>
+
+                    <button type="submit" class="btn btn-danger">Pridėti kūrinį</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+<!-- Specific Page JS -->
+{% block javascripts %}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let form = document.getElementById("add-form");
+
+        form.addEventListener("submit", function (event) {
+            event.preventDefault(); // Prevent form refresh
+            addKurinys();
+        });
+    });
+
+    function addKurinys() {
+        let table = document.getElementById("table-body");
+        let pavadinimas = document.getElementById("pavadinimas").value.trim();
+        let tipas = document.getElementById("tipas").value.trim();
+        let trukme = document.getElementById("trukme").value.trim();
+        let youtubeUrl = document.getElementById("youtube-url").value.trim();
+
+        if (!pavadinimas || !trukme) {
+            alert("Prašome užpildyti visus laukelius!");
+            return;
+        }
+
+        let youtubeLink = "—"; // Default when no URL is provided
+
+        if (youtubeUrl !== "") {
+            let videoId = extractYouTubeID(youtubeUrl);
+            if (!videoId) {
+                alert("Įveskite teisingą YouTube nuorodą!");
+                return;
+            }
+            youtubeLink = `<a href="https://www.youtube.com/watch?v=${videoId}" target="_blank" class="btn btn-primary btn-sm">Watch 🎵</a>`;
+        }
+
+        let row = document.createElement("tr");
+        row.innerHTML = `
+            <td class="text-center"></td>
+            <td>${pavadinimas}</td>
+            <td>${tipas}</td>
+            <td>${trukme}</td>
+            <td>${youtubeLink}</td>
+            <td class="td-actions text-right">
+                <button type="button" class="btn btn-success">
+                    <i class="material-icons">edit</i>
+                </button>
+                <button type="button" class="btn btn-danger" onclick="deleteRow(this)">
+                    <i class="material-icons">close</i>
+                </button>
+            </td>
+        `;
+
+        table.appendChild(row);
+        updateRowNumbers(); // Fix row numbering
+
+        // Clear input fields after adding
+        form.reset();
+    }
+
+    function deleteRow(btn) {
+        let row = btn.closest("tr");
+        row.remove();
+        updateRowNumbers();
+    }
+
+    function updateRowNumbers() {
+        let rows = document.querySelectorAll("#table-body tr");
+        rows.forEach((row, index) => {
+            row.querySelector("td.text-center").textContent = index + 1;
+        });
+    }
+
+    function extractYouTubeID(url) {
+        let match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:.*v=|.*\/)([\w-]{11}))/);
+        return match ? match[1] : null;
+    }
+</script>
+{% endblock javascripts %}
