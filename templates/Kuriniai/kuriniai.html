@@ -97,31 +97,49 @@
                     </div>
                 </div>
 
-                <!-- ✅ DELETE CONFIRMATION MODAL -->
+                <!-- ✅ Improved DELETE CONFIRMATION MODAL -->
                 <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel"
                      aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header text-white bg-danger">
-                                <h5 class="modal-title" id="deleteModalLabel">Patvirtinti ištrynimą</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <div class="modal-dialog modal-dialog-centered"> <!-- ✅ Center Modal -->
+                        <div class="modal-content shadow-lg border-0 rounded-4"> <!-- ✅ Softened corners -->
+
+                            <!-- 🔴 Modal Header with Warning Icon -->
+                            <div class="modal-header bg-danger text-white">
+                                <h5 class="modal-title d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">warning</span>
+                                    Patvirtinti ištrynimą
+                                </h5>
+                                <button type="button" class="btn-close btn-close-white"
+                                        data-bs-dismiss="modal"></button>
                             </div>
-                            <div class="modal-body">
-                                <p>Ar tikrai norite ištrinti <strong id="kurinysName"></strong>?</p>
+
+                            <!-- 📝 Modal Body with More Padding -->
+                            <div class="modal-body text-center py-4">
+                                <p class="fs-5">Ar tikrai norite ištrinti <strong id="kurinysName"></strong>?</p>
+                                <p class="text-muted">Šio veiksmo nebegalėsite atšaukti.</p>
                             </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Atšaukti
+
+                            <!-- ✅ Modal Footer with Centered Buttons -->
+                            <div class="modal-footer d-flex justify-content-center border-0 pb-4">
+                                <button type="button"
+                                        class="btn btn-light px-4 py-2 d-flex btn-outline-dark align-items-center justify-content-center"
+                                        data-bs-dismiss="modal">
+                                    <span class="material-symbols-outlined me-2">close</span> Atšaukti
                                 </button>
+
                                 <form id="deleteForm" method="post" onsubmit="delete_kurinys(event)">
                                     {% csrf_token %}
-                                    <button type="submit" class="btn btn-danger action-btn">
+                                    <button type="submit"
+                                            class="btn btn-danger px-4 py-2 d-flex align-items-center justify-content-center">
                                         <span class="material-symbols-outlined me-2">delete_forever</span> Ištrinti
                                     </button>
                                 </form>
                             </div>
+
                         </div>
                     </div>
                 </div>
+
 
                 <!-- ✅ Button to Refresh Trukmė -->
                 <div class="text-end p-3">
@@ -133,38 +151,38 @@
         </div>
     </div>
     <script>
-    // ✅ Make these functions global
-    function setDeleteUrl(kurinysId, kurinysName) {
-        document.getElementById("kurinysName").innerText = kurinysName;
-        document.getElementById("deleteForm").setAttribute("action", `/kuriniai/${kurinysId}/delete/`);
-    }
-
-    async function delete_kurinys(event) {
-        event.preventDefault();
-        try {
-            const response = await fetch(document.getElementById("deleteForm").action, {
-                method: "POST",
-                headers: {
-                    "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value,
-                }
-            });
-
-            if (response.ok) {
-                bootstrap.Modal.getInstance(document.getElementById("deleteModal")).hide();
-                setTimeout(() => window.location.reload(), 500);
-            } else {
-                alert("Klaida: Nepavyko ištrinti kūrinio!");
-            }
-        } catch (error) {
-            console.error("Klaida ištrinant kūrinį:", error);
+        // ✅ Make these functions global
+        function setDeleteUrl(kurinysId, kurinysName) {
+            document.getElementById("kurinysName").innerText = kurinysName;
+            document.getElementById("deleteForm").setAttribute("action", `/kuriniai/${kurinysId}/delete/`);
         }
-    }
 
-    // ✅ Ensure all event listeners run after the DOM is ready
-    document.addEventListener("DOMContentLoaded", function () {
-        console.log("JavaScript loaded successfully!");
-    });
-</script>
+        async function delete_kurinys(event) {
+            event.preventDefault();
+            try {
+                const response = await fetch(document.getElementById("deleteForm").action, {
+                    method: "POST",
+                    headers: {
+                        "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value,
+                    }
+                });
+
+                if (response.ok) {
+                    bootstrap.Modal.getInstance(document.getElementById("deleteModal")).hide();
+                    setTimeout(() => window.location.reload(), 500);
+                } else {
+                    alert("Klaida: Nepavyko ištrinti kūrinio!");
+                }
+            } catch (error) {
+                console.error("Klaida ištrinant kūrinį:", error);
+            }
+        }
+
+        // ✅ Ensure all event listeners run after the DOM is ready
+        document.addEventListener("DOMContentLoaded", function () {
+            console.log("JavaScript loaded successfully!");
+        });
+    </script>
 {% endblock content %}
 
 <!-- ✅ JavaScript for Delete Confirmation -->
