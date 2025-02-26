@@ -2,99 +2,143 @@
 {% load i18n static %}
 
 {% block content %}
+<style>
+    body {
+        background-color: #f8f9fa;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
 
-  {% include 'includes/navigation-fullscreen.html' %}
+    .login-container {
+        width: 100%;
+        max-width: 450px;
+        padding: 40px;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        animation: fadeIn 0.5s ease-in-out;
+    }
 
-  <main class="main-content mt-0">
-    <section>
-      <div class="page-header min-vh-100">
-        <div class="container">
-          <div class="row" style="padding-bottom: 200px;">
-            <div class="col-xl-4 col-lg-5 col-md-6 d-flex flex-column mx-auto">
-              <div class="card card-plain mt-8">
-                <div class="card-header pb-0 text-left bg-transparent">
-                  <h3 class="font-weight-bolder text-info text-gradient">
-                    Prisijungimas
-                  </h3>
-                  <p class="mb-0">
-                    {% if msg %}
-                      <span class="text-danger">{{ msg | safe }}</span>
-                    {% else %}
-                      Įveskite savo prisijungimo duomenis
-                    {% endif %}
-                  </p>
-                </div>
-                <div class="card-body">
-                  <form role="form" method="post" action="#">
-                    {% if form.non_field_errors %}
-                      {% for error in form.non_field_errors %}
-                        <span class="text-danger">{{ error }}</span>
-                      {% endfor %}
-                    {% endif %}
-                    {% csrf_token %}
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
 
-                    <!-- Vartotojo vardas -->
-                    <label for="id_username">Vartotojo vardas</label>
-                    <div class="mb-3">
-                      {{ form.username }}
-                    </div>
+    .form-floating > input {
+        border-radius: 10px;
+        padding-left: 50px;
+        height: 50px;
+        font-size: 16px;
+    }
 
-                    <!-- Slaptažodis -->
-                    <label for="id_password">Slaptažodis</label>
-                    <div class="mb-3">
-                      {{ form.password }}
-                    </div>
+    .input-group-text {
+        background: transparent;
+        border: none;
+        font-size: 18px;
+        position: absolute;
+        left: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: gray;
+    }
 
-                    <div class="text-center">
-                      <button type="submit" class="btn w-100 mt-1 mb-0">Prisijungti</button>
-                    </div>
+    .form-floating label {
+        color: #6c757d;
+    }
 
-                  </form>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="oblique position-absolute top-0 h-100 d-md-block d-none me-n8">
-                <div class="oblique-image bg-cover position-absolute fixed-top ms-auto h-100 z-index-0 ms-n6" style="background-image:url('{% static 'img/illustrations/intro.svg' %}')"></div>
-              </div>
-            </div>
-          </div>
+    .form-floating input:focus {
+        border-color: #17a2b8;
+        box-shadow: 0px 0px 8px rgba(23, 162, 184, 0.3);
+    }
+
+    .btn-custom {
+        border-radius: 10px;
+        font-weight: bold;
+        padding: 12px;
+        font-size: 16px;
+        transition: all 0.3s ease-in-out;
+    }
+
+    .btn-custom:hover {
+        background-color: #007bff;
+        color: white;
+    }
+</style>
+
+<div class="login-container">
+    <div class="text-center mb-4">
+        <h3 class="font-weight-bolder text-info">Prisijungti</h3>
+        <p class="text-muted">
+            {% if msg %}
+                <span class="text-danger">{{ msg | safe }}</span>
+            {% else %}
+                Įveskite savo prisijungimo duomenis
+            {% endif %}
+        </p>
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <!-- Username Field -->
+        <div class="form-floating mb-3 position-relative">
+            <input type="text" name="username" id="id_username" class="form-control" placeholder="Vartotojo vardas">
+            <label for="id_username">Vartotojo vardas</label>
+            <span class="input-group-text"><i class="bi bi-person"></i></span>
+            {% if form.username.errors %}
+                <small class="text-danger">{{ form.username.errors.0 }}</small>
+            {% endif %}
         </div>
-      </div>
-    </section>
-  </main>
 
+        <!-- Password Field -->
+        <div class="form-floating mb-3 position-relative">
+            <input type="password" name="password" id="id_password" class="form-control" placeholder="Slaptažodis">
+            <label for="id_password">Slaptažodis</label>
+            <span class="input-group-text"><i class="bi bi-lock"></i></span>
+            {% if form.password.errors %}
+                <small class="text-danger">{{ form.password.errors.0 }}</small>
+            {% endif %}
+        </div>
 
+        <!-- Submit Button -->
+        <div class="text-center">
+            <button type="submit" class="btn btn-info w-100 mt-3 shadow-sm btn-custom">
+                <i class="bi bi-box-arrow-in-right me-2"></i> Prisijungti
+            </button>
+        </div>
 
-{% endblock content %}
+    </form>
+</div>
+
+{% endblock %}
 
 {% block extrascript %}
-    <script type="application/javascript">
+<script type="application/javascript">
+    document.addEventListener("DOMContentLoaded", function () {
+        function showErrorMessage(message) {
+            if (message) {
+                alert(message);
+            }
+        }
+
         {% if form.username.errors %}
-            notification.danger("{{ form.username.errors }}", 'top', 'right');
+            showErrorMessage("{{ form.username.errors.0 }}");
         {% endif %}
         {% if form.password.errors %}
-            notification.danger("{{ form.password.errors }}", 'top', 'right');
+            showErrorMessage("{{ form.password.errors.0 }}");
         {% endif %}
 
         {% if user.is_authenticated %}
-            var msg = "Jūs esate prisijungęs kaip {{ username }}, tačiau neturite leidimo " +
-                "pasiekti šį puslapį. Ar norite prisijungti su kita paskyra?";
-            notification.warning(msg, 'top', 'right');
+            alert("Jūs jau esate prisijungęs!");
         {% endif %}
-
-        {% if form.errors and not form.non_field_errors %}
-            {% if form.errors.items|length == 1 %}
-                notification.warning("Prašome ištaisyti žemiau esančią klaidą.", 'top', 'right');
-            {% else %}
-                notification.warning("Prašome ištaisyti žemiau esančias klaidas.", 'top', 'right');
-            {% endif %}
-        {% endif %}
-
-        {% if form.non_field_errors %}
-            {% for error in form.non_field_errors %}
-                notification.warning("{{ error }}", 'top', 'right');
-            {% endfor %}
-        {% endif %}
-    </script>
+    });
+</script>
 {% endblock %}
