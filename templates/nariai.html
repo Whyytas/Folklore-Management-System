@@ -1,0 +1,344 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Nariai {% endblock %}
+
+{% block stylesheets %}
+    <style>
+        .form-control {
+            margin-bottom: 10px;
+        }
+
+        .ansambliai-selection {
+            background: #f3f3f3;
+            padding: 15px;
+            border-radius: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .checkbox-large {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+        }
+    </style>
+{% endblock stylesheets %}
+
+{% block content %}
+
+    <div class="row">
+        <!-- Nariai Table -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header card-header-info">
+                    <h4 class="card-title">Narių sąrašas</h4>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label>Filtruoti pagal ansamblį:</label>
+                        <select id="filter-ansamblis" class="form-control" onchange="filterByAnsamblis()">
+                            <option value="">Visi ansambliai</option>
+                        </select>
+                    </div>
+
+                    <table class="table" id="nariai-table">
+                        <thead>
+                        <tr>
+                            <th class="text-center">ID</th>
+                            <th>Vardas</th>
+                            <th>Pavardė</th>
+                            <th>Telefonas</th>
+                            <th>El. paštas</th>
+                            <th>Ansambliai</th>
+                            <th class="text-right">Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody id="table-body">
+                        <!-- Example Nariai Rows -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form to Add a New Narys -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header card-header-danger">
+                    <h4 class="card-title">Pridėti naują narį</h4>
+                    <p class="category">Įveskite informaciją apie narį</p>
+                </div>
+                <div class="card-body">
+                    <form id="add-form">
+                        <div class="form-group">
+                            <label>Vardas</label>
+                            <input type="text" id="vardas" class="form-control" required placeholder="Nario vardas">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Pavardė</label>
+                            <input type="text" id="pavarde" class="form-control" required placeholder="Nario pavardė">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Telefonas (nebūtinas)</label>
+                            <input type="tel" id="telefonas" class="form-control" placeholder="Telefono numeris">
+                        </div>
+
+                        <div class="form-group">
+                            <label>El. paštas (nebūtinas)</label>
+                            <input type="email" id="email" class="form-control" placeholder="El. paštas">
+                        </div>
+
+                        <div class="form-group">
+                            <label><strong>Priklausantys ansambliai:</strong></label>
+                            <input type="text" id="search-ansambliai" class="form-control"
+                                   placeholder="Ieškoti ansamblio..." onkeyup="filterAnsambliai()">
+                            <table class="table">
+                                <tbody id="ansambliai-list">
+                                <!-- Ansambliai checkboxes will be dynamically inserted here -->
+                                </tbody>
+                            </table>
+                            <div class="d-flex justify-content-center mt-2">
+                                <button id="prev-page" class="btn btn-outline-primary mx-1" onclick="changePage(-1)">«
+                                    Ankstesnis
+                                </button>
+                                <span id="page-info" class="align-self-center mx-2"></span>
+                                <button id="next-page" class="btn btn-outline-primary mx-1" onclick="changePage(1)">
+                                    Kitas »
+                                </button>
+                            </div>
+
+                        </div>
+
+
+                        <button type="button" class="btn btn-danger btn-lg" onclick="addNarys()">Pridėti narį</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block javascripts %}
+    <script>
+
+        let ansambliai = [
+            {id: 1, name: "Vilniaus ansamblis"},
+            {id: 2, name: "Kauno folkloro grupė"},
+            {id: 3, name: "Klaipėdos kapela"},
+            {id: 4, name: "Šiaulių dainininkai"},
+            {id: 5, name: "Aukštaitijos muzikantai"},
+            {id: 6, name: "Dzūkų dainininkai"},
+            {id: 7, name: "Panevėžio folkloras"},
+            {id: 8, name: "Tradicinių šokių grupė"}
+        ];
+
+        let selectedAnsambliai = new Set();
+        let filteredAnsambliai = [...ansambliai];
+        let currentPage = 1;
+        const itemsPerPage = 5;
+
+        document.addEventListener("DOMContentLoaded", function () {
+            populateAnsambliaiCheckboxes();
+        });
+
+        // Populate checkboxes with pagination
+        function populateAnsambliaiCheckboxes() {
+            const ansambliaiList = document.getElementById("ansambliai-list");
+            ansambliaiList.innerHTML = "";
+            let start = (currentPage - 1) * itemsPerPage;
+            let paginatedItems = filteredAnsambliai.slice(start, start + itemsPerPage);
+
+            paginatedItems.forEach(ansamblis => {
+                let isChecked = selectedAnsambliai.has(ansamblis.name) ? "checked" : "";
+                ansambliaiList.innerHTML += `<tr>
+            <td>
+                <input type="checkbox" class="checkbox-large" value="${ansamblis.name}" ${isChecked}
+                    onclick="toggleAnsamblis('${ansamblis.name}')"> ${ansamblis.name}
+            </td>
+        </tr>`;
+            });
+
+            updatePagination();
+        }
+
+        // Search ansambliai
+        function filterAnsambliai() {
+            let query = document.getElementById("search-ansambliai").value.toLowerCase();
+
+            if (query === "") {
+                filteredAnsambliai = [...ansambliai]; // Reset to all
+            } else {
+                filteredAnsambliai = ansambliai.filter(a => a.name.toLowerCase().includes(query));
+            }
+
+            currentPage = 1;
+            populateAnsambliaiCheckboxes();
+        }
+
+        // Preserve selected ansambliai
+        function toggleAnsamblis(name) {
+            selectedAnsambliai.has(name) ? selectedAnsambliai.delete(name) : selectedAnsambliai.add(name);
+        }
+
+        // Change pagination page
+        function changePage(step) {
+            let totalPages = Math.ceil(filteredAnsambliai.length / itemsPerPage);
+            currentPage = Math.max(1, Math.min(currentPage + step, totalPages));
+            populateAnsambliaiCheckboxes();
+        }
+
+        // Update pagination info
+        function updatePagination() {
+            let totalPages = Math.ceil(filteredAnsambliai.length / itemsPerPage);
+            document.getElementById("page-info").innerText = `Puslapis ${currentPage} iš ${totalPages}`;
+            document.getElementById("prev-page").disabled = currentPage === 1;
+            document.getElementById("next-page").disabled = currentPage === totalPages || totalPages === 0;
+        }
+
+
+        document.addEventListener("DOMContentLoaded", function () {
+            generateExampleNariai();
+            populateAnsambliaiCheckboxes();
+            populateFilterDropdown();
+        });
+
+        // Populate the filtering dropdown
+        function populateFilterDropdown() {
+            let filterDropdown = document.getElementById("filter-ansamblis");
+            filterDropdown.innerHTML = '<option value="">Visi ansambliai</option>';
+
+            let uniqueAnsambliai = new Set();
+            document.querySelectorAll("#nariai-table tbody tr").forEach(row => {
+                let ansamblisCell = row.cells[5]?.textContent.trim();
+                if (ansamblisCell && ansamblisCell !== "–") {
+                    ansamblisCell.split(", ").forEach(ansamblis => uniqueAnsambliai.add(ansamblis));
+                }
+            });
+
+            uniqueAnsambliai.forEach(ansamblis => {
+                filterDropdown.innerHTML += `<option value="${ansamblis}">${ansamblis}</option>`;
+            });
+        }
+
+        // Function to filter Nariai by Ansamblis
+        function filterByAnsamblis() {
+            let selectedAnsamblis = document.getElementById("filter-ansamblis").value.toLowerCase();
+            let rows = document.querySelectorAll("#nariai-table tbody tr");
+
+            rows.forEach(row => {
+                let ansamblisCell = row.cells[5]?.textContent.toLowerCase();
+
+                if (selectedAnsamblis === "" || ansamblisCell.includes(selectedAnsamblis)) {
+                    row.style.display = "table-row"; // Show matching rows
+                } else {
+                    row.style.display = "none"; // Hide non-matching rows
+                }
+            });
+        }
+
+        function generateExampleNariai() {
+            let table = document.getElementById("table-body");
+
+            let exampleNariai = [
+                {
+                    id: 1,
+                    vardas: "Jonas",
+                    pavarde: "Petrauskas",
+                    telefonas: "+37060012345",
+                    email: "jonas@example.com",
+                    ansambliai: ["Vilniaus ansamblis", "Kauno folkloro grupė"]
+                },
+                {
+                    id: 2,
+                    vardas: "Laura",
+                    pavarde: "Kazlauskaitė",
+                    telefonas: "",
+                    email: "laura@example.com",
+                    ansambliai: ["Klaipėdos kapela"]
+                },
+                {
+                    id: 3,
+                    vardas: "Mantas",
+                    pavarde: "Jankauskas",
+                    telefonas: "+37061298765",
+                    email: "",
+                    ansambliai: ["Šiaulių dainininkai", "Aukštaitijos muzikantai", "Vilniaus ansamblis"]
+                }
+            ];
+
+            exampleNariai.forEach(narys => {
+                let ansambliaiText = narys.ansambliai.length ? narys.ansambliai.join(", ") : "–";
+                let row = `<tr>
+                    <td class="text-center">${narys.id}</td>
+                    <td>${narys.vardas}</td>
+                    <td>${narys.pavarde}</td>
+                    <td>${narys.telefonas || "–"}</td>
+                    <td>${narys.email || "–"}</td>
+                    <td>${ansambliaiText}</td>
+                    <td class="td-actions text-right">
+                        <button type="button" class="btn btn-success">
+                            <i class="material-icons">edit</i>
+                        </button>
+                        <button type="button" class="btn btn-danger" onclick="deleteNarys(this)">
+                            <i class="material-icons">close</i>
+                        </button>
+                    </td>
+                </tr>`;
+
+                table.innerHTML += row;
+            });
+        }
+
+        function addNarys() {
+            let table = document.getElementById("table-body");
+            let rowCount = document.querySelectorAll("#nariai-table tbody tr").length + 1;
+
+            let vardas = document.getElementById("vardas").value;
+            let pavarde = document.getElementById("pavarde").value;
+            let telefonas = document.getElementById("telefonas").value || "–";
+            let email = document.getElementById("email").value || "–";
+
+            // ✅ Fix: Select checkboxes correctly inside #ansambliai-list
+            let selectedAnsambliai = [...document.querySelectorAll("#ansambliai-list input:checked")].map(checkbox => checkbox.value);
+
+            if (vardas.trim() === "" || pavarde.trim() === "") {
+                alert("Prašome užpildyti būtinus laukelius!");
+                return;
+            }
+
+            let ansambliaiText = selectedAnsambliai.length ? selectedAnsambliai.join(", ") : "–";
+
+            let row = `<tr>
+        <td class="text-center">${rowCount}</td>
+        <td>${vardas}</td>
+        <td>${pavarde}</td>
+        <td>${telefonas}</td>
+        <td>${email}</td>
+        <td>${ansambliaiText}</td>
+        <td class="td-actions text-right">
+            <button type="button" class="btn btn-danger" onclick="deleteNarys(this)">
+                <i class="material-icons">close</i>
+            </button>
+        </td>
+    </tr>`;
+
+            table.innerHTML += row;
+
+            // ✅ Fix: Clear form & uncheck checkboxes after adding
+            document.getElementById("vardas").value = "";
+            document.getElementById("pavarde").value = "";
+            document.getElementById("telefonas").value = "";
+            document.getElementById("email").value = "";
+            document.querySelectorAll("#ansambliai-list input:checked").forEach(checkbox => checkbox.checked = false);
+        }
+
+
+        function deleteNarys(btn) {
+            let row = btn.closest("tr");
+            row.remove();
+        }
+    </script>
+{% endblock javascripts %}

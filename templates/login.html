@@ -1,0 +1,100 @@
+{% extends 'layouts/base-fullscreen.html' %}
+{% load i18n static %}
+
+{% block content %}
+
+  {% include 'includes/navigation-fullscreen.html' %}
+
+  <main class="main-content mt-0">
+    <section>
+      <div class="page-header min-vh-100">
+        <div class="container">
+          <div class="row" style="padding-bottom: 200px;">
+            <div class="col-xl-4 col-lg-5 col-md-6 d-flex flex-column mx-auto">
+              <div class="card card-plain mt-8">
+                <div class="card-header pb-0 text-left bg-transparent">
+                  <h3 class="font-weight-bolder text-info text-gradient">
+                    Prisijungimas
+                  </h3>
+                  <p class="mb-0">
+                    {% if msg %}
+                      <span class="text-danger">{{ msg | safe }}</span>
+                    {% else %}
+                      Įveskite savo prisijungimo duomenis
+                    {% endif %}
+                  </p>
+                </div>
+                <div class="card-body">
+                  <form role="form" method="post" action="#">
+                    {% if form.non_field_errors %}
+                      {% for error in form.non_field_errors %}
+                        <span class="text-danger">{{ error }}</span>
+                      {% endfor %}
+                    {% endif %}
+                    {% csrf_token %}
+
+                    <!-- Vartotojo vardas -->
+                    <label for="id_username">Vartotojo vardas</label>
+                    <div class="mb-3">
+                      {{ form.username }}
+                    </div>
+
+                    <!-- Slaptažodis -->
+                    <label for="id_password">Slaptažodis</label>
+                    <div class="mb-3">
+                      {{ form.password }}
+                    </div>
+
+                    <div class="text-center">
+                      <button type="submit" class="btn w-100 mt-1 mb-0">Prisijungti</button>
+                    </div>
+
+                  </form>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="oblique position-absolute top-0 h-100 d-md-block d-none me-n8">
+                <div class="oblique-image bg-cover position-absolute fixed-top ms-auto h-100 z-index-0 ms-n6" style="background-image:url('{% static 'img/illustrations/intro.svg' %}')"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+
+
+{% endblock content %}
+
+{% block extrascript %}
+    <script type="application/javascript">
+        {% if form.username.errors %}
+            notification.danger("{{ form.username.errors }}", 'top', 'right');
+        {% endif %}
+        {% if form.password.errors %}
+            notification.danger("{{ form.password.errors }}", 'top', 'right');
+        {% endif %}
+
+        {% if user.is_authenticated %}
+            var msg = "Jūs esate prisijungęs kaip {{ username }}, tačiau neturite leidimo " +
+                "pasiekti šį puslapį. Ar norite prisijungti su kita paskyra?";
+            notification.warning(msg, 'top', 'right');
+        {% endif %}
+
+        {% if form.errors and not form.non_field_errors %}
+            {% if form.errors.items|length == 1 %}
+                notification.warning("Prašome ištaisyti žemiau esančią klaidą.", 'top', 'right');
+            {% else %}
+                notification.warning("Prašome ištaisyti žemiau esančias klaidas.", 'top', 'right');
+            {% endif %}
+        {% endif %}
+
+        {% if form.non_field_errors %}
+            {% for error in form.non_field_errors %}
+                notification.warning("{{ error }}", 'top', 'right');
+            {% endfor %}
+        {% endif %}
+    </script>
+{% endblock %}

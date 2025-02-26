@@ -1,0 +1,67 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block title %} Redaguoti Programą {% endblock %}
+
+{% block stylesheets %}
+<style>
+    .form-container {
+        max-width: 600px;
+        margin: auto;
+    }
+    .card {
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+</style>
+{% endblock stylesheets %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow p-4">
+                <div class="card-header bg-primary text-white text-center">
+                    <h4 class="mb-0">Redaguoti Programą</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <!-- Programos pavadinimas -->
+                        <div class="form-group mb-3">
+                            <label for="id_pavadinimas">Programos pavadinimas</label>
+                            {{ form.pavadinimas }}
+                        </div>
+
+                        <!-- Programos tipas -->
+                        <div class="form-group mb-3">
+                            <label for="id_tipas">Programos tipas</label>
+                            {{ form.tipas }}
+                        </div>
+
+                        <!-- Programos aprašymas -->
+                        <div class="form-group mb-3">
+                            <label for="id_aprasymas">Programos aprašymas</label>
+                            {{ form.aprasymas }}
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="{% url 'programos' %}" class="btn btn-secondary">Atšaukti</a>
+                            <button type="submit" class="btn btn-primary">Išsaugoti pakeitimus</button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

@@ -1,0 +1,100 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Redaguoti Kūrinį {% endblock %}
+
+{% block content %}
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow">
+                    <div class="card-header py-3 text-center bg-primary text-white">
+                        <h4 class="mb-0">Redaguoti Kūrinį</h4>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" id="editKurinysForm">
+                            {% csrf_token %}
+
+                            <!-- ✅ Pavadinimas -->
+                            <div class="mb-4">
+                                <label for="pavadinimas" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">music_note</span> Pavadinimas
+                                </label>
+                                <input type="text" name="pavadinimas" id="pavadinimas" class="form-control"
+                                       value="{{ kurinys.pavadinimas }}" required>
+                            </div>
+
+                            <!-- ✅ Tipas (Loaded from Backend) -->
+                            <div class="mb-4">
+                                <label for="tipas" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">category</span> Tipas
+                                </label>
+                                <select name="tipas" id="tipas" class="form-control" required>
+                                    {% for value, label in kurinys.TIPAS_CHOICES %}
+                                        <option value="{{ value }}" {% if kurinys.tipas == value %}selected{% endif %}>
+                                            {{ label }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <!-- ✅ YouTube URL -->
+                            <div class="mb-4">
+                                <label for="youtube_url" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">link</span> YouTube Nuoroda
+                                </label>
+                                <input type="url" name="youtube_url" id="youtube_url" class="form-control"
+                                       value="{{ kurinys.youtube_url }}">
+                            </div>
+
+                            <!-- ✅ Trukmė -->
+                            <div class="mb-4">
+                                <label for="trukme" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">timer</span> Trukmė
+                                </label>
+                                <input type="text" name="trukme" id="trukme" class="form-control"
+                                       value="{{ kurinys.trukme }}">
+                            </div>
+
+                            <!-- ✅ Buttons -->
+                            <div class="d-flex justify-content-between mt-4">
+                                <a href="{% url 'kuriniai' %}" class="btn btn-outline-secondary d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-1">arrow_back</span> Atšaukti
+                                </a>
+                                <button type="submit" class="btn btn-outline-dark d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-1">save</span> Išsaugoti kūrinį
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ✅ JavaScript for Submitting Form -->
+    <script>
+        document.getElementById("editKurinysForm").addEventListener("submit", async function(event) {
+            event.preventDefault();
+
+            const form = event.target;
+            const formData = new FormData(form);
+            const kurinysId = "{{ kurinys.id }}"; 
+
+            const response = await fetch(`/kuriniai/${kurinysId}/edit/`, {
+                method: "POST",
+                body: formData,
+                headers: {
+                    "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value
+                }
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                alert("Kūrinys sėkmingai atnaujintas!");
+                window.location.href = "/kuriniai/";
+            } else {
+                alert("Klaida atnaujinant kūrinį!");
+            }
+        });
+    </script>
+{% endblock content %}

@@ -1,0 +1,150 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Paskyra {% endblock %}
+
+{% block stylesheets %}
+    <style>
+        .profile-card {
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+        }
+        .form-group label {
+            font-weight: 500;
+        }
+        .btn-save {
+            width: 100%;
+            margin-top: 10px;
+        }
+        .profile-photo-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .profile-photo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #ccc;
+        }
+        .file-input {
+            display: none;
+        }
+        .btn-upload {
+            margin-top: 10px;
+        }
+    </style>
+{% endblock stylesheets %}
+
+{% block content %}
+
+    <div class="card profile-card">
+        <div class="card-header card-header-primary">
+            <h4 class="card-title">Redaguoti profilį</h4>
+            <p class="card-category">Atnaujinkite savo paskyros informaciją</p>
+        </div>
+        <div class="card-body">
+            <form>
+                <div class="profile-photo-container">
+                    <img id="profile-photo" src="{{ current_user.photo_url }}" class="profile-photo" alt="Profilio nuotrauka">
+                    <br>
+                    <input type="file" id="photo-upload" class="file-input" accept="image/*" onchange="previewPhoto(event)">
+                    <button type="button" class="btn btn-secondary btn-upload" onclick="document.getElementById('photo-upload').click()">Keisti nuotrauką</button>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-5">
+                        <div class="form-group">
+                            <label>User ID</label>
+                            <input type="text" class="form-control" disabled value="{{ current_user.id }}">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>Slapyvardis</label>
+                            <input type="text" class="form-control" value="{{ current_user.username }}">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>El. paštas</label>
+                            <input type="email" class="form-control" value="{{ current_user.email }}">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Vardas</label>
+                            <input type="text" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Pavardė</label>
+                            <input type="text" class="form-control">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Adresas</label>
+                            <input type="text" class="form-control">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Miestas</label>
+                            <input type="text" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Šalis</label>
+                            <input type="text" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Pašto kodas</label>
+                            <input type="text" class="form-control">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Apie mane</label>
+                            <textarea class="form-control" rows="4"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-save">Išsaugoti pakeitimus</button>
+            </form>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block javascripts %}
+    <script>
+        function previewPhoto(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById("profile-photo").src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+    </script>
+{% endblock javascripts %}

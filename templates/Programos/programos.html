@@ -1,0 +1,137 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Programų Sąrašas {% endblock %}
+
+{% block stylesheets %}
+    <style>
+        .form-control {
+            margin-bottom: 10px;
+        }
+    </style>
+{% endblock stylesheets %}
+
+{% block content %}
+    <div class="container-fluid mt-4">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0">Programų Sąrašas</h4>
+                        <a href="{% url 'program_create' %}"
+                           class="btn btn-light text-primary fw-bold d-flex align-items-center">
+                            <span class="material-symbols-outlined me-1">add</span> Pridėti programą
+                        </a>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-striped align-items-center">
+                                <thead class="thead-dark">
+                                <tr>
+                                    <th class="text-center">#</th>
+                                    <th>Pavadinimas</th>
+                                    <th>Tipas</th>
+                                    <th class="text-center">Valdyti</th>
+                                </tr>
+                                </thead>
+                                <tbody id="table-body">
+                                {% for programa in programos %}
+                                    <tr>
+                                        <td class="text-center">{{ forloop.counter }}</td>
+                                        <td>{{ programa.pavadinimas }}</td>
+                                        <td>{{ programa.tipas }}</td>
+                                        <td class="text-center">
+                                            <a href="{% url 'programos_kuriniai' programa.id %}"
+                                               class="btn btn-info btn-sm">
+                                                <span class="material-symbols-outlined">visibility</span>
+                                            </a>
+
+                                            <a href="{% url 'program_edit' programa.id %}"
+                                               class="btn btn-success btn-sm">
+                                                <span class="material-symbols-outlined">edit</span>
+                                            </a>
+
+                                            <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal"
+                                                    data-bs-target="#deleteModal"
+                                                    onclick="setDeleteUrl({{ kurinys.id }}, '{{ kurinys.pavadinimas }}')">
+                                                <span class="material-symbols-outlined">delete</span>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="4" class="text-center text-muted">Nėra sukurtų programų.</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+
+                            </table>
+
+                            <!-- DELETE CONFIRMATION MODAL -->
+                            <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel"
+                                 aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header bg-danger text-white">
+                                            <h5 class="modal-title" id="deleteModalLabel">Patvirtinti ištrynimą</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>Ar tikrai norite ištrinti <strong id="programName"></strong>?</p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                Atšaukti
+                                            </button>
+                                            <form id="deleteForm" method="post" onsubmit="deleteProgram(event)">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-danger">Ištrinti</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div> <!-- End card -->
+            </div> <!-- End col -->
+        </div> <!-- End row -->
+    </div> <!-- End container -->
+    <script>
+        let deleteProgramId = null;
+
+        window.setDeleteUrl = function (programId, programName) {
+            deleteProgramId = programId;
+            document.getElementById("programName").innerText = programName;
+        };
+
+        window.deleteProgram = function (event) {
+            event.preventDefault();
+
+            fetch(`/programos/${deleteProgramId}/delete/`, {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value,
+                    "Content-Type": "application/json"
+                }
+            }).then(response => {
+                if (response.ok) {
+                    let deleteModal = document.getElementById("deleteModal");
+                    let modalInstance = bootstrap.Modal.getInstance(deleteModal);
+                    modalInstance.hide();
+
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 500);
+                } else {
+                    alert("Klaida: Nepavyko ištrinti programos!");
+                }
+            }).catch(error => {
+                console.error("Error:", error);
+            });
+        };
+    </script>
+
+{% endblock content %}

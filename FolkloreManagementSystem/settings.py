@@ -11,15 +11,23 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
-
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
+import os
+
+STATIC_URL = '/static/'
+# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),  # Your regular static folder
+]
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-+_n6j3p7xr&pcxd1ujofrbs!k6hm^=ijg*6t#qgd5dm$_9*j50'
 
@@ -30,23 +38,29 @@ ALLOWED_HOSTS = ['folklore.azurewebsites.net',
                  'localhost',
                  '127.0.0.1']
 
-LOGIN_URL='/admin/'
+# LOGIN_URL='/admin/'
+LOGIN_REDIRECT_URL = '/main'
+# LOGOUT_REDIRECT_URL = '/login/'  # Redirect to login after logout
+
 # CSRF trusted origins
 CSRF_TRUSTED_ORIGINS = ['https://folklore.azurewebsites.net']
 OAUTH2_PROVIDER = {
     'ACCESS_TOKEN_EXPIRE_SECONDS': 3600,
     'APPLICATION_MODEL': 'oauth2_provider.Application',
     'SCOPES': {'read': 'Read scope', 'write': 'Write scope'},
-    'OAUTH2_VALIDATOR_CLASS': 'temp.validators.CustomOAuth2Validator',  # Correct path to validator
+    'OAUTH2_VALIDATOR_CLASS': 'Initial.validators.CustomOAuth2Validator',  # Correct path to validator
 }
-AUTH_USER_MODEL = 'temp.CustomUser'
+AUTH_USER_MODEL = 'Initial.CustomUser'
 
 REST_FRAMEWORK = {
 
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
-  'DEFAULT_AUTHENTICATION_CLASSES': (
+    'DEFAULT_AUTHENTICATION_CLASSES': (
         'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',  # Require authentication
     ),
 }
 
@@ -56,10 +70,8 @@ SPECTACULAR_SETTINGS = {
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
     # OTHER SETTINGS
-}
-
     'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
+        'rest_framework.permissions.py.IsAuthenticated',
     ),
 }
 # Application definition
@@ -72,12 +84,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'apis',
     'drf_spectacular',
     'django_filters',
     'oauth2_provider',
-    'temp',
-
+    'Initial',
+    'drf_yasg',
+    'Padaliniai',
+    'Programos',
+    'Kuriniai'
 ]
 
 MIDDLEWARE = [
@@ -88,6 +102,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'FolkloreManagementSystem.urls'
@@ -111,7 +126,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'FolkloreManagementSystem.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
@@ -123,11 +137,10 @@ DATABASES = {
         'PASSWORD': 'Slaptazodis1',
         'HOST': 'folkloredata.postgres.database.azure.com',
         'PORT': '5432',
-        'OPTIONS':{'sslmode':'require'},
+        'OPTIONS': {'sslmode': 'require'},
 
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -147,7 +160,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
@@ -158,13 +170,6 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
-
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.1/howto/static-files/
-
-STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field

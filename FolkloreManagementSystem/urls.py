@@ -15,32 +15,25 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-
 from django.urls import include, path
-from rest_framework import permissions
-from drf_yasg.views import get_schema_view
-from drf_yasg import openapi
-from drf_spectacular.views import SpectacularAPIView
-import mainPage
+from Initial.views import (custom_logout, CustomLoginView,)
 
 
-
-# schema_view = get_schema_view(
-#     openapi.Info(
-#         title="My API",
-#         default_version='v1',
-#         description="API documentation",
-#         terms_of_service="https://www.google.com/policies/terms/",
-#         contact=openapi.Contact(email="vitile@ktu.lt"),
-#         license=openapi.License(name="BSD License"),
-#     ),
-#     public=True,
-#     permission_classes=(permissions.AllowAny,),
-# )
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path('', include('mainPage.urls')),
-    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
-  path('o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
+
+    path('main/', include('mainPage.urls')),  # Include app-specific URLs
+    path('', CustomLoginView.as_view(), name='login'),  # Login page
+    path('logout/', custom_logout, name='logout'),  # Logout pag
+
+    path('ansambliai/', include('Ansambliai.urls')),
+    path('nariai/', include('Nariai.urls')),
+    path('renginiai/', include('Renginiai.urls')),
+    path('kuriniai/', include('Kuriniai.urls')),
+    path('programos/', include('Programos.urls')),
+    path('instrumentai/', include('Instrumentai.urls')),
+    path('padaliniai/', include('Padaliniai.urls')),
+    path('paskyra/', include('Paskyra.urls')),
+
 ]
 

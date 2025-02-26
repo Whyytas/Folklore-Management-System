@@ -1,0 +1,115 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Programa: {{ programa.pavadinimas }} {% endblock %}
+
+{% block stylesheets %}
+    <style>
+        .form-control {
+            margin-bottom: 10px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .table th {
+            background-color: #f8f9fa;
+        }
+
+        .total-time {
+            font-weight: bold;
+            font-size: 18px;
+            color: #007bff;
+        }
+
+        .btn-back {
+            background: #007bff;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .btn-back:hover {
+            background: #0056b3;
+            color: white;
+        }
+    </style>
+{% endblock stylesheets %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">Programa: {{ programa.pavadinimas }}</h4>
+        </div>
+        <div class="card-body">
+            <h5 class="text-muted">Kūriniai šiame programoje</h5>
+            <div class="table-responsive">
+                <table class="table table-striped align-items-center">
+                    <thead>
+                        <tr>
+                            <th class="text-center">#</th>
+                            <th>Pavadinimas</th>
+                            <th>Tipas</th>
+                            <th class="text-center">Trukmė</th>
+                        </tr>
+                    </thead>
+                    <tbody id="kuriniai-list">
+                        {% if programos_kuriniai %}
+                            {% for pk in programos_kuriniai %}
+                                <tr>
+                                    <td class="text-center">{{ pk.eile }}</td>
+                                    <td>{{ pk.kurinys.pavadinimas }}</td>
+                                    <td>{{ pk.kurinys.tipas }}</td>
+                                    <td class="text-center" data-duration="{{ pk.kurinys.trukme }}">{{ pk.kurinys.trukme }}</td>
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="4" class="text-center text-muted">Nėra pridėtų kūrinių šiai programai.</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Total Time -->
+            <div class="d-flex justify-content-end mt-3">
+                <p class="total-time">Bendra trukmė: <span id="total-time">00:00</span></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block javascripts %}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        function calculateTotalTime() {
+            let totalMinutes = 0;
+            let totalSeconds = 0;
+            let durations = document.querySelectorAll("td[data-duration]");
+
+            durations.forEach(cell => {
+                let timeParts = cell.dataset.duration.split(":");
+                let minutes = parseInt(timeParts[0]) || 0;
+                let seconds = parseInt(timeParts[1]) || 0;
+
+                totalMinutes += minutes;
+                totalSeconds += seconds;
+            });
+
+            // Convert excess seconds into minutes
+            totalMinutes += Math.floor(totalSeconds / 60);
+            totalSeconds = totalSeconds % 60;
+
+            document.getElementById("total-time").textContent =
+                (totalMinutes < 10 ? "0" : "") + totalMinutes + ":" +
+                (totalSeconds < 10 ? "0" : "") + totalSeconds;
+        }
+
+        calculateTotalTime();
+    });
+</script>
+{% endblock javascripts %}

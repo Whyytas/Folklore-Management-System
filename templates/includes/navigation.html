@@ -1,0 +1,30 @@
+<nav class="navbar navbar-expand-lg navbar-light navbar-custom">
+    <div class="container-fluid px-4 d-flex align-items-center justify-content-between">
+
+        <div class="d-flex align-items-center">
+            <!-- Sidebar Toggle Button (Only for Mobile) -->
+            <button class="btn btn-outline-primary d-lg-none me-3" type="button" data-bs-toggle="offcanvas"
+                    data-bs-target="#mobileSidebar">
+                ☰
+            </button>
+
+
+            <!-- Breadcrumb Navigation -->
+            {% with request.path|slice:"1:" as page_path %}
+                {% if page_path in "kuriniai programos renginiai instrumentai padaliniai nariai ansambliai" %}
+                    <nav aria-label="breadcrumb" class="d-none d-md-block">
+                        <ol class="breadcrumb mb-0">
+                            <li class="breadcrumb-item"><a class="text-decoration-none text-secondary" href="/">Dashboard</a>
+                            </li>
+                            <li class="breadcrumb-item active text-dark"
+                                aria-current="page">{{ page_path|capfirst }}</li>
+                        </ol>
+                    </nav>
+                {% endif %}
+            {% endwith %}
+        </div>
+
+        <!-- Logout Button -->
+        <a href="{% url 'logout' %}" class="btn btn-outline-danger btn-sm">Logout</a>
+    </div>
+</nav>

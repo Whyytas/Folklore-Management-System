@@ -1,7 +1,13 @@
 from django.urls import path
-
-from . import views
+from .views import  main
 
 urlpatterns = [
-    path("", views.index, name="index"),
+
+    # path('login/', CustomLoginView.as_view(), name='login'),
+    # path('logout/', custom_logout, name='logout'),  # Use the custom logout view
+    path('', main, name='main'),
+
+
+
+
 ]

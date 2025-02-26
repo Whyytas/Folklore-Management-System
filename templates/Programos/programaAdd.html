@@ -1,0 +1,218 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Pridėti Programą {% endblock %}
+
+{% block stylesheets %}
+    <style>
+        .form-control {
+            margin-bottom: 10px;
+        }
+
+        /* Container for selecting and ordering Kūriniai */
+        .kuriniai-container {
+            display: flex;
+            gap: 20px;
+        }
+
+        /* Available Kūriniai */
+        .kuriniai-list, .selected-kuriniai {
+            border: 1px solid #ddd;
+            padding: 10px;
+            min-height: 200px;
+            width: 50%;
+            background: #f8f9fa;
+        }
+
+        .kuriniai-item {
+            background: white;
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            cursor: grab;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .kuriniai-item button {
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        /* Remove button style */
+        .selected-kuriniai .kuriniai-item button {
+            color: red;
+        }
+
+        /* Cursor for draggable items */
+        .selected-kuriniai .kuriniai-item {
+            cursor: grab;
+        }
+    </style>
+{% endblock stylesheets %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">Pridėti Programą</h4>
+        </div>
+        <div class="card-body">
+            <form id="programa-form">
+                {% csrf_token %}
+
+                <div class="mb-3">
+                    <label>Pavadinimas</label>
+                    <input type="text" id="pavadinimas" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label>Tipas</label>
+                    <select id="tipas" class="form-control" required>
+                        <option value="Adventui">Adventui</option>
+                        <option value="Rasoms">Rasoms</option>
+                        <option value="Lygiadieniui">Lygiadieniui</option>
+                        <option value="Vakaronei">Vakaronei</option>
+                        <option value="Kaledoms">Kalėdoms</option>
+                        <option value="Velykoms">Velykoms</option>
+                        <option value="Susidainavimams">Susidainavimams</option>
+                    </select>
+                </div>
+
+                <!-- Kūriniai Selection & Sorting -->
+                <div class="kuriniai-container">
+                    <!-- Available Kūriniai -->
+                    <div>
+                        <label>Visi kūriniai</label>
+                        <div class="kuriniai-list" id="all-kuriniai">
+                            {% for kurinys in kuriniai %}
+                                <div class="kuriniai-item" id="kurinys-{{ kurinys.id }}" data-id="{{ kurinys.id }}">
+                                    {{ kurinys.pavadinimas }}
+                                    <button type="button" onclick="moveKurinys({{ kurinys.id }}, '{{ kurinys.pavadinimas }}')">
+                                        ➕
+                                    </button>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Selected Kūriniai (Sortable) -->
+                    <div>
+                        <label>Pasirinkti kūriniai (galite keisti eiliškumą)</label>
+                        <div class="selected-kuriniai" id="selected-kuriniai"></div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary mt-3">Išsaugoti Programą</button>
+            </form>
+        </div>
+    </div>
+</div>
+    <script>
+    let selectedKuriniai = [];
+
+    function moveKurinys(id, name) {
+        let existing = document.getElementById(`selected-${id}`);
+        if (existing) return; // Prevent duplicates
+
+        // Hide from available list
+        document.getElementById(`kurinys-${id}`).style.display = "none";
+
+        // Add to selected list
+        selectedKuriniai.push({ id, name });
+
+        let listItem = document.createElement("div");
+        listItem.className = "kuriniai-item";
+        listItem.id = `selected-${id}`;
+        listItem.setAttribute("data-id", id);
+        listItem.draggable = true;
+        listItem.innerHTML = `
+            ${name}
+            <button type="button" onclick="removeKurinys(${id})">❌</button>
+        `;
+
+        // Add drag events for sorting
+        listItem.addEventListener("dragstart", dragStart);
+        listItem.addEventListener("dragover", dragOver);
+        listItem.addEventListener("drop", dropItem);
+        listItem.addEventListener("dragend", dragEnd);
+
+        document.getElementById("selected-kuriniai").appendChild(listItem);
+    }
+
+    function removeKurinys(id) {
+        selectedKuriniai = selectedKuriniai.filter(k => k.id !== id);
+        document.getElementById(`selected-${id}`).remove();
+        document.getElementById(`kurinys-${id}`).style.display = "flex";
+    }
+
+    function dragStart(event) {
+        event.dataTransfer.setData("text/plain", event.target.getAttribute("data-id"));
+        event.target.classList.add("dragging");
+    }
+
+    function dragOver(event) {
+        event.preventDefault();
+        const draggingItem = document.querySelector(".dragging");
+        if (draggingItem) {
+            const dropTarget = event.target.closest(".kuriniai-item");
+            if (dropTarget && dropTarget !== draggingItem) {
+                let parent = document.getElementById("selected-kuriniai");
+                let children = [...parent.children];
+                let draggingIndex = children.indexOf(draggingItem);
+                let targetIndex = children.indexOf(dropTarget);
+
+                if (draggingIndex < targetIndex) {
+                    parent.insertBefore(draggingItem, dropTarget.nextSibling);
+                } else {
+                    parent.insertBefore(draggingItem, dropTarget);
+                }
+            }
+        }
+    }
+
+    function dropItem(event) {
+        event.preventDefault();
+    }
+
+    function dragEnd(event) {
+        event.target.classList.remove("dragging");
+    }
+
+    document.getElementById("programa-form").addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        let pavadinimas = document.getElementById("pavadinimas").value;
+        let tipas = document.getElementById("tipas").value;
+        let csrfToken = document.querySelector("[name=csrfmiddlewaretoken]").value;
+
+        let sortedKuriniai = [];
+        document.querySelectorAll("#selected-kuriniai .kuriniai-item").forEach((item, index) => {
+            sortedKuriniai.push({ id: item.getAttribute("data-id"), eile: index + 1 });
+        });
+
+        fetch("{% url 'program_create' %}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": csrfToken
+            },
+            body: JSON.stringify({
+                pavadinimas: pavadinimas,
+                tipas: tipas,
+                kuriniai: sortedKuriniai
+            })
+        }).then(response => response.json())
+        .then(data => {
+            if (data.redirect) {
+                window.location.replace(data.redirect);
+            } else {
+                alert("Nepavyko išsaugoti programos.");
+            }
+        }).catch(error => console.error("Klaida:", error));
+    });
+</script>
+{% endblock content %}
+
