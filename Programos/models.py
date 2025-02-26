@@ -11,9 +11,12 @@ class Programa(models.Model):
         ('Susidainavimams', 'Susidainavimams'),
     ]
     pavadinimas = models.CharField(max_length=255)
-    tipas = models.CharField(max_length=50, choices=PROGRAM_TIPAS)
+    tipas = models.CharField(max_length=50, choices=PROGRAM_TIPAS, blank=False, null=False)
     aprasymas = models.TextField(blank=True, null=True)
     sukurtas = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.pavadinimas
 
 class ProgramosKurinys(models.Model):
     programa = models.ForeignKey(Programa, on_delete=models.CASCADE)

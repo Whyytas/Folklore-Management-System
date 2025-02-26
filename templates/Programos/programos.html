@@ -2,59 +2,73 @@
 
 {% block title %} Programų Sąrašas {% endblock %}
 
-{% block stylesheets %}
-    <style>
-        .form-control {
-            margin-bottom: 10px;
-        }
-    </style>
-{% endblock stylesheets %}
-
 {% block content %}
     <div class="container-fluid mt-4">
         <div class="row justify-content-center">
             <div class="col-lg-10">
                 <div class="card shadow">
-                    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                        <h4 class="mb-0">Programų Sąrašas</h4>
-                        <a href="{% url 'program_create' %}"
-                           class="btn btn-light text-primary fw-bold d-flex align-items-center">
-                            <span class="material-symbols-outlined me-1">add</span> Pridėti programą
+                    <!-- ✅ Header with Add Button -->
+                    <div class="card-header d-flex justify-content-between align-items-center py-3 table-header-custom">
+                        <h4>Programų Sąrašas</h4>
+                        <a href="{% url 'program_create' %}" class="btn btn-light d-flex align-items-center action-btn">
+                            <span class="material-symbols-outlined me-2">add</span> Pridėti
                         </a>
                     </div>
+
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table table-hover table-striped align-items-center">
+                            <table class="table table-hover table-striped align-middle">
                                 <thead class="thead-dark">
                                 <tr>
-                                    <th class="text-center">#</th>
-                                    <th>Pavadinimas</th>
-                                    <th>Tipas</th>
+                                    <th class="text-end">#</th>  <!-- Align ID to the right -->
+                                    <th class="text-start">Pavadinimas</th>  <!-- Align Pavadinimas to the left -->
+                                    <th class="text-center">Tipas</th>
+                                    <th class="text-center">Peržiūra</th>
                                     <th class="text-center">Valdyti</th>
                                 </tr>
                                 </thead>
+
                                 <tbody id="table-body">
                                 {% for programa in programos %}
                                     <tr>
-                                        <td class="text-center">{{ forloop.counter }}</td>
-                                        <td>{{ programa.pavadinimas }}</td>
-                                        <td>{{ programa.tipas }}</td>
-                                        <td class="text-center">
-                                            <a href="{% url 'programos_kuriniai' programa.id %}"
-                                               class="btn btn-info btn-sm">
-                                                <span class="material-symbols-outlined">visibility</span>
-                                            </a>
+                                        <td class="align-middle text-end">{{ forloop.counter }}</td>
+                                        <td class="align-middle text-start fw-bold">{{ programa.pavadinimas }}</td>
+                                        <td class="align-middle text-center">{{ programa.tipas }}</td>
 
-                                            <a href="{% url 'program_edit' programa.id %}"
-                                               class="btn btn-success btn-sm">
-                                                <span class="material-symbols-outlined">edit</span>
-                                            </a>
+                                         <td class="align-middle text-center">
+                                                <div class="d-flex justify-content-center">
+                                                    <a href="{% url 'programos_kuriniai' programa.id %}"
+                                                       class="btn btn-primary d-flex align-items-center">
+                                                        <span class="material-symbols-outlined me-2">visibility</span>
+                                                        Peržiūrėti
+                                                    </a>
+                                                </div>
 
-                                            <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal"
-                                                    data-bs-target="#deleteModal"
-                                                    onclick="setDeleteUrl({{ kurinys.id }}, '{{ kurinys.pavadinimas }}')">
-                                                <span class="material-symbols-outlined">delete</span>
-                                            </button>
+                                        </td>
+
+                                        <!-- ✅ Full Bootstrap Edit & Delete Buttons -->
+                                        <td class="align-middle text-center">
+                                            <div class="d-flex justify-content-center gap-2">
+
+
+
+                                                <!-- Edit Button -->
+                                                <a href="{% url 'program_edit' programa.id %}"
+                                                   class="btn btn-success d-flex align-items-center justify-content-center"
+                                                   style="width: 130px; height: 40px;">
+                                                    <span class="material-symbols-outlined me-2">edit</span> Redaguoti
+                                                </a>
+
+
+                                                <!-- Delete Button -->
+                                                <button type="button"
+                                                        class="btn btn-danger d-flex align-items-center justify-content-center"
+                                                        data-bs-toggle="modal" data-bs-target="#deleteModal"
+                                                        onclick="setDeleteUrl({{ programa.id }}, '{{ programa.pavadinimas }}')"
+                                                        style="width: 130px; height: 40px;">
+                                                    <span class="material-symbols-outlined me-2">delete</span> Ištrinti
+                                                </button>
+                                            </div>
                                         </td>
                                     </tr>
                                 {% empty %}
@@ -63,75 +77,89 @@
                                     </tr>
                                 {% endfor %}
                                 </tbody>
-
                             </table>
+                        </div>
+                    </div>
+                </div>
 
-                            <!-- DELETE CONFIRMATION MODAL -->
-                            <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel"
-                                 aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header bg-danger text-white">
-                                            <h5 class="modal-title" id="deleteModalLabel">Patvirtinti ištrynimą</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                    aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <p>Ar tikrai norite ištrinti <strong id="programName"></strong>?</p>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                                                Atšaukti
-                                            </button>
-                                            <form id="deleteForm" method="post" onsubmit="deleteProgram(event)">
-                                                {% csrf_token %}
-                                                <button type="submit" class="btn btn-danger">Ištrinti</button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
+                <!-- ✅ Improved DELETE CONFIRMATION MODAL -->
+                <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered"> <!-- ✅ Center Modal -->
+                        <div class="modal-content shadow-lg border-0 rounded-4"> <!-- ✅ Softened corners -->
+
+                            <!-- 🔴 Modal Header with Warning Icon -->
+                            <div class="modal-header bg-danger text-white">
+                                <h5 class="modal-title d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">warning</span>
+                                    Patvirtinti ištrynimą
+                                </h5>
+                                <button type="button" class="btn-close btn-close-white"
+                                        data-bs-dismiss="modal"></button>
                             </div>
 
+                            <!-- 📝 Modal Body with More Padding -->
+                            <div class="modal-body text-center py-4">
+                                <p class="fs-5">Ar tikrai norite ištrinti <strong id="programName"></strong>?</p>
+                                <p class="text-muted">Šio veiksmo nebegalėsite atšaukti.</p>
+                            </div>
+
+                            <!-- ✅ Modal Footer with Centered Buttons -->
+                            <div class="modal-footer d-flex justify-content-center border-0 pb-4">
+                                <button type="button"
+                                        class="btn btn-light px-4 py-2 d-flex btn-outline-dark align-items-center justify-content-center"
+                                        data-bs-dismiss="modal">
+                                    <span class="material-symbols-outlined me-2">close</span> Atšaukti
+                                </button>
+
+                                <form id="deleteForm" method="post" onsubmit="deleteProgram(event)">
+                                    {% csrf_token %}
+                                    <button type="submit"
+                                            class="btn btn-danger px-4 py-2 d-flex align-items-center justify-content-center">
+                                        <span class="material-symbols-outlined me-2">delete_forever</span> Ištrinti
+                                    </button>
+                                </form>
+                            </div>
 
                         </div>
                     </div>
-                </div> <!-- End card -->
+                </div>
+
             </div> <!-- End col -->
         </div> <!-- End row -->
     </div> <!-- End container -->
+
     <script>
-        let deleteProgramId = null;
-
-        window.setDeleteUrl = function (programId, programName) {
-            deleteProgramId = programId;
+        // ✅ Make these functions global
+        function setDeleteUrl(programId, programName) {
             document.getElementById("programName").innerText = programName;
-        };
+            document.getElementById("deleteForm").setAttribute("action", `/programos/${programId}/delete/`);
+        }
 
-        window.deleteProgram = function (event) {
+        async function deleteProgram(event) {
             event.preventDefault();
+            try {
+                const response = await fetch(document.getElementById("deleteForm").action, {
+                    method: "POST",
+                    headers: {
+                        "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value,
+                    }
+                });
 
-            fetch(`/programos/${deleteProgramId}/delete/`, {
-                method: "POST",
-                headers: {
-                    "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value,
-                    "Content-Type": "application/json"
-                }
-            }).then(response => {
                 if (response.ok) {
-                    let deleteModal = document.getElementById("deleteModal");
-                    let modalInstance = bootstrap.Modal.getInstance(deleteModal);
-                    modalInstance.hide();
-
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 500);
+                    bootstrap.Modal.getInstance(document.getElementById("deleteModal")).hide();
+                    setTimeout(() => window.location.reload(), 500);
                 } else {
                     alert("Klaida: Nepavyko ištrinti programos!");
                 }
-            }).catch(error => {
-                console.error("Error:", error);
-            });
-        };
-    </script>
+            } catch (error) {
+                console.error("Klaida ištrinant programą:", error);
+            }
+        }
 
+        // ✅ Ensure all event listeners run after the DOM is ready
+        document.addEventListener("DOMContentLoaded", function () {
+            console.log("JavaScript loaded successfully!");
+        });
+    </script>
 {% endblock content %}

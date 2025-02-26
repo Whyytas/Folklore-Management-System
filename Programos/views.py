@@ -5,6 +5,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .forms import ProgramaForm
 from Kuriniai.models import Kurinys
 from .models import Programa, ProgramosKurinys
+from django.views.decorators.csrf import csrf_exempt
 
 
 def programos_page(request):
@@ -13,31 +14,45 @@ def programos_page(request):
 
 def program_create(request):
     if request.method == "POST":
-        data = json.loads(request.body)
-        pavadinimas = data.get("pavadinimas")
-        tipas = data.get("tipas")
-        kuriniai_data = data.get("kuriniai", [])
+        try:
+            data = json.loads(request.body)
+            pavadinimas = data.get("pavadinimas")
+            tipas = data.get("tipas")
+            kuriniai_data = data.get("kuriniai", [])
 
-        programa = Programa.objects.create(
-            pavadinimas=pavadinimas,
-            tipas=tipas
-        )
-
-        for item in kuriniai_data:
-            kurinys_id = item["id"]
-            eile = item["eile"]
-            kurinys = Kurinys.objects.get(id=kurinys_id)
-            ProgramosKurinys.objects.create(
-                programa=programa,
-                kurinys=kurinys,
-                eile=eile
+            programa = Programa.objects.create(
+                pavadinimas=pavadinimas,
+                tipas=tipas
             )
 
-        return JsonResponse({"redirect": "/programos"})
+            programos_kuriniai = []
+            kurinys_ids = [item["id"] for item in kuriniai_data]
+            kuriniai = {k.id: k for k in Kurinys.objects.filter(id__in=kurinys_ids)}
+
+            for item in kuriniai_data:
+                kurinys = kuriniai.get(int(item["id"]))
+                if kurinys:
+                    programos_kuriniai.append(
+                        ProgramosKurinys(
+                            programa=programa,
+                            kurinys=kurinys,
+                            eile=item["eile"]
+                        )
+                    )
+
+            ProgramosKurinys.objects.bulk_create(programos_kuriniai)
+
+            return JsonResponse({"redirect": "/programos"}, status=201)
+
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=400)
 
     kuriniai = Kurinys.objects.all()
-    return render(request, "Programos/programaAdd.html", {"kuriniai": kuriniai})
-
+    tipai = Programa.PROGRAM_TIPAS  # ✅ Fetch from model dynamically
+    return render(request, "Programos/programaAdd.html", {
+        "kuriniai": kuriniai,
+        "TIPAS_CHOICES": tipai  # ✅ Ensure choices are passed to template
+    })
 def program_edit(request, pk):
     programa = get_object_or_404(Programa, pk=pk)
 
