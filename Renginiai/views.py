@@ -40,3 +40,6 @@ def events_list(request):
         "selected_ensemble_id": selected_ensemble_id,
     }
     return render(request, "renginiai.html", context)
+
+def publicEvents(request):
+    return render(request, 'renginiaiPublic.html', )

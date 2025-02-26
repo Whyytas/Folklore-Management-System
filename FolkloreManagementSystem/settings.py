@@ -90,6 +90,8 @@ INSTALLED_APPS = [
     'Initial',
     'drf_yasg',
     'Padaliniai',
+    'Programos',
+    'Kuriniai'
 ]
 
 MIDDLEWARE = [

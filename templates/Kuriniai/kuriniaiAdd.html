@@ -1,0 +1,84 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Pridėti Kūrinį {% endblock %}
+
+{% block content %}
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card shadow">
+                    <div class="card-header py-3 text-center bg-primary text-white">
+                        <h4 class="mb-0">Pridėti naują kūrinį</h4>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST">
+                            {% csrf_token %}
+
+                            <!-- ✅ Pavadinimas Input -->
+                            <div class="mb-4">
+                                <label for="pavadinimas" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">music_note</span> Pavadinimas
+                                </label>
+                                <input type="text" class="form-control" id="pavadinimas" name="pavadinimas"
+                                       placeholder="Įveskite pavadinimą"
+                                       required
+                                       autocomplete="off" spellcheck="false">
+                            </div>
+
+                            <!-- ✅ Tipas Dropdown -->
+                            <div class="mb-4">
+                                <label for="tipasDropdown" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">category</span> Tipas
+                                </label>
+                                <div class="dropdown">
+                                    <button class="btn btn-outline-secondary dropdown-toggle w-100" type="button"
+                                            id="tipasDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Pasirinkite tipą
+                                    </button>
+                                    <ul class="dropdown-menu w-100" id="tipasDropdownMenu">
+                                        {% for choice_value, choice_label in form.tipas.field.choices %}
+                                            <li><a class="dropdown-item" href="#"
+                                                   onclick="selectTipas('{{ choice_value }}', '{{ choice_label }}')">
+                                                {{ choice_label }}
+                                            </a></li>
+                                        {% endfor %}
+                                    </ul>
+                                    <input type="hidden" id="tipasInput" name="tipas" value="">
+                                </div>
+                            </div>
+
+                            <!-- ✅ YouTube URL Input (No Suggestions) -->
+                            <div class="mb-4">
+                                <label for="youtube_url" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">link</span> YouTube URL
+                                </label>
+                                <input type="url" class="form-control" id="youtube_url" name="youtube_url"
+                                       placeholder="Nukopijuokite YouTube nuorodą"
+                                       autocomplete="off" spellcheck="false">
+                            </div>
+
+                            <!-- ✅ Form Actions -->
+                            <div class="d-flex justify-content-between mt-4">
+                                <a href="{% url 'kuriniai' %}"
+                                   class="btn btn-outline-secondary d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-1">arrow_back</span> Atšaukti
+                                </a>
+                                <button type="submit" class="btn btn-outline-dark d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-1">save</span> Išsaugoti kūrinį
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ✅ JavaScript for Dropdown -->
+    <script>
+        function selectTipas(value, label) {
+            document.getElementById("tipasDropdown").innerText = label;
+            document.getElementById("tipasInput").value = value;
+        }
+    </script>
+{% endblock content %}

@@ -34,5 +34,6 @@ urlpatterns = [
     path('instrumentai/', include('Instrumentai.urls')),
     path('padaliniai/', include('Padaliniai.urls')),
     path('paskyra/', include('Paskyra.urls')),
+
 ]
 
