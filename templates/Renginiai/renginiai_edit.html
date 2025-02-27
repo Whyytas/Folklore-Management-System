@@ -1,0 +1,113 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Redaguoti Renginį {% endblock %}
+
+{% block content %}
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow">
+                    <div class="card-header d-flex justify-content-between align-items-center py-3 table-header-custom">
+                        <h4 class="mb-0">Redaguoti Renginį</h4>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" id="editRenginysForm">
+                            {% csrf_token %}
+
+                            <!-- ✅ Ansamblis Dropdown -->
+                            <div class="mb-4">
+                                <label for="ansamblisDropdown" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">group</span> Ansamblis
+                                </label>
+                                <div class="dropdown">
+                                    <button class="btn btn-outline-secondary dropdown-toggle w-100" type="button"
+                                            id="ansamblisDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                        {{ renginys.ansamblis.pavadinimas }}
+                                    </button>
+                                    <ul class="dropdown-menu w-100" id="ansamblisDropdownMenu">
+                                        {% for ansamblis in ansambliai %}
+                                            <li><a class="dropdown-item" href="#"
+                                                   onclick="selectAnsamblis('{{ ansamblis.id }}', '{{ ansamblis.pavadinimas }}')">
+                                                {{ ansamblis.pavadinimas }}
+                                            </a></li>
+                                        {% endfor %}
+                                    </ul>
+                                    <input type="hidden" id="ansamblisInput" name="ansamblis" value="{{ renginys.ansamblis.id }}">
+                                </div>
+                            </div>
+
+                            <!-- ✅ Pavadinimas -->
+                            <div class="mb-4">
+                                <label for="pavadinimas" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">event</span> Pavadinimas
+                                </label>
+                                <input type="text" name="pavadinimas" id="pavadinimas" class="form-control"
+                                       value="{{ renginys.pavadinimas }}" required>
+                            </div>
+
+                            <!-- ✅ Adresas -->
+                            <div class="mb-4">
+                                <label for="adresas" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">location_on</span> Adresas
+                                </label>
+                                <input type="text" name="adresas" id="adresas" class="form-control"
+                                       value="{{ renginys.adresas }}" required>
+                            </div>
+
+                            <!-- ✅ Data ir Laikas -->
+                            <div class="mb-4">
+                                <label for="data_laikas" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">schedule</span> Data ir laikas
+                                </label>
+                                <input type="datetime-local" name="data_laikas" id="data_laikas" class="form-control"
+                                       value="{{ renginys.data_laikas|date:'Y-m-d\TH:i' }}" required>
+                            </div>
+
+                            <!-- ✅ Buttons -->
+                            <div class="d-flex justify-content-between mt-4">
+                                <a href="{% url 'renginiai' %}" class="btn btn-outline-secondary d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-1">arrow_back</span> Atšaukti
+                                </a>
+                                <button type="submit" class="btn btn-outline-dark d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-1">save</span> Išsaugoti renginį
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ✅ JavaScript for Dropdown Selection & Submitting Form -->
+    <script>
+        function selectAnsamblis(value, label) {
+            document.getElementById("ansamblisDropdown").innerText = label;
+            document.getElementById("ansamblisInput").value = value;
+        }
+
+        document.getElementById("editRenginysForm").addEventListener("submit", async function(event) {
+            event.preventDefault();
+
+            const form = event.target;
+            const formData = new FormData(form);
+            const renginysId = "{{ renginys.id }}";
+
+            const response = await fetch(`/renginiai/${renginysId}/edit/`, {
+                method: "POST",
+                body: formData,
+                headers: {
+                    "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value
+                }
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                alert("Renginys sėkmingai atnaujintas!");
+                window.location.href = "/renginiai/";
+            } else {
+                alert("Klaida atnaujinant renginį!");
+            }
+        });
+    </script>
+{% endblock content %}

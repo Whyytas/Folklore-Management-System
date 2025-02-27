@@ -1,45 +1,46 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
+from django.http import JsonResponse
+from .models import Renginys
+from .forms import RenginysForm
 
-# Hardcoded ensembles and Renginiai
-ENSEMBLES = [
-    {"id": 1, "name": "Folk Ensemble A"},
-    {"id": 2, "name": "Folk Ensemble B"},
-    {"id": 3, "name": "Folk Ensemble C"},
-]
+def renginiai_list(request):
+    """ Retrieve and display all Renginiai """
+    renginiai = Renginys.objects.all()
+    return render(request, 'Renginiai/renginiai.html', {'renginiai': renginiai})
 
-EVENTS = [
-    {"id": 1, "name": "Event 1A", "address": "Address 1A", "date": "2024-01-10", "ensemble_id": 1},
-    {"id": 2, "name": "Event 2A", "address": "Address 2A", "date": "2024-02-15", "ensemble_id": 1},
-    {"id": 3, "name": "Event 3A", "address": "Address 3A", "date": "2024-03-20", "ensemble_id": 1},
-    {"id": 4, "name": "Event 1B", "address": "Address 1B", "date": "2024-01-25", "ensemble_id": 2},
-    {"id": 5, "name": "Event 2B", "address": "Address 2B", "date": "2024-02-28", "ensemble_id": 2},
-    {"id": 6, "name": "Event 1C", "address": "Address 1C", "date": "2024-03-15", "ensemble_id": 3},
-    {"id": 7, "name": "Event 2C", "address": "Address 2C", "date": "2024-04-01", "ensemble_id": 3},
-]
+def renginiai_add(request):
+    if request.method == "POST":
+        form = RenginysForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('renginiai')
+    else:
+        form = RenginysForm()
 
-def events_list(request):
-    """
-    Render the Renginiai list with ensemble selection.
-    """
-    selected_ensemble_id = request.GET.get('ensemble_id')
-    filtered_events = EVENTS
+    return render(request, 'Renginiai/renginiai_add.html', {'form': form})
 
-    if selected_ensemble_id:
-        # Filter Renginiai by ensemble
-        filtered_events = [event for event in EVENTS if event["ensemble_id"] == int(selected_ensemble_id)]
 
-    # Add ensemble name to each event
-    for event in filtered_events:
-        ensemble = next((e for e in ENSEMBLES if e["id"] == event["ensemble_id"]), None)
-        if ensemble:
-            event["ensemble_name"] = ensemble["name"]
+def renginiai_edit(request, renginys_id):
+    """ Handles editing an existing Renginys """
+    renginys = get_object_or_404(Renginys, id=renginys_id)
 
-    context = {
-        "ensembles": ENSEMBLES,
-        "events": filtered_events,  # Update key to match template variable
-        "selected_ensemble_id": selected_ensemble_id,
-    }
-    return render(request, "renginiai.html", context)
+    if request.method == "POST":
+        form = RenginysForm(request.POST, instance=renginys)
+        if form.is_valid():
+            form.save()
+            return JsonResponse({"success": True})
+
+    return render(request, "Renginiai/renginiai_edit.html", {"renginys": renginys})
+
+def delete_renginys(request, renginys_id):
+    """ Deletes the selected Renginys """
+    if request.method == "POST":
+        renginys = get_object_or_404(Renginys, id=renginys_id)
+        renginys.delete()
+        return JsonResponse({"success": True})
+
+    return JsonResponse({"error": "Invalid request method"}, status=400)
+
 
 def publicEvents(request):
-    return render(request, 'renginiaiPublic.html', )
+    return render(request, 'Renginiai/renginiaiPublic.html', )
