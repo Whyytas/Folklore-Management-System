@@ -21,11 +21,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 import os
 
+# ✅ Define the static URL
 STATIC_URL = '/static/'
-# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
+# ✅ Define where static files are collected
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# ✅ Define where Django looks for static files inside the project
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),  # Your regular static folder
+    os.path.join(BASE_DIR, 'static'),  # Ensure this directory exists
 ]
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # SECURITY WARNING: keep the secret key used in production secret!
