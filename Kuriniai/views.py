@@ -1,14 +1,13 @@
 import requests
 import logging
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import JsonResponse
-from .models import Kurinys
 from .forms import KurinysForm
+from django.conf import settings
 
 # Set up logging
 logger = logging.getLogger(__name__)
 
-YOUTUBE_API_KEY = "AIzaSyAX8QZHAYYSdEozYqHwH2XytcmrOG055Bo"  # ⚠️ Replace with your actual API key
+YOUTUBE_API_KEY = settings.YOUTUBE_API_KEY  # ⚠️ Replace with your actual API key
 
 def kuriniai_list(request):
     """ Retrieve and display all Kūriniai """

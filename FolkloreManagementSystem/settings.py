@@ -34,6 +34,8 @@ STATICFILES_DIRS = [
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-+_n6j3p7xr&pcxd1ujofrbs!k6hm^=ijg*6t#qgd5dm$_9*j50'
+YOUTUBE_API_KEY = "AIzaSyAX8QZHAYYSdEozYqHwH2XytcmrOG055Bo"
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
