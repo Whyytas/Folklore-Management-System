@@ -10,7 +10,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 def programos_page(request):
     programos = Programa.objects.all()  # ✅ Fetch programs from the database
-    return render(request, 'Programos/programos.html', {'programos': programos})
+    return render(request, 'programos.html', {'programos': programos})
 
 def program_create(request):
     if request.method == "POST":
@@ -49,7 +49,7 @@ def program_create(request):
 
     kuriniai = Kurinys.objects.all()
     tipai = Programa.PROGRAM_TIPAS  # ✅ Fetch from model dynamically
-    return render(request, "Programos/programaAdd.html", {
+    return render(request, "programaAdd.html", {
         "kuriniai": kuriniai,
         "TIPAS_CHOICES": tipai  # ✅ Ensure choices are passed to template
     })
@@ -72,7 +72,7 @@ def program_edit(request, pk):
     else:
         form = ProgramaForm(instance=programa)
 
-    return render(request, 'Programos/programEdit.html', {'form': form, 'programa': programa})
+    return render(request, 'programEdit.html', {'form': form, 'programa': programa})
 
 
 
@@ -92,7 +92,7 @@ def programos_kuriniai_view(request, pk):
     # Retrieve all Kūriniai in the correct order (`eile`)
     programos_kuriniai = ProgramosKurinys.objects.filter(programa=programa).order_by("eile")
 
-    return render(request, 'Programos/programosKuriniai.html', {
+    return render(request, 'programosKuriniai.html', {
         "programa": programa,
         "programos_kuriniai": programos_kuriniai
     })

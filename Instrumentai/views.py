@@ -7,7 +7,7 @@ from .forms import InstrumentasForm
 
 def instrumentai_list(request):
     instrumentai = Instrumentas.objects.all()
-    return render(request, "Instrumentai/instrumentai.html", {"instrumentai": instrumentai})
+    return render(request, "instrumentai.html", {"instrumentai": instrumentai})
 
 def instrumentai_add(request):
     ansambliai = Ansamblis.objects.all()  # ✅ Fetch all ansambliai
@@ -20,7 +20,7 @@ def instrumentai_add(request):
     else:
         form = InstrumentasForm()
 
-    return render(request, "Instrumentai/instrumentai_add.html", {"form": form, "ansambliai": ansambliai})  # ✅ Pass ansambliai
+    return render(request, "instrumentai_add.html", {"form": form, "ansambliai": ansambliai})  # ✅ Pass ansambliai
 def instrumentai_edit(request, pk):
     instrumentas = get_object_or_404(Instrumentas, pk=pk)
     if request.method == "POST":
@@ -31,7 +31,7 @@ def instrumentai_edit(request, pk):
             return redirect("instrumentai_list")
     else:
         form = InstrumentasForm(instance=instrumentas)
-    return render(request, "Instrumentai/instrumentai_edit.html", {"form": form})
+    return render(request, "instrumentai_edit.html", {"form": form})
 
 def instrumentai_delete(request, pk):
     instrumentas = get_object_or_404(Instrumentas, pk=pk)

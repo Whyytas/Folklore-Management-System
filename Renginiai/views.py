@@ -6,7 +6,7 @@ from .forms import RenginysForm
 def renginiai_list(request):
     """ Retrieve and display all Renginiai """
     renginiai = Renginys.objects.all()
-    return render(request, 'Renginiai/renginiai.html', {'renginiai': renginiai})
+    return render(request, 'renginiai.html', {'renginiai': renginiai})
 
 def renginiai_add(request):
     if request.method == "POST":
@@ -17,7 +17,7 @@ def renginiai_add(request):
     else:
         form = RenginysForm()
 
-    return render(request, 'Renginiai/renginiai_add.html', {'form': form})
+    return render(request, 'renginiai_add.html', {'form': form})
 
 
 def renginiai_edit(request, renginys_id):
@@ -30,7 +30,7 @@ def renginiai_edit(request, renginys_id):
             form.save()
             return JsonResponse({"success": True})
 
-    return render(request, "Renginiai/renginiai_edit.html", {"renginys": renginys})
+    return render(request, "renginiai_edit.html", {"renginys": renginys})
 
 def delete_renginys(request, renginys_id):
     """ Deletes the selected Renginys """
@@ -43,4 +43,4 @@ def delete_renginys(request, renginys_id):
 
 
 def publicEvents(request):
-    return render(request, 'Renginiai/renginiaiPublic.html', )
+    return render(request, 'renginiaiPublic.html', )

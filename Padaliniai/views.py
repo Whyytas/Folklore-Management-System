@@ -7,13 +7,13 @@ from .forms import PadalinysForm
 
 class PadaliniaiListView(ListView):
     model = Padalinys
-    template_name = "Padaliniai/padaliniai.html"
+    template_name = "padaliniai.html"
     context_object_name = "padaliniai"
 
 class PadalinysCreateView(CreateView):
     model = Padalinys
     form_class = PadalinysForm
-    template_name = "Padaliniai/padaliniai_add.html"
+    template_name = "padaliniai_add.html"
 
     def form_valid(self, form):
         messages.success(self.request, "Padalinys sėkmingai pridėtas!")
@@ -25,7 +25,7 @@ class PadalinysCreateView(CreateView):
 class PadalinysUpdateView(UpdateView):
     model = Padalinys
     form_class = PadalinysForm
-    template_name = "Padaliniai/padaliniai_edit.html"
+    template_name = "padaliniai_edit.html"
 
     def form_valid(self, form):
         messages.success(self.request, "Padalinys atnaujintas!")

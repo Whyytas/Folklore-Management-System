@@ -4,7 +4,7 @@ from .forms import AnsamblisForm
 
 def ansambliai_list(request):
     ansambliai = Ansamblis.objects.all()
-    return render(request, 'Ansambliai/ansambliai.html', {'ansambliai': ansambliai})
+    return render(request, 'ansambliai.html', {'ansambliai': ansambliai})
 
 def ansamblis_add(request):
     if request.method == "POST":
@@ -14,7 +14,7 @@ def ansamblis_add(request):
             return redirect('ansambliai_list')
     else:
         form = AnsamblisForm()
-    return render(request, 'Ansambliai/ansamblis_add.html', {'form': form})
+    return render(request, 'ansamblis_add.html', {'form': form})
 
 def ansamblis_edit(request, pk):
     ansamblis = get_object_or_404(Ansamblis, pk=pk)
@@ -25,7 +25,7 @@ def ansamblis_edit(request, pk):
             return redirect('ansambliai_list')
     else:
         form = AnsamblisForm(instance=ansamblis)
-    return render(request, 'Ansambliai/ansamblis_edit.html', {'form': form})
+    return render(request, 'ansamblis_edit.html', {'form': form})
 
 def ansamblis_delete(request, pk):
     ansamblis = get_object_or_404(Ansamblis, pk=pk)
