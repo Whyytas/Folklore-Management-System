@@ -1,0 +1,64 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Pridėti Padalinį {% endblock %}
+
+{% block content %}
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card shadow">
+                    <div class="card-header py-3 text-center bg-primary text-white">
+                        <h4 class="mb-0">Pridėti naują padalinį</h4>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST">
+                            {% csrf_token %}
+
+                            <!-- ✅ Pavadinimas Input -->
+                            <div class="mb-4">
+                                <label for="pavadinimas" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">business</span> Pavadinimas
+                                </label>
+                                <input type="text" class="form-control" id="pavadinimas" name="pavadinimas"
+                                       placeholder="Įveskite pavadinimą"
+                                       required
+                                       autocomplete="off" spellcheck="false">
+                            </div>
+
+                            <!-- ✅ Adresas Textarea -->
+                            <div class="mb-4">
+                                <label for="adresas" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">location_on</span> Adresas
+                                </label>
+                                <textarea class="form-control" id="adresas" name="adresas"
+                                          placeholder="Įveskite adresą"
+                                          rows="3" required></textarea>
+                            </div>
+
+                            <!-- ✅ Telefono Numeris Input -->
+                            <div class="mb-4">
+                                <label for="tel_nr" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">call</span> Telefono numeris
+                                </label>
+                                <input type="text" class="form-control" id="tel_nr" name="tel_nr"
+                                       placeholder="Įveskite telefono numerį"
+                                       required>
+                            </div>
+
+                            <!-- ✅ Form Actions -->
+                            <div class="d-flex justify-content-between mt-4">
+                                <a href="{% url 'padaliniai_list' %}"
+                                   class="btn btn-outline-secondary d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-1">arrow_back</span> Atšaukti
+                                </a>
+                                <button type="submit" class="btn btn-outline-dark d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-1">save</span> Išsaugoti padalinį
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

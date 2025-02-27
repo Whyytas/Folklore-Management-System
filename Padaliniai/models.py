@@ -1,10 +1,10 @@
 from django.db import models
-from django_filters.rest_framework import DjangoFilterBackend
 
 class Padalinys(models.Model):
-    pavadinimas = models.TextField()
+    pavadinimas = models.CharField(max_length=255)
     adresas = models.TextField()
-    telNr = models.BigIntegerField()
+    tel_nr = models.CharField(max_length=20, default="N/A")  # Set a default value
+ # Ensure this field is present
 
     def __str__(self):
         return self.pavadinimas

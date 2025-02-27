@@ -1,6 +1,14 @@
 from django.urls import path
-from . import views
+from .views import (
+    PadaliniaiListView,
+    PadalinysCreateView,
+    PadalinysUpdateView,
+    PadalinysDeleteView,
+)
 
 urlpatterns = [
-    path('', views.manage_padaliniai, name='padaliniai'),
+    path("", PadaliniaiListView.as_view(), name="padaliniai_list"),
+    path("add/", PadalinysCreateView.as_view(), name="padaliniai_add"),
+    path("<int:pk>/edit/", PadalinysUpdateView.as_view(), name="padaliniai_edit"),
+    path("<int:pk>/delete/", PadalinysDeleteView.as_view(), name="padaliniai_delete"),
 ]

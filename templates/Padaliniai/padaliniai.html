@@ -1,0 +1,103 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Padaliniai {% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card shadow">
+                <div class="card-header d-flex justify-content-between align-items-center py-3 table-header-custom">
+                    <h4>Padaliniai</h4>
+                    <a href="{% url 'padaliniai_add' %}" class="btn btn-light d-flex align-items-center action-btn">
+                        <span class="material-symbols-outlined me-2">add</span> Pridėti
+                    </a>
+                </div>
+
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-striped align-middle">
+                            <thead class="thead-dark">
+                            <tr>
+                                <th class="text-end">#</th>
+                                <th class="text-start">Pavadinimas</th>
+                                <th class="text-start">Adresas</th>
+                                <th class="text-center">Tel. nr.</th>
+                                <th class="text-center">Valdyti</th>
+                            </tr>
+                            </thead>
+
+                            <tbody>
+                            {% for padalinys in padaliniai %}
+                                <tr>
+                                    <td class="align-middle text-end">{{ forloop.counter }}</td>
+                                    <td class="align-middle text-start fw-bold">{{ padalinys.pavadinimas }}</td>
+                                    <td class="align-middle text-start">{{ padalinys.adresas }}</td>
+                                    <td class="align-middle text-center">{{ padalinys.tel_nr }}</td>
+
+                                    <td class="align-middle text-center">
+                                        <div class="d-flex justify-content-center gap-2">
+                                            <a href="{% url 'padaliniai_edit' padalinys.id %}"
+                                               class="btn btn-success d-flex align-items-center justify-content-center">
+                                                <span class="material-symbols-outlined me-2">edit</span> Redaguoti
+                                            </a>
+
+                                            <button type="button"
+                                                    class="btn btn-danger d-flex align-items-center justify-content-center"
+                                                    data-bs-toggle="modal" data-bs-target="#deleteModal"
+                                                    onclick="setDeleteUrl({{ padalinys.id }}, '{{ padalinys.pavadinimas }}')">
+                                                <span class="material-symbols-outlined me-2">delete</span> Ištrinti
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted">Nėra sukurtų padalinių.</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content shadow-lg border-0 rounded-4">
+                        <div class="modal-header bg-danger text-white">
+                            <h5 class="modal-title d-flex align-items-center">
+                                <span class="material-symbols-outlined me-2">warning</span>
+                                Patvirtinti ištrynimą
+                            </h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                        </div>
+
+                        <div class="modal-body text-center py-4">
+                            <p class="fs-5">Ar tikrai norite ištrinti <strong id="padalinysName"></strong>?</p>
+                            <p class="text-muted">Šio veiksmo nebegalėsite atšaukti.</p>
+                        </div>
+
+                        <div class="modal-footer d-flex justify-content-center border-0 pb-4">
+                            <button type="button" class="btn btn-light px-4 py-2 btn-outline-dark"
+                                    data-bs-dismiss="modal">Atšaukti</button>
+                            <form id="deleteForm" method="post">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger px-4 py-2">Ištrinti</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                function setDeleteUrl(padalinysId, padalinysName) {
+                    document.getElementById("padalinysName").innerText = padalinysName;
+                    document.getElementById("deleteForm").setAttribute("action", `/padaliniai/${padalinysId}/delete/`);
+                }
+            </script>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

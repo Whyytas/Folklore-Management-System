@@ -1,69 +1,43 @@
-from rest_framework import viewsets
-from rest_framework.permissions import IsAuthenticated
-from .serializers import PadalinysSerializer
+from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.contrib import messages
 from .models import Padalinys
-from rest_framework import viewsets
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from oauth2_provider.models import AccessToken
-from rest_framework import status
-from .permissions import IsAdminOrModeratorOrReadOnly
-from django.shortcuts import render, get_object_or_404
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-import json
+from .forms import PadalinysForm
 
-from django.shortcuts import render
+class PadaliniaiListView(ListView):
+    model = Padalinys
+    template_name = "Padaliniai/padaliniai.html"
+    context_object_name = "padaliniai"
 
-# Create your views here.
-class PadalinysViewSet(viewsets.ModelViewSet):
-    queryset = Padalinys.objects.all()
-    serializer_class = PadalinysSerializer
-    permission_classes = [IsAuthenticated, IsAdminOrModeratorOrReadOnly]
+class PadalinysCreateView(CreateView):
+    model = Padalinys
+    form_class = PadalinysForm
+    template_name = "Padaliniai/padaliniai_add.html"
 
-def manage_padaliniai(request, id=None):
-    """
-    Handle all CRUD operations for Padaliniai.
-    """
-    if request.method == "GET":
-        # Fetch and render all Padaliniai
-        padaliniai = Padalinys.objects.all()
-        return render(request, 'padaliniai.html', {'padaliniai': padaliniai})
+    def form_valid(self, form):
+        messages.success(self.request, "Padalinys sėkmingai pridėtas!")
+        return super().form_valid(form)
 
-    elif request.method == "POST" and id is None:
-        # Create new Padalinys
-        try:
-            data = json.loads(request.body)
-            Padalinys.objects.create(
-                pavadinimas=data["pavadinimas"],
-                adresas=data["adresas"],
-                telNr=data["telNr"],
-            )
-            return JsonResponse({"success": True, "message": "Padalinys created successfully."})
-        except Exception as e:
-            return JsonResponse({"success": False, "error": str(e)})
+    def get_success_url(self):
+        return reverse("padaliniai_list")
 
-    elif request.method == "PUT" and id:
-        # Update existing Padalinys
-        try:
-            padalinys = get_object_or_404(Padalinys, id=id)
-            data = json.loads(request.body)
-            padalinys.pavadinimas = data.get("pavadinimas", padalinys.pavadinimas)
-            padalinys.adresas = data.get("adresas", padalinys.adresas)
-            padalinys.telNr = data.get("telNr", padalinys.telNr)
-            padalinys.save()
-            return JsonResponse({"success": True, "message": "Padalinys updated successfully."})
-        except Exception as e:
-            return JsonResponse({"success": False, "error": str(e)})
+class PadalinysUpdateView(UpdateView):
+    model = Padalinys
+    form_class = PadalinysForm
+    template_name = "Padaliniai/padaliniai_edit.html"
 
-    elif request.method == "DELETE" and id:
-        # Delete an existing Padalinys
-        try:
-            padalinys = get_object_or_404(Padalinys, id=id)
-            padalinys.delete()
-            return JsonResponse({"success": True, "message": "Padalinys deleted successfully."})
-        except Exception as e:
-            return JsonResponse({"success": False, "error": str(e)})
+    def form_valid(self, form):
+        messages.success(self.request, "Padalinys atnaujintas!")
+        return super().form_valid(form)
 
-    return JsonResponse({"success": False, "error": "Invalid HTTP method or missing ID."})
+    def get_success_url(self):
+        return reverse("padaliniai_list")
 
+class PadalinysDeleteView(DeleteView):
+    model = Padalinys
+    template_name = "padalinys_confirm_delete.html"
+
+    def get_success_url(self):
+        messages.success(self.request, "Padalinys ištrintas!")
+        return reverse("padaliniai_list")
