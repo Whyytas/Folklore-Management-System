@@ -97,7 +97,8 @@ INSTALLED_APPS = [
     'Programos',
     'Kuriniai',
     'Renginiai',
-    'Ansambliai'
+    'Ansambliai',
+    'Instrumentai'
 ]
 
 MIDDLEWARE = [

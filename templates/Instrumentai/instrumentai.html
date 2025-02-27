@@ -1,0 +1,178 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Instrumentų Sąrašas {% endblock %}
+
+{% block content %}
+    <div class="container-fluid mt-4">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="card shadow">
+                    <!-- ✅ Green Header with Add Button -->
+                    <div class="card-header d-flex justify-content-between align-items-center py-3 table-header-custom">
+                        <h4>Instrumentų Sąrašas</h4>
+                        <a href="{% url 'instrumentai_add' %}" class="btn btn-light d-flex align-items-center action-btn">
+                            <span class="material-symbols-outlined me-2">add</span> Pridėti
+                        </a>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-striped align-middle">
+                                <thead class="thead-dark">
+                                <tr>
+                                    <th class="text-end">#</th>
+                                    <th class="text-start">Pavadinimas</th>
+                                    <th class="text-center">Nuotrauka</th>
+                                    <th class="text-center">Ansamblis</th>
+                                    <th class="text-center">Valdyti</th>
+                                </tr>
+                                </thead>
+
+                                <tbody id="table-body">
+                                {% for instrumentas in instrumentai %}
+                                    <tr>
+                                        <td class="align-middle text-end">{{ forloop.counter }}</td>
+                                        <td class="align-middle text-start fw-bold">{{ instrumentas.pavadinimas }}</td>
+
+                                        <!-- ✅ Clickable Image to Open in Modal -->
+                                        <td class="align-middle text-center">
+                                            {% if instrumentas.nuotrauka %}
+                                                <a href="#" data-bs-toggle="modal" data-bs-target="#imageModal"
+                                                   onclick="showImage('{{ instrumentas.nuotrauka }}', '{{ instrumentas.pavadinimas }}')">
+                                                    <img src="{{ instrumentas.nuotrauka }}" alt="{{ instrumentas.pavadinimas }}"
+                                                         class="img-thumbnail rounded" style="width: 80px; height: 80px;">
+                                                </a>
+                                            {% else %}
+                                                <span class="text-muted">Nėra nuotraukos</span>
+                                            {% endif %}
+                                        </td>
+
+                                        <!-- ✅ Display Ansamblis Name -->
+                                        <td class="align-middle text-center">
+                                            {{ instrumentas.ansamblis.pavadinimas }}
+                                        </td>
+
+                                        <td class="align-middle text-center">
+                                            <div class="d-flex justify-content-center gap-2">
+                                                <!-- Edit Button -->
+                                                <a href="{% url 'instrumentai_edit' instrumentas.id %}"
+                                                   class="btn btn-success d-flex align-items-center justify-content-center"
+                                                   style="width: 130px; height: 40px;">
+                                                    <span class="material-symbols-outlined me-2">edit</span> Redaguoti
+                                                </a>
+
+                                                <!-- Delete Button -->
+                                                <button type="button"
+                                                        class="btn btn-danger d-flex align-items-center justify-content-center"
+                                                        data-bs-toggle="modal" data-bs-target="#deleteModal"
+                                                        onclick="setDeleteUrl({{ instrumentas.id }}, '{{ instrumentas.pavadinimas }}')"
+                                                        style="width: 130px; height: 40px;">
+                                                    <span class="material-symbols-outlined me-2">delete</span> Ištrinti
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="5" class="text-center text-muted">Nėra sukurtų instrumentų.</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ✅ Large Image Preview Modal -->
+                <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="imageModalTitle"></h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body text-center">
+                                <img id="modalImage" src="" class="img-fluid rounded shadow">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ✅ Delete Confirmation Modal -->
+                <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content shadow-lg border-0 rounded-4">
+                            <div class="modal-header bg-danger text-white">
+                                <h5 class="modal-title d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">warning</span>
+                                    Patvirtinti ištrynimą
+                                </h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                            </div>
+
+                            <div class="modal-body text-center py-4">
+                                <p class="fs-5">Ar tikrai norite ištrinti <strong id="instrumentasName"></strong>?</p>
+                                <p class="text-muted">Šio veiksmo nebegalėsite atšaukti.</p>
+                            </div>
+
+                            <div class="modal-footer d-flex justify-content-center border-0 pb-4">
+                                <button type="button"
+                                        class="btn btn-light px-4 py-2 d-flex btn-outline-dark align-items-center justify-content-center"
+                                        data-bs-dismiss="modal">
+                                    <span class="material-symbols-outlined me-2">close</span> Atšaukti
+                                </button>
+
+                                <form id="deleteForm" method="post" onsubmit="delete_instrumentas(event)">
+                                    {% csrf_token %}
+                                    <button type="submit"
+                                            class="btn btn-danger px-4 py-2 d-flex align-items-center justify-content-center">
+                                        <span class="material-symbols-outlined me-2">delete_forever</span> Ištrinti
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ✅ JavaScript for Delete & Image Modal -->
+    <script>
+        function setDeleteUrl(instrumentasId, instrumentasName) {
+            document.getElementById("instrumentasName").innerText = instrumentasName;
+            document.getElementById("deleteForm").setAttribute("action", `/instrumentai/${instrumentasId}/delete/`);
+        }
+
+        async function delete_instrumentas(event) {
+            event.preventDefault();
+            try {
+                const response = await fetch(document.getElementById("deleteForm").action, {
+                    method: "POST",
+                    headers: {
+                        "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value,
+                    }
+                });
+
+                if (response.ok) {
+                    bootstrap.Modal.getInstance(document.getElementById("deleteModal")).hide();
+                    setTimeout(() => window.location.reload(), 500);
+                } else {
+                    alert("Klaida: Nepavyko ištrinti instrumento!");
+                }
+            } catch (error) {
+                console.error("Klaida ištrinant instrumentą:", error);
+            }
+        }
+
+        function showImage(imageUrl, title) {
+            document.getElementById("modalImage").src = imageUrl;
+            document.getElementById("imageModalTitle").innerText = title;
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            console.log("Instrumentų sąrašas įkeltas!");
+        });
+    </script>
+
+{% endblock content %}

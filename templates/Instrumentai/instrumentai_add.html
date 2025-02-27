@@ -1,0 +1,84 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Pridėti Instrumentą {% endblock %}
+
+{% block content %}
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card shadow">
+                    <div class="card-header py-3 text-center bg-primary text-white">
+                        <h4 class="mb-0">Pridėti naują instrumentą</h4>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST">
+                            {% csrf_token %}
+
+                            <!-- ✅ Pavadinimas Input -->
+                            <div class="mb-4">
+                                <label for="pavadinimas" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">music_note</span> Pavadinimas
+                                </label>
+                                <input type="text" class="form-control" id="pavadinimas" name="pavadinimas"
+                                       placeholder="Įveskite pavadinimą"
+                                       required
+                                       autocomplete="off" spellcheck="false">
+                            </div>
+
+                            <!-- ✅ Nuotrauka (URL) Input -->
+                            <div class="mb-4">
+                                <label for="nuotrauka" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">image</span> Nuotrauka (URL)
+                                </label>
+                                <input type="url" class="form-control" id="nuotrauka" name="nuotrauka"
+                                       placeholder="Įveskite nuotraukos URL"
+                                       autocomplete="off" spellcheck="false">
+                            </div>
+
+                            <!-- ✅ Ansamblis Dropdown -->
+                            <div class="mb-4">
+                                <label for="ansamblisDropdown" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">group</span> Ansamblis
+                                </label>
+                                <div class="dropdown">
+                                    <button class="btn btn-outline-secondary dropdown-toggle w-100" type="button"
+                                            id="ansamblisDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Pasirinkite ansamblį
+                                    </button>
+                                    <ul class="dropdown-menu w-100" id="ansamblisDropdownMenu">
+                                        {% for ansamblis in ansambliai %}
+                                            <li><a class="dropdown-item" href="#"
+                                                   onclick="selectAnsamblis('{{ ansamblis.id }}', '{{ ansamblis.pavadinimas }}')">
+                                                {{ ansamblis.pavadinimas }}
+                                            </a></li>
+                                        {% endfor %}
+                                    </ul>
+                                    <input type="hidden" id="ansamblisInput" name="ansamblis" value="">
+                                </div>
+                            </div>
+
+                            <!-- ✅ Form Actions -->
+                            <div class="d-flex justify-content-between mt-4">
+                                <a href="{% url 'instrumentai_list' %}"
+                                   class="btn btn-outline-secondary d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-1">arrow_back</span> Atšaukti
+                                </a>
+                                <button type="submit" class="btn btn-outline-dark d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-1">save</span> Išsaugoti instrumentą
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ✅ JavaScript for Dropdown Selection -->
+    <script>
+        function selectAnsamblis(value, label) {
+            document.getElementById("ansamblisDropdown").innerText = label;
+            document.getElementById("ansamblisInput").value = value;
+        }
+    </script>
+{% endblock content %}
