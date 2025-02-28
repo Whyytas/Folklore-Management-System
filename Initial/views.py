@@ -1,18 +1,8 @@
 from django.shortcuts import render
 from django.contrib.auth import logout
 from django.shortcuts import redirect
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.views import LoginView
 from django.urls import reverse_lazy
-
-class ProtectedResourceView(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request):
-        return Response({"message": "This is a protected resource!"})
-
 def custom_logout(request):
     """
     Custom logout view that supports both GET and POST requests.
