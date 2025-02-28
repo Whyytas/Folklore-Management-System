@@ -12,7 +12,7 @@ YOUTUBE_API_KEY = settings.YOUTUBE_API_KEY  # ⚠️ Replace with your actual AP
 def kuriniai_list(request):
     """ Retrieve and display all Kūriniai """
     kuriniai = Kurinys.objects.all()
-    return render(request, './kuriniai.html', {'kuriniai': kuriniai})
+    return render(request, 'kuriniai.html', {'kuriniai': kuriniai})
 
 def kuriniai_add(request):
     """ Handles the creation of a new Kūrinys """
@@ -33,7 +33,7 @@ def kuriniai_add(request):
     else:
         form = KurinysForm()
 
-    return render(request, './kuriniaiAdd.html', {'form': form})
+    return render(request, 'kuriniaiAdd.html', {'form': form})
 
 def kuriniai_edit(request, kurinys_id):
     kurinys = get_object_or_404(Kurinys, id=kurinys_id)
@@ -47,7 +47,7 @@ def kuriniai_edit(request, kurinys_id):
         kurinys.save()
         return JsonResponse({"success": True})
 
-    return render(request, "./kuriniaiEdit.html", {
+    return render(request, "kuriniaiEdit.html", {
         "kurinys": kurinys,
         "TIPAS_CHOICES": Kurinys.TIPAS_CHOICES  # Pass choices dynamically
     })
