@@ -117,7 +117,7 @@ ROOT_URLCONF = 'FolkloreManagementSystem.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['Templates']
+        'DIRS': [BASE_DIR / "Templates"]
         ,
         'APP_DIRS': True,
         'OPTIONS': {
