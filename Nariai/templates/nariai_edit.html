@@ -1,0 +1,64 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Redaguoti Vartotoją {% endblock %}
+
+{% block content %}
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card shadow">
+                    <div class="card-header py-3 text-center bg-warning text-dark">
+                        <h4 class="mb-0">Redaguoti vartotoją: {{ user.username }}</h4>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST">
+                            {% csrf_token %}
+
+                            <!-- Username Field -->
+                            <div class="mb-4">
+                                <label for="id_username" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">person</span> Vartotojo vardas
+                                </label>
+                                {{ form.username }}
+                            </div>
+
+                            <!-- Email Field -->
+                            <div class="mb-4">
+                                <label for="id_email" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">email</span> El. paštas
+                                </label>
+                                {{ form.email }}
+                            </div>
+
+                            <!-- Phone Number Field -->
+                            <div class="mb-4">
+                                <label for="id_phone_number" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">phone</span> Telefono numeris
+                                </label>
+                                {{ form.phone_number }}
+                            </div>
+
+                            <!-- Role Dropdown -->
+                            <div class="mb-4">
+                                <label for="id_role" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">category</span> Rolė
+                                </label>
+                                {{ form.role }}
+                            </div>
+
+                            <!-- Form Actions -->
+                            <div class="d-flex justify-content-between mt-4">
+                                <a href="{% url 'nariai' %}" class="btn btn-outline-secondary d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-1">arrow_back</span> Atšaukti
+                                </a>
+                                <button type="submit" class="btn btn-outline-dark d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-1">save</span> Atnaujinti vartotoją
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

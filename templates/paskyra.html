@@ -1,150 +1,36 @@
-{% extends "layouts/base.html" %}
-
-{% block title %} Paskyra {% endblock %}
-
-{% block stylesheets %}
-    <style>
-        .profile-card {
-            max-width: 800px;
-            margin: auto;
-            padding: 20px;
-        }
-        .form-group label {
-            font-weight: 500;
-        }
-        .btn-save {
-            width: 100%;
-            margin-top: 10px;
-        }
-        .profile-photo-container {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .profile-photo {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 3px solid #ccc;
-        }
-        .file-input {
-            display: none;
-        }
-        .btn-upload {
-            margin-top: 10px;
-        }
-    </style>
-{% endblock stylesheets %}
+{% extends 'base.html' %}
 
 {% block content %}
+<div class="container mt-5">
+    <h2>Profile Update</h2>
+    <form method="post">
+        {% csrf_token %}
 
-    <div class="card profile-card">
-        <div class="card-header card-header-primary">
-            <h4 class="card-title">Redaguoti profilį</h4>
-            <p class="card-category">Atnaujinkite savo paskyros informaciją</p>
+        <div class="mb-3">
+            <label for="username" class="form-label">Username</label>
+            <input type="text" id="username" name="username" class="form-control" value="{{ user.username }}" required>
         </div>
-        <div class="card-body">
-            <form>
-                <div class="profile-photo-container">
-                    <img id="profile-photo" src="{{ current_user.photo_url }}" class="profile-photo" alt="Profilio nuotrauka">
-                    <br>
-                    <input type="file" id="photo-upload" class="file-input" accept="image/*" onchange="previewPhoto(event)">
-                    <button type="button" class="btn btn-secondary btn-upload" onclick="document.getElementById('photo-upload').click()">Keisti nuotrauką</button>
-                </div>
 
-                <div class="row">
-                    <div class="col-md-5">
-                        <div class="form-group">
-                            <label>User ID</label>
-                            <input type="text" class="form-control" disabled value="{{ current_user.id }}">
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label>Slapyvardis</label>
-                            <input type="text" class="form-control" value="{{ current_user.username }}">
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label>El. paštas</label>
-                            <input type="email" class="form-control" value="{{ current_user.email }}">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Vardas</label>
-                            <input type="text" class="form-control">
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Pavardė</label>
-                            <input type="text" class="form-control">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <label>Adresas</label>
-                            <input type="text" class="form-control">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label>Miestas</label>
-                            <input type="text" class="form-control">
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label>Šalis</label>
-                            <input type="text" class="form-control">
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label>Pašto kodas</label>
-                            <input type="text" class="form-control">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <label>Apie mane</label>
-                            <textarea class="form-control" rows="4"></textarea>
-                        </div>
-                    </div>
-                </div>
-
-                <button type="submit" class="btn btn-primary btn-save">Išsaugoti pakeitimus</button>
-            </form>
+        <div class="mb-3">
+            <label for="email" class="form-label">Email (optional)</label>
+            <input type="email" id="email" name="email" class="form-control" value="{{ user.email }}">
         </div>
-    </div>
 
-{% endblock content %}
+        <div class="mb-3">
+            <label for="phone_number" class="form-label">Phone Number (optional)</label>
+            <input type="text" id="phone_number" name="phone_number" class="form-control" value="{{ user.phone_number }}">
+        </div>
 
-{% block javascripts %}
-    <script>
-        function previewPhoto(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById("profile-photo").src = e.target.result;
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-    </script>
-{% endblock javascripts %}
+        <div class="mb-3">
+            <label for="role" class="form-label">Role</label>
+            <select id="role" name="role" class="form-select">
+                {% for key, value in user.ROLE_CHOICES %}
+                    <option value="{{ key }}" {% if user.role == key %}selected{% endif %}>{{ value }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+    </form>
+</div>
+{% endblock %}

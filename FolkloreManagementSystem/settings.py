@@ -46,6 +46,8 @@ ALLOWED_HOSTS = ['folklore.azurewebsites.net',
 
 # LOGIN_URL='/admin/'
 LOGIN_REDIRECT_URL = '/main'
+LOGOUT_REDIRECT_URL = '/'  # Redirect to homepage after logout
+
 # LOGOUT_REDIRECT_URL = '/login/'  # Redirect to login after logout
 
 # CSRF trusted origins
@@ -56,7 +58,7 @@ OAUTH2_PROVIDER = {
     'SCOPES': {'read': 'Read scope', 'write': 'Write scope'},
     'OAUTH2_VALIDATOR_CLASS': 'Initial.validators.CustomOAuth2Validator',  # Correct path to validator
 }
-AUTH_USER_MODEL = 'Initial.CustomUser'
+AUTH_USER_MODEL = 'Initial.User'
 
 REST_FRAMEWORK = {
 
@@ -83,15 +85,14 @@ SPECTACULAR_SETTINGS = {
 # Application definition
 
 INSTALLED_APPS = [
+    'Initial',  # Place your user model app first
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # 'django_filters',
     'oauth2_provider',
-    'Initial',
     'Padaliniai',
     'Programos',
     'Kuriniai',
@@ -100,6 +101,7 @@ INSTALLED_APPS = [
     'Instrumentai',
     'Nariai'
 ]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -141,7 +143,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'allData',
         'USER': 'adminas',
-        'PASSWORD': 'Slaptazodis1',
+        'PASSWORD': 'Bebaimis100.',
         'HOST': 'folkloredata.postgres.database.azure.com',
         'PORT': '5432',
         'OPTIONS': {'sslmode': 'require'},

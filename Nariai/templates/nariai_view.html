@@ -1,0 +1,48 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Naudotojo Informacija {% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header py-3 text-center bg-primary text-white">
+                    <h4 class="mb-0">{{ user.username }} - Informacija</h4>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <strong>Vartotojo vardas:</strong> {{ user.username }}
+                        </li>
+                        <li class="list-group-item">
+                            <strong>El. paštas:</strong> {{ user.email|default:"Nėra" }}
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Telefono numeris:</strong> {{ user.phone_number|default:"Nėra" }}
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Rolė:</strong> {{ user.get_role_display }}
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Paskyros sukūrimo data:</strong> {{ user.date_joined|date:"Y-m-d H:i" }}
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Paskutinį kartą prisijungė:</strong> {{ user.last_login|default:"Nėra" }}
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="card-footer d-flex justify-content-between">
+                    <a href="{% url 'nariai' %}" class="btn btn-outline-secondary">
+                        <span class="material-symbols-outlined me-1">arrow_back</span> Grįžti
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

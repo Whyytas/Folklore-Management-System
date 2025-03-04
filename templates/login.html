@@ -3,60 +3,24 @@
 
 {% block content %}
 <style>
+    /* ✅ Set full-page background */
     body {
-        background-color: #f8f9fa;
+        background: url("{% static 'img/LoginPic.svg' %}") no-repeat center center fixed;
+        background-size: cover;
         height: 100vh;
         display: flex;
         justify-content: center;
         align-items: center;
     }
 
+    /* ✅ Login Card */
     .login-container {
         width: 100%;
         max-width: 450px;
         padding: 40px;
-        background: white;
+        background: rgba(255, 255, 255, 0.9); /* ✅ Slight transparency for better contrast */
         border-radius: 15px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        animation: fadeIn 0.5s ease-in-out;
-    }
-
-    @keyframes fadeIn {
-        from {
-            opacity: 0;
-            transform: translateY(-10px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    .form-floating > input {
-        border-radius: 10px;
-        padding-left: 50px;
-        height: 50px;
-        font-size: 16px;
-    }
-
-    .input-group-text {
-        background: transparent;
-        border: none;
-        font-size: 18px;
-        position: absolute;
-        left: 10px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: gray;
-    }
-
-    .form-floating label {
-        color: #6c757d;
-    }
-
-    .form-floating input:focus {
-        border-color: #17a2b8;
-        box-shadow: 0px 0px 8px rgba(23, 162, 184, 0.3);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     }
 
     .btn-custom {
@@ -64,15 +28,10 @@
         font-weight: bold;
         padding: 12px;
         font-size: 16px;
-        transition: all 0.3s ease-in-out;
-    }
-
-    .btn-custom:hover {
-        background-color: #007bff;
-        color: white;
     }
 </style>
 
+<!-- ✅ Centered Login Card -->
 <div class="login-container">
     <div class="text-center mb-4">
         <h3 class="font-weight-bolder text-info">Prisijungti</h3>
@@ -88,37 +47,33 @@
     <form method="post">
         {% csrf_token %}
 
-        <!-- Username Field -->
-        <div class="form-floating mb-3 position-relative">
+        <div class="form-floating mb-3">
             <input type="text" name="username" id="id_username" class="form-control" placeholder="Vartotojo vardas">
             <label for="id_username">Vartotojo vardas</label>
-            <span class="input-group-text"><i class="bi bi-person"></i></span>
             {% if form.username.errors %}
                 <small class="text-danger">{{ form.username.errors.0 }}</small>
             {% endif %}
         </div>
 
-        <!-- Password Field -->
-        <div class="form-floating mb-3 position-relative">
+        <div class="form-floating mb-3">
             <input type="password" name="password" id="id_password" class="form-control" placeholder="Slaptažodis">
             <label for="id_password">Slaptažodis</label>
-            <span class="input-group-text"><i class="bi bi-lock"></i></span>
             {% if form.password.errors %}
                 <small class="text-danger">{{ form.password.errors.0 }}</small>
             {% endif %}
         </div>
 
-        <!-- Submit Button -->
         <div class="text-center">
             <button type="submit" class="btn btn-info w-100 mt-3 shadow-sm btn-custom">
                 <i class="bi bi-box-arrow-in-right me-2"></i> Prisijungti
             </button>
         </div>
-
     </form>
 </div>
 
 {% endblock %}
+
+
 
 {% block extrascript %}
 <script type="application/javascript">

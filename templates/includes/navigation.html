@@ -25,6 +25,10 @@
         </div>
 
         <!-- Logout Button -->
-        <a href="{% url 'logout' %}" class="btn btn-outline-danger btn-sm">Logout</a>
+        <form action="{% url 'logout' %}" method="post" style="display: inline;">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-outline-danger btn-sm">Logout</button>
+        </form>
+
     </div>
 </nav>

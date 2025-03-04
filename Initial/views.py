@@ -1,20 +1,31 @@
-from django.shortcuts import render
-from django.contrib.auth import logout
-from django.shortcuts import redirect
-from django.contrib.auth.views import LoginView
-from django.urls import reverse_lazy
-def custom_logout(request):
-    """
-    Custom logout view that supports both GET and POST requests.
-    """
-    logout(request)  # Log out the user
-    return redirect('/')  # Redirect to the login page
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import get_user_model
+from django.contrib import messages
 
-class CustomLoginView(LoginView):
-    template_name = '../templates/login.html'  # Path to your login template
-    redirect_authenticated_user = True  # Redirect authenticated users
-    success_url = reverse_lazy('main')  # Redirect URL after successful login
+User = get_user_model()
 
-    def get_success_url(self):
-        return self.success_url or super().get_success_url()
+@login_required
+def paskyra_page(request):
+    user = request.user
 
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        phone_number = request.POST.get('phone_number')
+        role = request.POST.get('role')
+
+        if username:
+            user.username = username
+        if email:
+            user.email = email
+        if phone_number:
+            user.phone_number = phone_number
+        if role in dict(User.ROLE_CHOICES):
+            user.role = role
+
+        user.save()
+        messages.success(request, 'Your profile has been updated successfully.')
+        return redirect('paskyra')
+
+    return render(request, 'paskyra.html', {'user': user})

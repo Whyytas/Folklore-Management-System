@@ -1,0 +1,105 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Pridėti Naują Narį {% endblock %}
+
+{% block content %}
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card shadow">
+                    <div class="card-header py-3 text-center bg-primary text-white">
+                        <h4 class="mb-0">Pridėti naują narį</h4>
+                    </div>
+                    <div class="card-body">
+
+                        <!-- ✅ Display Success & Error Messages -->
+                        {% if messages %}
+                            <div class="alert alert-dismissible fade show" role="alert">
+                                {% for message in messages %}
+                                    <div class="alert {% if message.tags == 'success' %}alert-success{% else %}alert-danger{% endif %}">
+                                        {{ message }}
+                                    </div>
+                                {% endfor %}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        {% endif %}
+
+                        <form method="POST">
+                            {% csrf_token %}
+
+                            <!-- ✅ Display Form Errors -->
+                            {% if form.errors %}
+                                <div class="alert alert-danger">
+                                    <ul>
+                                        {% for field, errors in form.errors.items %}
+                                            {% for error in errors %}
+                                                <li>{{ field|capfirst }}: {{ error }}</li>
+                                            {% endfor %}
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            {% endif %}
+
+                            <!-- Username Field -->
+                            <div class="mb-4">
+                                <label for="id_username" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">person</span> Vartotojo vardas
+                                </label>
+                                {{ form.username }}
+                            </div>
+
+                            <!-- Email Field -->
+                            <div class="mb-4">
+                                <label for="id_email" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">email</span> El. paštas
+                                </label>
+                                {{ form.email }}
+                            </div>
+
+                            <!-- Phone Number Field -->
+                            <div class="mb-4">
+                                <label for="id_phone_number" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">phone</span> Telefono numeris
+                                </label>
+                                {{ form.phone_number }}
+                            </div>
+
+                            <!-- Role Dropdown -->
+                            <div class="mb-4">
+                                <label for="id_role" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">category</span> Rolė
+                                </label>
+                                {{ form.role }}
+                            </div>
+
+                            <!-- Password Fields -->
+                            <div class="mb-4">
+                                <label for="id_password1" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">lock</span> Slaptažodis
+                                </label>
+                                {{ form.password1 }}
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="id_password2" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">lock</span> Pakartokite slaptažodį
+                                </label>
+                                {{ form.password2 }}
+                            </div>
+
+                            <!-- Form Actions -->
+                            <div class="d-flex justify-content-between mt-4">
+                                <a href="{% url 'nariai' %}" class="btn btn-outline-secondary d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-1">arrow_back</span> Atšaukti
+                                </a>
+                                <button type="submit" class="btn btn-outline-dark d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-1">save</span> Pridėti narį
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
