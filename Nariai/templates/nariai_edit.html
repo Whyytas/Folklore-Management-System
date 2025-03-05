@@ -16,7 +16,14 @@
             background-color: #28a745 !important;
             color: white !important;
         }
+
+        .ansamblis-btn.disabled {
+            background-color: #ffc107 !important; /* Yellow for "Visi" */
+            color: black !important;
+            cursor: not-allowed;
+        }
     </style>
+
 
     <div class="container mt-4">
         <div class="row justify-content-center">
@@ -86,23 +93,36 @@
                                 </select>
                             </div>
 
-                            <!-- ✅ Ansambliai Selection with Bootstrap Button Toggles -->
-                            <div class="mb-4">
+                            <!-- ✅ Ansambliai Selection -->
+                            <div class="mb-4" id="ansambliai-section">
                                 <label class="form-label d-flex align-items-center">
                                     <span class="material-symbols-outlined me-2">groups</span> Priskirti ansamblius
                                 </label>
                                 <div id="ansambliai-container" class="d-flex flex-column gap-2">
                                     {% for ansamblis in all_ansambliai %}
-                                        <input type="checkbox" class="btn-check ansamblis-btn"
-                                               id="ansamblis-{{ ansamblis.id }}" name="ansambliai"
-                                               value="{{ ansamblis.id }}" autocomplete="off"
-                                               {% if ansamblis in user.ansambliai.all %}checked{% endif %}>
-                                        <label class="btn btn-outline-dark border-dark d-flex justify-content-between align-items-center fs-5"
-                                               for="ansamblis-{{ ansamblis.id }}">
-                                            <span>{{ ansamblis.pavadinimas }}</span>
-                                            <span class="material-symbols-outlined">add</span>
-                                        </label>
+                                        {% if ansamblis.pavadinimas == "Visi" %}
+                                            <input type="checkbox" class="btn-check" id="ansamblis_{{ ansamblis.id }}"
+                                                   checked disabled>
+                                            <label class="btn w-100 py-2 d-flex justify-content-between align-items-center fs-5 ansamblis-btn disabled"
+                                                   for="ansamblis_{{ ansamblis.id }}">
+                                                <span>{{ ansamblis.pavadinimas }}</span>
+                                                <span class="material-symbols-outlined">lock</span>
+                                            </label>
+                                        {% else %}
+                                            <input type="checkbox" class="btn-check" name="ansambliai"
+                                                   id="ansamblis_{{ ansamblis.id }}" value="{{ ansamblis.id }}"
+                                                   {% if ansamblis in user.ansambliai.all %}checked{% endif %}>
+                                            <label class="btn w-100 py-2 d-flex justify-content-between align-items-center fs-5 ansamblis-btn
+               {% if ansamblis in user.ansambliai.all %}selected{% endif %}"
+                                                   for="ansamblis_{{ ansamblis.id }}">
+                                                <span>{{ ansamblis.pavadinimas }}</span>
+                                                <span class="material-symbols-outlined">
+                {% if ansamblis in user.ansambliai.all %}check{% else %}add{% endif %}
+            </span>
+                                            </label>
+                                        {% endif %}
                                     {% endfor %}
+
                                 </div>
                             </div>
 
@@ -123,26 +143,45 @@
         </div>
     </div>
 
-    <!-- ✅ JavaScript for Instant Styling -->
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            document.querySelectorAll(".ansamblis-btn").forEach(button => {
-                let label = document.querySelector(`label[for="${button.id}"]`);
+            const roleDropdown = document.getElementById("id_role");
+            const ansambliaiSection = document.getElementById("ansambliai-section");
+            const ansambliaiCheckboxes = document.querySelectorAll(".btn-check");
 
+            function toggleAnsambliai() {
+                if (roleDropdown.value === "administratorius") {
+                    ansambliaiSection.style.display = "none";
+                    ansambliaiCheckboxes.forEach(box => box.disabled = true);
+                } else {
+                    ansambliaiSection.style.display = "block";
+                    ansambliaiCheckboxes.forEach(box => box.disabled = false);
+                }
+            }
+
+            // ✅ Run on page load
+            toggleAnsambliai();
+
+            // ✅ Run on role change
+            roleDropdown.addEventListener("change", toggleAnsambliai);
+
+            // ✅ Ansambliai Selection Behavior
+            document.querySelectorAll(".btn-check").forEach(button => {
+                let label = document.querySelector(`label[for="${button.id}"]`);
                 if (button.checked) {
-                    label.classList.add("btn-success");
-                    label.classList.remove("btn-outline-dark");
+                    label.classList.add("selected");
                     label.querySelector("span.material-symbols-outlined").innerText = "check";
                 }
 
                 button.addEventListener("change", function () {
-                    label.classList.toggle("btn-success", this.checked);
-                    label.classList.toggle("btn-outline-dark", !this.checked);
+                    label.classList.toggle("selected", this.checked);
                     label.querySelector("span.material-symbols-outlined").innerText =
                         this.checked ? "check" : "add";
                 });
             });
         });
     </script>
+
+
 
 {% endblock %}

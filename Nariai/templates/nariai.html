@@ -40,12 +40,16 @@
 
                                         <!-- ✅ Display User's Ansambliai -->
                                         <td class="align-middle text-center">
-                                            {% if user.ansambliai.all %}
-                                                {% for ansamblis in user.ansambliai.all %}
-                                                    <span class="badge bg-info text-dark">{{ ansamblis.pavadinimas }}</span>
-                                                {% endfor %}
+                                            {% if user.role == "administratorius" %}
+                                                <span class="badge bg-warning text-dark">Visi</span>
                                             {% else %}
-                                                <span class="text-muted">—</span>
+                                                {% if user.ansambliai.all %}
+                                                    {% for ansamblis in user.ansambliai.all %}
+                                                        <span class="badge bg-info text-dark">{{ ansamblis.pavadinimas }}</span>
+                                                    {% endfor %}
+                                                {% else %}
+                                                    <span class="text-muted">—</span>
+                                                {% endif %}
                                             {% endif %}
                                         </td>
 

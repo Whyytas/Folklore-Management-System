@@ -3,8 +3,6 @@
 {% block title %} Pridėti Naują Narį {% endblock %}
 
 {% block content %}
-
-
     <div class="container mt-4">
         <div class="row justify-content-center">
             <div class="col-md-6">
@@ -68,6 +66,7 @@
                                 <input type="text" class="form-control" id="id_phone_number" name="phone_number"
                                        value="{{ form.phone_number.value|default:'' }}">
                             </div>
+
                             <!-- Role Dropdown -->
                             <div class="mb-4">
                                 <label for="id_role" class="form-label d-flex align-items-center">
@@ -81,27 +80,33 @@
                                 </select>
                             </div>
 
-
-                            <!-- ✅ Ansambliai Selection with Buttons -->
-                            <!-- ✅ Ansambliai Selection with Bootstrap Button Toggles -->
-                            <div class="mb-4">
+                            <!-- ✅ Ansambliai Selection -->
+                            <div class="mb-4" id="ansambliai-section">
                                 <label class="form-label d-flex align-items-center">
                                     <span class="material-symbols-outlined me-2">groups</span> Pasirinkti ansamblius
                                 </label>
                                 <div id="ansambliai-container" class="d-flex flex-column gap-2">
                                     {% for ansamblis in all_ansambliai %}
-                                        <input type="checkbox" class="btn-check ansamblis-btn"
-                                               id="ansamblis-{{ ansamblis.id }}" name="ansambliai"
-                                               value="{{ ansamblis.id }}" autocomplete="off">
-                                        <label class="btn btn-outline-dark border-dark d-flex justify-content-between align-items-center fs-5"
-                                               for="ansamblis-{{ ansamblis.id }}">
-                                            <span>{{ ansamblis.pavadinimas }}</span>
-                                            <span class="material-symbols-outlined">add</span>
-                                        </label>
+                                        {% if ansamblis.pavadinimas == "Visi" %}
+                                            <input type="checkbox" class="btn-check" id="ansamblis_{{ ansamblis.id }}"
+                                                   checked disabled>
+                                            <label class="btn w-100 py-2 d-flex justify-content-between align-items-center fs-5 ansamblis-btn btn-warning"
+                                                   for="ansamblis_{{ ansamblis.id }}">
+                                                <span>{{ ansamblis.pavadinimas }}</span>
+                                                <span class="material-symbols-outlined">lock</span>
+                                            </label>
+                                        {% else %}
+                                            <input type="checkbox" class="btn-check" name="ansambliai"
+                                                   id="ansamblis_{{ ansamblis.id }}" value="{{ ansamblis.id }}">
+                                            <label class="btn w-100 py-2 d-flex justify-content-between align-items-center fs-5 ansamblis-btn btn-outline-dark"
+                                                   for="ansamblis_{{ ansamblis.id }}">
+                                                <span>{{ ansamblis.pavadinimas }}</span>
+                                                <span class="material-symbols-outlined">add</span>
+                                            </label>
+                                        {% endif %}
                                     {% endfor %}
                                 </div>
                             </div>
-
 
                             <!-- Password Fields -->
                             <div class="mb-4">
@@ -135,28 +140,41 @@
         </div>
     </div>
 
-    <div id="selected-ansambliai"></div>
-
     <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        document.querySelectorAll(".ansamblis-btn").forEach(button => {
-            let label = document.querySelector(`label[for="${button.id}"]`);
-            if (button.checked) {
-                label.classList.add("btn-success");
-                label.classList.remove("btn-outline-dark");
-                label.querySelector("span.material-symbols-outlined").innerText = "check";
+        document.addEventListener("DOMContentLoaded", function () {
+            const roleDropdown = document.getElementById("id_role");
+            const ansambliaiSection = document.getElementById("ansambliai-section");
+            const ansambliaiInputs = document.querySelectorAll(".btn-check");
+
+            // ✅ Toggle ansambliai selection based on role
+            function toggleAnsambliaiSelection() {
+                const selectedRole = roleDropdown.value;
+                if (selectedRole === "administratorius") {
+                    ansambliaiSection.style.display = "none";
+                    ansambliaiInputs.forEach(input => input.disabled = true);
+                } else {
+                    ansambliaiSection.style.display = "block";
+                    ansambliaiInputs.forEach(input => input.disabled = false);
+                }
             }
-            button.addEventListener("change", function () {
-                label.classList.toggle("btn-success", this.checked);
-                label.classList.toggle("btn-outline-dark", !this.checked);
-                label.querySelector("span.material-symbols-outlined").innerText =
-                    this.checked ? "check" : "add";
+
+            // ✅ Apply on page load
+            toggleAnsambliaiSelection();
+
+            // ✅ Apply on role change
+            roleDropdown.addEventListener("change", toggleAnsambliaiSelection);
+
+            // ✅ Update button styling on selection
+            document.querySelectorAll(".btn-check").forEach(button => {
+                let label = document.querySelector(`label[for="${button.id}"]`);
+                button.addEventListener("change", function () {
+                    label.classList.toggle("btn-success", this.checked);
+                    label.classList.toggle("btn-outline-dark", !this.checked);
+                    label.querySelector("span.material-symbols-outlined").innerText =
+                        this.checked ? "check" : "add";
+                });
             });
         });
-    });
-</script>
-
-
-
+    </script>
 
 {% endblock %}

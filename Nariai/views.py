@@ -49,37 +49,26 @@ class CustomUserCreationForm(UserCreationForm):
 @login_required
 def nariai_add(request):
     all_ansambliai = Ansamblis.objects.all()
+    visi_ansamblis = Ansamblis.objects.filter(pavadinimas="Visi").first()
 
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
-
-        logger.debug(f"Received POST data: {request.POST}")  # ✅ Log received form data
-
         if form.is_valid():
-            user = form.save(commit=False)
-            user.save()  # ✅ Save the user first
+            user = form.save()
 
-            # ✅ Debugging: Check what is being received
-            selected_ansambliai_ids = request.POST.getlist("ansambliai")  # ✅ Retrieve as list
-            logger.debug(f"Selected Ansambliai IDs: {selected_ansambliai_ids}")
+            # ✅ Automatically assign "Visi" to administrators
+            selected_ansambliai_ids = request.POST.getlist("ansambliai")
+            selected_ansambliai = Ansamblis.objects.filter(id__in=selected_ansambliai_ids)
 
-            try:
-                if selected_ansambliai_ids:
-                    selected_ansambliai = Ansamblis.objects.filter(id__in=selected_ansambliai_ids)
-                    user.ansambliai.set(selected_ansambliai)  # ✅ Assign ansambliai
-                else:
-                    user.ansambliai.clear()  # ✅ Clear if no selection
+            if user.role == "administratorius" and visi_ansamblis:
+                user.ansambliai.set([visi_ansamblis])
+            else:
+                user.ansambliai.set(selected_ansambliai)
 
-                messages.success(request, "Naujas vartotojas sėkmingai pridėtas!")
-                return redirect('nariai')
-
-            except Exception as e:
-                logger.error(f"Error setting ansambliai: {e}")
-                messages.error(request, f"Klaida priskiriant ansamblius: {e}")
-
+            messages.success(request, "Naujas vartotojas sėkmingai pridėtas!")
+            return redirect('nariai')
         else:
             messages.error(request, "Klaida: Patikrinkite formą ir bandykite dar kartą.")
-            logger.error(f"Form errors: {form.errors}")
 
     else:
         form = CustomUserCreationForm()
@@ -119,6 +108,7 @@ class CustomUserEditForm(forms.ModelForm):
 def nariai_edit(request, user_id):
     user = get_object_or_404(User, id=user_id)
     all_ansambliai = Ansamblis.objects.all()
+    visi_ansamblis = Ansamblis.objects.filter(pavadinimas="Visi").first()
 
     if request.method == 'POST':
         user.username = request.POST.get('username')
@@ -127,7 +117,13 @@ def nariai_edit(request, user_id):
         user.role = request.POST.get('role')
 
         selected_ansambliai = request.POST.getlist('ansambliai')
-        user.ansambliai.set(Ansamblis.objects.filter(id__in=selected_ansambliai))
+        selected_ansambliai = Ansamblis.objects.filter(id__in=selected_ansambliai)
+
+        # ✅ Ensure "Visi" is always assigned to administrators
+        if user.role == "administratorius" and visi_ansamblis:
+            user.ansambliai.set([visi_ansamblis])
+        else:
+            user.ansambliai.set(selected_ansambliai)
 
         user.save()
         messages.success(request, "Vartotojas atnaujintas sėkmingai.")
