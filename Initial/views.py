@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 from django.contrib import messages
+from django.contrib.auth import views as auth_views
 
 User = get_user_model()
 
@@ -29,3 +30,10 @@ def paskyra_page(request):
         return redirect('paskyra')
 
     return render(request, 'paskyra.html', {'user': user})
+
+class CustomLoginView(auth_views.LoginView):
+    """ Redirect already logged-in users to /main """
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect('main')  # ✅ Redirect to /main if already logged in
+        return super().dispatch(request, *args, **kwargs)

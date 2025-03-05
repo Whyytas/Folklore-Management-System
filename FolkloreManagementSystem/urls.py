@@ -19,13 +19,21 @@ from django.contrib.auth.views import redirect_to_login
 from django.urls import include, path
 # from Initial.views import (custom_logout, CustomLoginView,)
 from django.contrib.auth import views as auth_views
+from django.shortcuts import redirect
+
+from Initial.views import CustomLoginView
 
 
+def redirect_to_main(request):
+    """ Redirect logged-in users to /main """
+    if request.user.is_authenticated:
+        return redirect('main')  # ✅ Redirect to main
+    return redirect('login')  # ❌ If not logged in, redirect to login
 urlpatterns = [
     path("admin/", admin.site.urls),
 
     path('main/', include('mainPage.urls')),  # Include app-specific URLs
-    path('', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
+    path('', CustomLoginView.as_view(), name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),  # Logout pag
 
     path('ansambliai/', include('Ansambliai.urls')),
