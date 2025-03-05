@@ -40,14 +40,39 @@
                                 </div>
                             {% endif %}
 
+                            <!-- First Name Field (Vardas) -->
+                            <div class="mb-4">
+                                <label for="id_vardas" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">badge</span> Vardas
+                                </label>
+                                <input type="text" class="form-control" id="id_vardas" name="vardas"
+                                       value="{{ form.vardas.value|default:'' }}" required>
+                            </div>
+
+                            <!-- Last Name Field (Pavarde) -->
+                            <div class="mb-4">
+                                <label for="id_pavarde" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">badge</span> Pavardė
+                                </label>
+                                <input type="text" class="form-control" id="id_pavarde" name="pavarde"
+                                       value="{{ form.pavarde.value|default:'' }}" required>
+                            </div>
+
+                            <!-- Username Field -->
                             <!-- Username Field -->
                             <div class="mb-4">
                                 <label for="id_username" class="form-label d-flex align-items-center">
                                     <span class="material-symbols-outlined me-2">person</span> Vartotojo vardas
                                 </label>
-                                <input type="text" class="form-control" id="id_username" name="username"
-                                       value="{{ form.username.value|default:'' }}" required>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="id_username" name="username" required>
+                                    <button type="button" class="btn btn-outline-primary" id="generate-username">
+                                        <span class="material-symbols-outlined me-1">autorenew</span> Sukurti
+                                        prisijungimo vardą
+                                    </button>
+                                </div>
                             </div>
+
 
                             <!-- Email Field -->
                             <div class="mb-4">
@@ -141,6 +166,49 @@
     </div>
 
     <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const firstNameInput = document.getElementById("id_vardas");
+            const lastNameInput = document.getElementById("id_pavarde");
+            const usernameInput = document.getElementById("id_username");
+            const generateButton = document.getElementById("generate-username");
+
+            generateButton.addEventListener("click", function () {
+                const firstName = firstNameInput.value.trim().toLowerCase();
+                const lastName = lastNameInput.value.trim().toLowerCase();
+
+                if (firstName.length < 3 || lastName.length < 3) {
+                    alert("Vardas ir pavardė turi būti bent 3 simboliai!");
+                    return;
+                }
+
+                let baseUsername = firstName.substring(0, 3) + lastName.substring(0, 3);
+                checkUsernameAvailability(baseUsername, 0, function (availableUsername) {
+                    usernameInput.value = availableUsername;
+                });
+            });
+
+            function checkUsernameAvailability(username, count, callback) {
+    let finalUsername = count > 0 ? username + count : username;
+    const url = `/nariai/check-username/?username=${encodeURIComponent(finalUsername)}`;
+
+    fetch(url)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Server returned ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.exists) {
+                checkUsernameAvailability(username, count + 1, callback);
+            } else {
+                callback(finalUsername);
+            }
+        })
+        .catch(error => console.error("Klaida tikrinant prisijungimo vardą:", error));
+}
+
+        });
         document.addEventListener("DOMContentLoaded", function () {
             const roleDropdown = document.getElementById("id_role");
             const ansambliaiSection = document.getElementById("ansambliai-section");

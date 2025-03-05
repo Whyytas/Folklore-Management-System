@@ -20,11 +20,10 @@
                                 <thead class="thead-dark">
                                 <tr>
                                     <th class="text-end">#</th>
-                                    <th class="text-start">Vartotojo vardas</th>
-                                    <th class="text-start">El. paštas</th>
-                                    <th class="text-start">Telefono numeris</th>
+                                    <th class="text-start">Vartotojo vardas</th>  <!-- ✅ Added Username -->
+                                    <th class="text-start">Vardas ir Pavardė</th>  <!-- ✅ Added Full Name -->
                                     <th class="text-center">Rolė</th>
-                                    <th class="text-center">Ansambliai</th>  <!-- ✅ New Column -->
+                                    <th class="text-center">Ansambliai</th>
                                     <th class="text-center">Veiksmai</th>
                                 </tr>
                                 </thead>
@@ -34,8 +33,15 @@
                                     <tr>
                                         <td class="align-middle text-end">{{ forloop.counter }}</td>
                                         <td class="align-middle text-start fw-bold">{{ user.username }}</td>
-                                        <td class="align-middle text-start">{{ user.email|default:"—" }}</td>
-                                        <td class="align-middle text-start">{{ user.phone_number|default:"—" }}</td>
+                                        <!-- ✅ Show Username -->
+                                        <td class="align-middle text-start">
+                                            {% if user.vardas and user.pavarde %}
+                                                {{ user.vardas }} {{ user.pavarde }}
+                                            {% else %}
+                                                <span class="text-muted">Nenurodyta</span>
+                                            {% endif %}
+                                        </td>  <!-- ✅ Show Full Name -->
+
                                         <td class="align-middle text-center">{{ user.get_role_display }}</td>
 
                                         <!-- ✅ Display User's Ansambliai -->
@@ -52,7 +58,6 @@
                                                 {% endif %}
                                             {% endif %}
                                         </td>
-
 
                                         <td class="align-middle text-center">
                                             <div class="d-flex justify-content-center gap-2">
@@ -75,7 +80,7 @@
                                     </tr>
                                 {% empty %}
                                     <tr>
-                                        <td colspan="7" class="text-center text-muted">Nėra registruotų vartotojų.</td>
+                                        <td colspan="6" class="text-center text-muted">Nėra registruotų vartotojų.</td>
                                     </tr>
                                 {% endfor %}
                                 </tbody>

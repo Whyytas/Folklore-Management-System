@@ -1,3 +1,4 @@
+from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -23,29 +24,31 @@ def nariai_list(request):
 
 # ✅ Custom Form for Creating a User
 class CustomUserCreationForm(UserCreationForm):
+    vardas = forms.CharField(max_length=255, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    pavarde = forms.CharField(max_length=255, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
+
     role = forms.ChoiceField(
         choices=User.ROLE_CHOICES,
         widget=forms.Select(attrs={'class': 'form-select'})
     )
-    email = forms.EmailField(required=True, widget=forms.EmailInput(attrs={'class': 'form-control'}))
-    phone_number = forms.CharField(required=False, widget=forms.TextInput(attrs={'class': 'form-control'}))
 
     ansambliai = forms.ModelMultipleChoiceField(
         queryset=Ansamblis.objects.all(),
-        widget=forms.CheckboxSelectMultiple,  # ✅ Ensure Django accepts multiple values
+        widget=forms.CheckboxSelectMultiple,
         required=False
     )
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'phone_number', 'role', 'password1', 'password2', 'ansambliai']
+        fields = ['username', 'vardas', 'pavarde', 'email', 'phone_number', 'role', 'password1', 'password2', 'ansambliai']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['username'].widget.attrs.update({'class': 'form-control'})
+        self.fields['email'].widget.attrs.update({'class': 'form-control'})
+        self.fields['phone_number'].widget.attrs.update({'class': 'form-control'})
         self.fields['password1'].widget.attrs.update({'class': 'form-control'})
-        self.fields['password2'].widget.attrs.update({'class': 'form-control'})
-# ✅ View to Add a New User
+        self.fields['password2'].widget.attrs.update({'class': 'form-control'})# ✅ View to Add a New User
 @login_required
 def nariai_add(request):
     all_ansambliai = Ansamblis.objects.all()
@@ -54,9 +57,14 @@ def nariai_add(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
-            user = form.save()
+            user = form.save(commit=False)  # ✅ Prevent immediate save
 
-            # ✅ Automatically assign "Visi" to administrators
+            # ✅ Assign vardas and pavarde
+            user.vardas = form.cleaned_data['vardas']
+            user.pavarde = form.cleaned_data['pavarde']
+            user.save()  # ✅ Save after adding fields
+
+            # ✅ Assign ansambliai
             selected_ansambliai_ids = request.POST.getlist("ansambliai")
             selected_ansambliai = Ansamblis.objects.filter(id__in=selected_ansambliai_ids)
 
@@ -111,19 +119,21 @@ def nariai_edit(request, user_id):
     visi_ansamblis = Ansamblis.objects.filter(pavadinimas="Visi").first()
 
     if request.method == 'POST':
-        user.username = request.POST.get('username')
-        user.email = request.POST.get('email')
-        user.phone_number = request.POST.get('phone_number')
-        user.role = request.POST.get('role')
+        user.username = request.POST.get('username', user.username)
+        user.email = request.POST.get('email', user.email)
+        user.phone_number = request.POST.get('phone_number', user.phone_number)
+        user.role = request.POST.get('role', user.role)
 
-        selected_ansambliai = request.POST.getlist('ansambliai')
-        selected_ansambliai = Ansamblis.objects.filter(id__in=selected_ansambliai)
+        # ✅ Fix KeyError for vardas and pavarde
+        user.vardas = request.POST.get('vardas', user.vardas)  # Safely get field
+        user.pavarde = request.POST.get('pavarde', user.pavarde)
 
-        # ✅ Ensure "Visi" is always assigned to administrators
+        selected_ansambliai_ids = request.POST.getlist('ansambliai')
+
         if user.role == "administratorius" and visi_ansamblis:
             user.ansambliai.set([visi_ansamblis])
         else:
-            user.ansambliai.set(selected_ansambliai)
+            user.ansambliai.set(Ansamblis.objects.filter(id__in=selected_ansambliai_ids))
 
         user.save()
         messages.success(request, "Vartotojas atnaujintas sėkmingai.")
@@ -142,3 +152,13 @@ def nariai_delete(request, user_id):
 
     messages.error(request, "Negalima ištrinti vartotojo.")
     return redirect('nariai')
+
+
+def check_username(request):
+    """Check if the username is already taken."""
+    username = request.GET.get('username')
+    if not username:
+        return JsonResponse({'error': 'Username parameter is required'}, status=400)
+
+    exists = User.objects.filter(username=username).exists()
+    return JsonResponse({'exists': exists})

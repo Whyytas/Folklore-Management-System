@@ -52,6 +52,25 @@
                         <form method="POST">
                             {% csrf_token %}
 
+                            <!-- First Name Field (Vardas) -->
+                            <div class="mb-4">
+                                <label for="id_vardas" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">badge</span> Vardas
+                                </label>
+                                <input type="text" class="form-control" id="id_vardas" name="vardas"
+                                       value="{{ user.vardas }}" required>
+                            </div>
+
+                            <!-- Last Name Field (Pavarde) -->
+                            <div class="mb-4">
+                                <label for="id_pavarde" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">badge</span> Pavardė
+                                </label>
+                                <input type="text" class="form-control" id="id_pavarde" name="pavarde"
+                                       value="{{ user.pavarde }}" required>
+                            </div>
+
+
                             <!-- Username Field -->
                             <div class="mb-4">
                                 <label for="id_username" class="form-label d-flex align-items-center">
