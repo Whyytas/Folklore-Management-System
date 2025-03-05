@@ -99,7 +99,8 @@ INSTALLED_APPS = [
     'Renginiai',
     'Ansambliai',
     'Instrumentai',
-    'Nariai'
+    'Nariai',
+    'Repeticijos'
 ]
 
 

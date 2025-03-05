@@ -1,0 +1,209 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Pridėti Repeticiją {% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card shadow">
+                <div class="card-header py-3 text-center bg-primary text-white">
+                    <h4 class="mb-0">Pridėti naują repeticiją</h4>
+                </div>
+                <div class="card-body">
+                    <form id="repeticija-form">
+                        {% csrf_token %}
+
+                        <!-- ✅ Pavadinimas Input -->
+                        <div class="mb-4">
+                            <label for="pavadinimas" class="form-label d-flex align-items-center">
+                                <span class="material-symbols-outlined me-2">music_note</span> Pavadinimas
+                            </label>
+                            <input type="text" class="form-control" id="pavadinimas" name="pavadinimas"
+                                   placeholder="Įveskite repeticijos pavadinimą" required autocomplete="off">
+                        </div>
+
+                        <!-- ✅ Data Picker -->
+                        <div class="mb-4">
+                            <label for="data" class="form-label d-flex align-items-center">
+                                <span class="material-symbols-outlined me-2">event</span> Data
+                            </label>
+                            <input type="date" class="form-control" id="data" name="data" required>
+                        </div>
+
+                        <!-- ✅ Kūriniai Selection -->
+                        <div class="row">
+                            <!-- Available Kūriniai -->
+                            <div class="col-md-6">
+                                <div class="card shadow-sm">
+                                    <div class="card-header bg-light">
+                                        <h5 class="mb-0">Visi kūriniai</h5>
+                                    </div>
+                                    <div class="card-body kuriniai-list" id="all-kuriniai">
+                                        {% for kurinys in kuriniai %}
+                                            <div class="kuriniai-item card mb-2" id="kurinys-{{ kurinys.id }}" data-id="{{ kurinys.id }}">
+                                                <div class="card-body d-flex justify-content-between align-items-center">
+                                                    <span class="fw-bold">{{ kurinys.pavadinimas }}</span>
+                                                    <button type="button" class="btn btn-outline-primary d-flex align-items-center justify-content-center"
+                                                            style="width: 40px; height: 40px;"
+                                                            onclick="moveKurinys({{ kurinys.id }}, '{{ kurinys.pavadinimas }}')">
+                                                        <span class="material-symbols-outlined">add_circle</span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Selected Kūriniai -->
+                            <div class="col-md-6">
+                                <div class="card shadow-sm">
+                                    <div class="card-header bg-light">
+                                        <h5 class="mb-0">Pasirinkti kūriniai</h5>
+                                    </div>
+                                    <div class="card-body selected-kuriniai" id="selected-kuriniai">
+                                        <p id="empty-message" class="text-muted text-center">Nėra pasirinktų kūrinių</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ✅ Form Actions -->
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="{% url 'repeticijos' %}" class="btn btn-outline-secondary d-flex align-items-center">
+                                <span class="material-symbols-outlined me-1">arrow_back</span> Atšaukti
+                            </a>
+                            <button type="submit" class="btn btn-outline-dark d-flex align-items-center">
+                                <span class="material-symbols-outlined me-1">save</span> Išsaugoti repeticiją
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ✅ JavaScript -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    let kuriniaiMap = {};  // ✅ Store all kūriniai
+
+    function updateEmptyMessage() {
+        let emptyMessage = document.getElementById("empty-message");
+        let selectedContainer = document.getElementById("selected-kuriniai");
+
+        if (!emptyMessage || !selectedContainer) return;
+
+        emptyMessage.style.display = selectedContainer.children.length > 0 ? "none" : "block";
+    }
+
+    function initializeKuriniai() {
+        document.querySelectorAll(".kuriniai-item").forEach(item => {
+            let id = item.dataset.id;
+            let name = item.querySelector("span.fw-bold").innerText;
+            kuriniaiMap[id] = name;
+        });
+    }
+
+    window.moveKurinys = function (id) {
+        let selectedContainer = document.getElementById("selected-kuriniai");
+        let availableItem = document.getElementById(`kurinys-${id}`);
+
+        let name = kuriniaiMap[id];
+
+        if (!name || document.getElementById(`selected-${id}`)) return;
+
+        let listItem = document.createElement("div");
+        listItem.className = "kuriniai-item card mb-2";
+        listItem.id = `selected-${id}`;
+        listItem.dataset.id = id;
+
+        listItem.innerHTML = `
+            <div class="card-body d-flex justify-content-between align-items-center">
+                <span class="fw-bold">${name}</span>
+                <button type="button" class="btn btn-outline-danger d-flex align-items-center justify-content-center"
+                        style="width: 40px; height: 40px;"
+                        onclick="removeKurinys(${id})">
+                    <span class="material-symbols-outlined">remove_circle</span>
+                </button>
+            </div>
+        `;
+
+        selectedContainer.appendChild(listItem);
+        updateEmptyMessage();
+
+        if (availableItem) {
+            availableItem.remove();
+        }
+    };
+
+    window.removeKurinys = function (id) {
+        let item = document.getElementById(`selected-${id}`);
+        let availableContainer = document.getElementById("all-kuriniai");
+
+        if (!item) return;
+
+        let name = kuriniaiMap[id];
+
+        item.remove();
+        updateEmptyMessage();
+
+        let newAvailableItem = document.createElement("div");
+        newAvailableItem.className = "kuriniai-item card mb-2";
+        newAvailableItem.id = `kurinys-${id}`;
+        newAvailableItem.dataset.id = id;
+
+        newAvailableItem.innerHTML = `
+            <div class="card-body d-flex justify-content-between align-items-center">
+                <span class="fw-bold">${name}</span>
+                <button type="button" class="btn btn-outline-primary d-flex align-items-center justify-content-center"
+                        style="width: 40px; height: 40px;"
+                        onclick="moveKurinys(${id})">
+                    <span class="material-symbols-outlined">add_circle</span>
+                </button>
+            </div>
+        `;
+
+        availableContainer.appendChild(newAvailableItem);
+    };
+
+    document.getElementById("repeticija-form").addEventListener("submit", function(event) {
+        event.preventDefault();
+
+        let pavadinimas = document.getElementById("pavadinimas").value;
+        let data = document.getElementById("data").value;
+        let csrfToken = document.querySelector("[name=csrfmiddlewaretoken]").value;
+        let selectedKuriniai = [];
+
+        document.querySelectorAll("#selected-kuriniai .kuriniai-item").forEach((item) => {
+            selectedKuriniai.push(parseInt(item.dataset.id));
+        });
+
+        if (!pavadinimas.trim() || !data || selectedKuriniai.length === 0) {
+            alert("Užpildykite visus laukus ir pasirinkite bent vieną kūrinį!");
+            return;
+        }
+
+        fetch("{% url 'repeticija_create' %}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": csrfToken
+            },
+            body: JSON.stringify({ pavadinimas, data, kuriniai: selectedKuriniai })
+        }).then(response => response.json())
+          .then(data => {
+              if (data.redirect) window.location.replace(data.redirect);
+              else alert("Nepavyko išsaugoti repeticijos.");
+          })
+          .catch(error => console.error("Klaida:", error));
+    });
+
+    initializeKuriniai();
+    updateEmptyMessage();
+});
+</script>
+
+{% endblock %}

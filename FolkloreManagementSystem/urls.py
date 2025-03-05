@@ -23,15 +23,8 @@ from django.shortcuts import redirect
 
 from Initial.views import CustomLoginView
 
-
-def redirect_to_main(request):
-    """ Redirect logged-in users to /main """
-    if request.user.is_authenticated:
-        return redirect('main')  # ✅ Redirect to main
-    return redirect('login')  # ❌ If not logged in, redirect to login
 urlpatterns = [
     path("admin/", admin.site.urls),
-
     path('main/', include('mainPage.urls')),  # Include app-specific URLs
     path('', CustomLoginView.as_view(), name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),  # Logout pag
@@ -44,6 +37,7 @@ urlpatterns = [
     path('instrumentai/', include('Instrumentai.urls')),
     path('padaliniai/', include('Padaliniai.urls')),
     path('paskyra/', include('Paskyra.urls')),
+    path('repeticijos/', include('Repeticijos.urls')),
 
 ]
 

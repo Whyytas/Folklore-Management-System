@@ -9,49 +9,65 @@
     <hr>
     <ul class="nav flex-column">
         <li class="nav-item">
-            <a href="/main/" class="nav-link d-flex align-items-center mb-1 text-dark {% if request.path == '/main/' %} bg-secondary-subtle rounded-pill{% endif %}">
+            <a href="/main/"
+               class="nav-link d-flex align-items-center mb-1 text-dark {% if request.path == '/main/' %} bg-secondary-subtle rounded-pill{% endif %}">
                 <span class="material-symbols-outlined me-2 text-dark">dashboard</span>
                 {% trans 'Pagrindinis' %}
             </a>
         </li>
         <li class="nav-item">
-            <a href="/kuriniai/" class="nav-link d-flex align-items-center mb-1 text-dark {% if request.path == '/kuriniai/' %}bg-secondary-subtle rounded-pill{% endif %}">
+            <a href="/kuriniai/"
+               class="nav-link d-flex align-items-center mb-1 text-dark {% if request.path == '/kuriniai/' %}bg-secondary-subtle rounded-pill{% endif %}">
                 <span class="material-symbols-outlined me-2 text-dark">music_note</span>
                 {% trans 'Kūriniai' %}
             </a>
         </li>
         <li class="nav-item">
-            <a href="/programos/" class="nav-link d-flex align-items-center mb-1 text-dark {% if request.path == '/programos/' %}bg-secondary-subtle rounded-pill{% endif %}">
+            <a href="/repeticijos/"
+               class="nav-link d-flex align-items-center mb-1 text-dark {% if request.path == '/repeticijos/' %} bg-secondary-subtle rounded-pill{% endif %}">
+                <span class="material-symbols-outlined me-2 text-dark">schedule</span>
+                {% trans 'Repeticijos' %}
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="/programos/"
+               class="nav-link d-flex align-items-center mb-1 text-dark {% if request.path == '/programos/' %}bg-secondary-subtle rounded-pill{% endif %}">
                 <span class="material-symbols-outlined me-2 text-dark">format_list_bulleted</span>
                 {% trans 'Programos' %}
             </a>
         </li>
         <li class="nav-item">
-            <a href="/renginiai/" class="nav-link d-flex align-items-center mb-1 text-dark {% if request.path == '/renginiai/' %}bg-secondary-subtle rounded-pill{% endif %}">
+            <a href="/renginiai/"
+               class="nav-link d-flex align-items-center mb-1 text-dark {% if request.path == '/renginiai/' %}bg-secondary-subtle rounded-pill{% endif %}">
                 <span class="material-symbols-outlined me-2 text-dark">today</span>
                 {% trans 'Renginiai' %}
             </a>
         </li>
         <li class="nav-item">
-            <a href="/instrumentai/" class="nav-link d-flex align-items-center mb-1 text-dark {% if request.path == '/instrumentai/' %}bg-secondary-subtle rounded-pill{% endif %}">
+            <a href="/instrumentai/"
+               class="nav-link d-flex align-items-center mb-1 text-dark {% if request.path == '/instrumentai/' %}bg-secondary-subtle rounded-pill{% endif %}">
                 <span class="material-symbols-outlined me-2 text-dark">piano</span>
                 {% trans 'Instrumentai' %}
             </a>
         </li>
         <li class="nav-item">
-            <a href="/padaliniai/" class="nav-link d-flex align-items-center mb-1 text-dark {% if request.path == '/padaliniai/' %}bg-secondary-subtle rounded-pill{% endif %}">
+            <a href="/padaliniai/"
+               class="nav-link d-flex align-items-center mb-1 text-dark {% if request.path == '/padaliniai/' %}bg-secondary-subtle rounded-pill{% endif %}">
                 <span class="material-symbols-outlined me-2 text-dark">domain</span>
                 {% trans 'Padaliniai' %}
             </a>
         </li>
         <li class="nav-item">
-            <a href="/nariai/" class="nav-link d-flex align-items-center mb-1 text-dark {% if request.path == '/nariai/' %}bg-secondary-subtle rounded-pill{% endif %}">
+            <a href="/nariai/"
+               class="nav-link d-flex align-items-center mb-1 text-dark {% if request.path == '/nariai/' %}bg-secondary-subtle rounded-pill{% endif %}">
                 <span class="material-symbols-outlined me-2 text-dark">group</span>
                 {% trans 'Nariai' %}
             </a>
         </li>
         <li class="nav-item">
-            <a href="/ansambliai/" class="nav-link d-flex align-items-center mb-1 text-dark {% if request.path == '/ansambliai/' %}bg-secondary-subtle rounded-pill{% endif %}">
+            <a href="/ansambliai/"
+               class="nav-link d-flex align-items-center mb-1 text-dark {% if request.path == '/ansambliai/' %}bg-secondary-subtle rounded-pill{% endif %}">
                 <span class="material-symbols-outlined me-2 text-dark">groups</span>
                 {% trans 'Ansambliai' %}
             </a>
@@ -76,43 +92,50 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a href="/kuriniai/" class="nav-link text-dark {% if request.path == '/kuriniai/' %}bg-light rounded-pill{% endif %}">
+                <a href="/kuriniai/"
+                   class="nav-link text-dark {% if request.path == '/kuriniai/' %}bg-light rounded-pill{% endif %}">
                     <span class="material-symbols-outlined me-2 text-dark">music_note</span>
                     {% trans 'Kūriniai' %}
                 </a>
             </li>
             <li class="nav-item">
-                <a href="/programos/" class="nav-link text-dark {% if request.path == '/programos/' %}bg-light rounded-pill{% endif %}">
+                <a href="/programos/"
+                   class="nav-link text-dark {% if request.path == '/programos/' %}bg-light rounded-pill{% endif %}">
                     <span class="material-symbols-outlined me-2 text-dark">format_list_bulleted</span>
                     {% trans 'Programos' %}
                 </a>
             </li>
             <li class="nav-item">
-                <a href="/renginiai/" class="nav-link text-dark {% if request.path == '/renginiai/' %}bg-light rounded-pill{% endif %}">
+                <a href="/renginiai/"
+                   class="nav-link text-dark {% if request.path == '/renginiai/' %}bg-light rounded-pill{% endif %}">
                     <span class="material-symbols-outlined me-2 text-dark">today</span>
                     {% trans 'Renginiai' %}
                 </a>
             </li>
             <li class="nav-item">
-                <a href="/instrumentai/" class="nav-link text-dark {% if request.path == '/instrumentai/' %}bg-light rounded-pill{% endif %}">
+                <a href="/instrumentai/"
+                   class="nav-link text-dark {% if request.path == '/instrumentai/' %}bg-light rounded-pill{% endif %}">
                     <span class="material-symbols-outlined me-2 text-dark">piano</span>
                     {% trans 'Instrumentai' %}
                 </a>
             </li>
             <li class="nav-item">
-                <a href="/padaliniai/" class="nav-link text-dark {% if request.path == '/padaliniai/' %}bg-light rounded-pill{% endif %}">
+                <a href="/padaliniai/"
+                   class="nav-link text-dark {% if request.path == '/padaliniai/' %}bg-light rounded-pill{% endif %}">
                     <span class="material-symbols-outlined me-2 text-dark">domain</span>
                     {% trans 'Padaliniai' %}
                 </a>
             </li>
             <li class="nav-item">
-                <a href="/nariai/" class="nav-link text-dark {% if request.path == '/nariai/' %}bg-light rounded-pill{% endif %}">
+                <a href="/nariai/"
+                   class="nav-link text-dark {% if request.path == '/nariai/' %}bg-light rounded-pill{% endif %}">
                     <span class="material-symbols-outlined me-2 text-dark">group</span>
                     {% trans 'Nariai' %}
                 </a>
             </li>
             <li class="nav-item">
-                <a href="/ansambliai/" class="nav-link text-dark {% if request.path == '/ansambliai/' %}bg-light rounded-pill{% endif %}">
+                <a href="/ansambliai/"
+                   class="nav-link text-dark {% if request.path == '/ansambliai/' %}bg-light rounded-pill{% endif %}">
                     <span class="material-symbols-outlined me-2 text-dark">groups</span>
                     {% trans 'Ansambliai' %}
                 </a>

@@ -28,7 +28,7 @@ def kuriniai_add(request):
                     kurinys.trukme = get_video_duration(video_id)
 
             kurinys.save()
-            return redirect('./kuriniai')  # ✅ Redirect back to the list view
+            return redirect('/kuriniai')  # ✅ Redirect back to the list view
 
     else:
         form = KurinysForm()
