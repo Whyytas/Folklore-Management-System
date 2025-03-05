@@ -53,27 +53,41 @@ def program_create(request):
         "kuriniai": kuriniai,
         "TIPAS_CHOICES": tipai  # ✅ Ensure choices are passed to template
     })
+from django.http import JsonResponse
+
+from django.http import JsonResponse
+import json
+
 def program_edit(request, pk):
     programa = get_object_or_404(Programa, pk=pk)
+    kuriniai = Kurinys.objects.all()
+    selected_kuriniai = ProgramosKurinys.objects.filter(programa=programa).order_by("eile")
 
     if request.method == "POST":
-        form = ProgramaForm(request.POST, instance=programa)
-        if form.is_valid():
-            form.save()
+        try:
+            data = json.loads(request.body)
+            programa.pavadinimas = data.get("pavadinimas")
+            programa.tipas = data.get("tipas")
+            programa.save()
 
             # ✅ Update kūriniai ordering
             ProgramosKurinys.objects.filter(programa=programa).delete()  # Remove old entries
-            selected_kuriniai = request.POST.getlist('kuriniai')
-            for index, kurinys_id in enumerate(selected_kuriniai, start=1):
-                kurinys = Kurinys.objects.get(id=kurinys_id)
+            for index, kurinys_data in enumerate(data.get("kuriniai", []), start=1):
+                kurinys = Kurinys.objects.get(id=kurinys_data["id"])
                 ProgramosKurinys.objects.create(programa=programa, kurinys=kurinys, eile=index)
 
-            return redirect('programos')
-    else:
-        form = ProgramaForm(instance=programa)
+            return JsonResponse({"redirect": "/programos"}, status=200)  # ✅ JSON response for frontend redirect
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=400)
 
-    return render(request, 'programEdit.html', {'form': form, 'programa': programa})
-
+    context = {
+        "programa": programa,
+        "kuriniai": kuriniai,
+        "selected_kuriniai": selected_kuriniai,
+        "selected_kuriniai_ids": [pk.kurinys.id for pk in selected_kuriniai],
+        "TIPAS_CHOICES": Programa.PROGRAM_TIPAS,
+    }
+    return render(request, "programEdit.html", context)
 
 
 def istrinti_programa(request, pk):
