@@ -3,14 +3,45 @@
 {% block title %} Redaguoti Vartotoją {% endblock %}
 
 {% block content %}
+
+    <style>
+        .ansamblis-btn {
+            border: 1px solid black !important;
+            background-color: white;
+            color: black;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .ansamblis-btn.selected {
+            background-color: #28a745 !important;
+            color: white !important;
+        }
+    </style>
+
     <div class="container mt-4">
         <div class="row justify-content-center">
             <div class="col-md-6">
                 <div class="card shadow">
                     <div class="card-header py-3 text-center bg-warning text-dark">
-                        <h4 class="mb-0">Redaguoti vartotoją: {{ user.username }}</h4>
+                        <h4 class="mb-0">
+                            <span class="material-symbols-outlined me-2">edit</span>
+                            Redaguoti vartotoją: {{ user.username }}
+                        </h4>
                     </div>
                     <div class="card-body">
+
+                        <!-- ✅ Display Success & Error Messages -->
+                        {% if messages %}
+                            <div class="alert alert-dismissible fade show" role="alert">
+                                {% for message in messages %}
+                                    <div class="alert {% if message.tags == 'success' %}alert-success{% else %}alert-danger{% endif %}">
+                                        {{ message }}
+                                    </div>
+                                {% endfor %}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        {% endif %}
+
                         <form method="POST">
                             {% csrf_token %}
 
@@ -19,7 +50,8 @@
                                 <label for="id_username" class="form-label d-flex align-items-center">
                                     <span class="material-symbols-outlined me-2">person</span> Vartotojo vardas
                                 </label>
-                                {{ form.username }}
+                                <input type="text" class="form-control" id="id_username" name="username"
+                                       value="{{ user.username }}" required>
                             </div>
 
                             <!-- Email Field -->
@@ -27,7 +59,8 @@
                                 <label for="id_email" class="form-label d-flex align-items-center">
                                     <span class="material-symbols-outlined me-2">email</span> El. paštas
                                 </label>
-                                {{ form.email }}
+                                <input type="email" class="form-control" id="id_email" name="email"
+                                       value="{{ user.email }}" required>
                             </div>
 
                             <!-- Phone Number Field -->
@@ -35,7 +68,8 @@
                                 <label for="id_phone_number" class="form-label d-flex align-items-center">
                                     <span class="material-symbols-outlined me-2">phone</span> Telefono numeris
                                 </label>
-                                {{ form.phone_number }}
+                                <input type="text" class="form-control" id="id_phone_number" name="phone_number"
+                                       value="{{ user.phone_number|default:'' }}">
                             </div>
 
                             <!-- Role Dropdown -->
@@ -43,12 +77,39 @@
                                 <label for="id_role" class="form-label d-flex align-items-center">
                                     <span class="material-symbols-outlined me-2">category</span> Rolė
                                 </label>
-                                {{ form.role }}
+                                <select class="form-select" id="id_role" name="role" required>
+                                    {% for value, label in user.ROLE_CHOICES %}
+                                        <option value="{{ value }}" {% if user.role == value %}selected{% endif %}>
+                                            {{ label }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <!-- ✅ Ansambliai Selection with Bootstrap Button Toggles -->
+                            <div class="mb-4">
+                                <label class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">groups</span> Priskirti ansamblius
+                                </label>
+                                <div id="ansambliai-container" class="d-flex flex-column gap-2">
+                                    {% for ansamblis in all_ansambliai %}
+                                        <input type="checkbox" class="btn-check ansamblis-btn"
+                                               id="ansamblis-{{ ansamblis.id }}" name="ansambliai"
+                                               value="{{ ansamblis.id }}" autocomplete="off"
+                                               {% if ansamblis in user.ansambliai.all %}checked{% endif %}>
+                                        <label class="btn btn-outline-dark border-dark d-flex justify-content-between align-items-center fs-5"
+                                               for="ansamblis-{{ ansamblis.id }}">
+                                            <span>{{ ansamblis.pavadinimas }}</span>
+                                            <span class="material-symbols-outlined">add</span>
+                                        </label>
+                                    {% endfor %}
+                                </div>
                             </div>
 
                             <!-- Form Actions -->
                             <div class="d-flex justify-content-between mt-4">
-                                <a href="{% url 'nariai' %}" class="btn btn-outline-secondary d-flex align-items-center">
+                                <a href="{% url 'nariai' %}"
+                                   class="btn btn-outline-secondary d-flex align-items-center">
                                     <span class="material-symbols-outlined me-1">arrow_back</span> Atšaukti
                                 </a>
                                 <button type="submit" class="btn btn-outline-dark d-flex align-items-center">
@@ -61,4 +122,27 @@
             </div>
         </div>
     </div>
+
+    <!-- ✅ JavaScript for Instant Styling -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll(".ansamblis-btn").forEach(button => {
+                let label = document.querySelector(`label[for="${button.id}"]`);
+
+                if (button.checked) {
+                    label.classList.add("btn-success");
+                    label.classList.remove("btn-outline-dark");
+                    label.querySelector("span.material-symbols-outlined").innerText = "check";
+                }
+
+                button.addEventListener("change", function () {
+                    label.classList.toggle("btn-success", this.checked);
+                    label.classList.toggle("btn-outline-dark", !this.checked);
+                    label.querySelector("span.material-symbols-outlined").innerText =
+                        this.checked ? "check" : "add";
+                });
+            });
+        });
+    </script>
+
 {% endblock %}

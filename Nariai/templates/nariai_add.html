@@ -3,6 +3,8 @@
 {% block title %} Pridėti Naują Narį {% endblock %}
 
 {% block content %}
+
+
     <div class="container mt-4">
         <div class="row justify-content-center">
             <div class="col-md-6">
@@ -45,7 +47,8 @@
                                 <label for="id_username" class="form-label d-flex align-items-center">
                                     <span class="material-symbols-outlined me-2">person</span> Vartotojo vardas
                                 </label>
-                                {{ form.username }}
+                                <input type="text" class="form-control" id="id_username" name="username"
+                                       value="{{ form.username.value|default:'' }}" required>
                             </div>
 
                             <!-- Email Field -->
@@ -53,7 +56,8 @@
                                 <label for="id_email" class="form-label d-flex align-items-center">
                                     <span class="material-symbols-outlined me-2">email</span> El. paštas
                                 </label>
-                                {{ form.email }}
+                                <input type="email" class="form-control" id="id_email" name="email"
+                                       value="{{ form.email.value|default:'' }}" required>
                             </div>
 
                             <!-- Phone Number Field -->
@@ -61,35 +65,63 @@
                                 <label for="id_phone_number" class="form-label d-flex align-items-center">
                                     <span class="material-symbols-outlined me-2">phone</span> Telefono numeris
                                 </label>
-                                {{ form.phone_number }}
+                                <input type="text" class="form-control" id="id_phone_number" name="phone_number"
+                                       value="{{ form.phone_number.value|default:'' }}">
                             </div>
-
                             <!-- Role Dropdown -->
                             <div class="mb-4">
                                 <label for="id_role" class="form-label d-flex align-items-center">
                                     <span class="material-symbols-outlined me-2">category</span> Rolė
                                 </label>
-                                {{ form.role }}
+                                <select class="form-select" id="id_role" name="role" required>
+                                    {% for value, label in form.fields.role.choices %}
+                                        <option value="{{ value }}"
+                                                {% if form.role.value == value %}selected{% endif %}>{{ label }}</option>
+                                    {% endfor %}
+                                </select>
                             </div>
+
+
+                            <!-- ✅ Ansambliai Selection with Buttons -->
+                            <!-- ✅ Ansambliai Selection with Bootstrap Button Toggles -->
+                            <div class="mb-4">
+                                <label class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">groups</span> Pasirinkti ansamblius
+                                </label>
+                                <div id="ansambliai-container" class="d-flex flex-column gap-2">
+                                    {% for ansamblis in all_ansambliai %}
+                                        <input type="checkbox" class="btn-check ansamblis-btn"
+                                               id="ansamblis-{{ ansamblis.id }}" name="ansambliai"
+                                               value="{{ ansamblis.id }}" autocomplete="off">
+                                        <label class="btn btn-outline-dark border-dark d-flex justify-content-between align-items-center fs-5"
+                                               for="ansamblis-{{ ansamblis.id }}">
+                                            <span>{{ ansamblis.pavadinimas }}</span>
+                                            <span class="material-symbols-outlined">add</span>
+                                        </label>
+                                    {% endfor %}
+                                </div>
+                            </div>
+
 
                             <!-- Password Fields -->
                             <div class="mb-4">
                                 <label for="id_password1" class="form-label d-flex align-items-center">
                                     <span class="material-symbols-outlined me-2">lock</span> Slaptažodis
                                 </label>
-                                {{ form.password1 }}
+                                <input type="password" class="form-control" id="id_password1" name="password1" required>
                             </div>
 
                             <div class="mb-4">
                                 <label for="id_password2" class="form-label d-flex align-items-center">
                                     <span class="material-symbols-outlined me-2">lock</span> Pakartokite slaptažodį
                                 </label>
-                                {{ form.password2 }}
+                                <input type="password" class="form-control" id="id_password2" name="password2" required>
                             </div>
 
                             <!-- Form Actions -->
                             <div class="d-flex justify-content-between mt-4">
-                                <a href="{% url 'nariai' %}" class="btn btn-outline-secondary d-flex align-items-center">
+                                <a href="{% url 'nariai' %}"
+                                   class="btn btn-outline-secondary d-flex align-items-center">
                                     <span class="material-symbols-outlined me-1">arrow_back</span> Atšaukti
                                 </a>
                                 <button type="submit" class="btn btn-outline-dark d-flex align-items-center">
@@ -102,4 +134,29 @@
             </div>
         </div>
     </div>
+
+    <div id="selected-ansambliai"></div>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll(".ansamblis-btn").forEach(button => {
+            let label = document.querySelector(`label[for="${button.id}"]`);
+            if (button.checked) {
+                label.classList.add("btn-success");
+                label.classList.remove("btn-outline-dark");
+                label.querySelector("span.material-symbols-outlined").innerText = "check";
+            }
+            button.addEventListener("change", function () {
+                label.classList.toggle("btn-success", this.checked);
+                label.classList.toggle("btn-outline-dark", !this.checked);
+                label.querySelector("span.material-symbols-outlined").innerText =
+                    this.checked ? "check" : "add";
+            });
+        });
+    });
+</script>
+
+
+
+
 {% endblock %}

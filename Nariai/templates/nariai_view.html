@@ -3,46 +3,82 @@
 {% block title %} Naudotojo Informacija {% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card shadow">
-                <div class="card-header py-3 text-center bg-primary text-white">
-                    <h4 class="mb-0">{{ user.username }} - Informacija</h4>
-                </div>
-                <div class="card-body">
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item">
-                            <strong>Vartotojo vardas:</strong> {{ user.username }}
-                        </li>
-                        <li class="list-group-item">
-                            <strong>El. paštas:</strong> {{ user.email|default:"Nėra" }}
-                        </li>
-                        <li class="list-group-item">
-                            <strong>Telefono numeris:</strong> {{ user.phone_number|default:"Nėra" }}
-                        </li>
-                        <li class="list-group-item">
-                            <strong>Rolė:</strong> {{ user.get_role_display }}
-                        </li>
-                        <li class="list-group-item">
-                            <strong>Paskyros sukūrimo data:</strong> {{ user.date_joined|date:"Y-m-d H:i" }}
-                        </li>
-                        <li class="list-group-item">
-                            <strong>Paskutinį kartą prisijungė:</strong> {{ user.last_login|default:"Nėra" }}
-                        </li>
-                    </ul>
-                </div>
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow-lg rounded-4">
+                    <!-- Header -->
+                    <div class="card-header py-3 text-center bg-primary text-white rounded-top">
+                        <h4 class="mb-0">
+                            <span class="material-symbols-outlined me-2">person</span>
+                            {{ user.username }} - Informacija
+                        </h4>
+                    </div>
 
-                <!-- Action Buttons -->
-                <div class="card-footer d-flex justify-content-between">
-                    <a href="{% url 'nariai' %}" class="btn btn-outline-secondary">
-                        <span class="material-symbols-outlined me-1">arrow_back</span> Grįžti
-                    </a>
+                    <!-- Body -->
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex align-items-center">
+                                <span class="material-symbols-outlined text-primary me-2">badge</span>
+                                <strong>Vartotojo vardas:</strong>
+                                <span class="ms-2">{{ user.username }}</span>
+                            </li>
+                            <li class="list-group-item d-flex align-items-center">
+                                <span class="material-symbols-outlined text-primary me-2">mail</span>
+                                <strong>El. paštas:</strong>
+                                <span class="ms-2">{{ user.email|default:"Nėra" }}</span>
+                            </li>
+                            <li class="list-group-item d-flex align-items-center">
+                                <span class="material-symbols-outlined text-primary me-2">phone</span>
+                                <strong>Telefono numeris:</strong>
+                                <span class="ms-2">{{ user.phone_number|default:"Nėra" }}</span>
+                            </li>
+                            <li class="list-group-item d-flex align-items-center">
+                                <span class="material-symbols-outlined text-primary me-2">verified_user</span>
+                                <strong>Rolė:</strong>
+                                <span class="ms-2">{{ user.get_role_display }}</span>
+                            </li>
+                            <li class="list-group-item d-flex align-items-center">
+                                <span class="material-symbols-outlined text-primary me-2">event</span>
+                                <strong>Paskyros sukūrimo data:</strong>
+                                <span class="ms-2">{{ user.date_joined|date:"Y-m-d H:i" }}</span>
+                            </li>
+                            <li class="list-group-item d-flex align-items-center">
+                                <span class="material-symbols-outlined text-primary me-2">history</span>
+                                <strong>Paskutinį kartą prisijungė:</strong>
+                                <span class="ms-2">{{ user.last_login|default:"Nėra" }}</span>
+                            </li>
+
+                            <!-- ✅ Ansambliai Display -->
+                            <li class="list-group-item d-flex align-items-center">
+                                <span class="material-symbols-outlined text-primary me-2">groups</span>
+                                <strong>Ansambliai:</strong>
+                                <div class="ms-2">
+                                    {% if user.ansambliai.all %}
+                                        {% for ansamblis in user.ansambliai.all %}
+                                            <span class="badge bg-info text-dark fs-6 p-2 rounded-pill">
+                                                {{ ansamblis.pavadinimas }}
+                                            </span>
+                                        {% endfor %}
+                                    {% else %}
+                                        <span class="text-muted">Nėra priskirtų ansamblių</span>
+                                    {% endif %}
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Footer with Action Buttons -->
+                    <div class="card-footer d-flex justify-content-between bg-light rounded-bottom">
+                        <a href="{% url 'nariai' %}" class="btn btn-outline-secondary d-flex align-items-center">
+                            <span class="material-symbols-outlined me-1">arrow_back</span> Grįžti
+                        </a>
+                        <a href="{% url 'nariai_edit' user.id %}" class="btn btn-outline-success d-flex align-items-center">
+                            <span class="material-symbols-outlined me-1">edit</span> Redaguoti
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-
-
 {% endblock %}
