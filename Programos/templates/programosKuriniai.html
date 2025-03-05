@@ -1,90 +1,83 @@
 {% extends "layouts/base.html" %}
 
-{% block title %} Programa: {{ programa.pavadinimas }} {% endblock %}
-
-{% block stylesheets %}
-    <style>
-        .form-control {
-            margin-bottom: 10px;
-        }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .table th {
-            background-color: #f8f9fa;
-        }
-
-        .total-time {
-            font-weight: bold;
-            font-size: 18px;
-            color: #007bff;
-        }
-
-        .btn-back {
-            background: #007bff;
-            color: white;
-            transition: all 0.3s ease;
-        }
-
-        .btn-back:hover {
-            background: #0056b3;
-            color: white;
-        }
-    </style>
-{% endblock stylesheets %}
+{% block title %} Programa Peržiūra: {{ programa.pavadinimas }} {% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-    <div class="card shadow">
-        <div class="card-header bg-primary text-white">
-            <h4 class="mb-0">Programa: {{ programa.pavadinimas }}</h4>
-        </div>
-        <div class="card-body">
-            <h5 class="text-muted">Kūriniai šiame programoje</h5>
-            <div class="table-responsive">
-                <table class="table table-striped align-items-center">
-                    <thead>
-                        <tr>
-                            <th class="text-center">#</th>
-                            <th>Pavadinimas</th>
-                            <th>Tipas</th>
-                            <th class="text-center">Trukmė</th>
-                        </tr>
-                    </thead>
-                    <tbody id="kuriniai-list">
-                        {% if programos_kuriniai %}
-                            {% for pk in programos_kuriniai %}
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white text-center">
+                        <h4>{{ programa.pavadinimas }}</h4>
+                        <p class="mb-0">Programa Tipas: {{ programa.get_tipas_display }}</p>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="mb-3">Kūriniai</h5>
+                        <div class="table-responsive">
+                            <table class="table table-hover table-striped align-middle">
+                                <thead class="thead-dark">
                                 <tr>
-                                    <td class="text-center">{{ pk.eile }}</td>
-                                    <td>{{ pk.kurinys.pavadinimas }}</td>
-                                    <td>{{ pk.kurinys.tipas }}</td>
-                                    <td class="text-center" data-duration="{{ pk.kurinys.trukme }}">{{ pk.kurinys.trukme }}</td>
+                                    <th class="text-end">#</th>
+                                    <th class="text-start">Pavadinimas</th>
+                                    <th class="text-center">Tipas</th>
+                                    <th class="text-center">Trukmė</th>
+                                    <th class="text-center">Peržiūra</th>
                                 </tr>
-                            {% endfor %}
-                        {% else %}
-                            <tr>
-                                <td colspan="4" class="text-center text-muted">Nėra pridėtų kūrinių šiai programai.</td>
-                            </tr>
-                        {% endif %}
-                    </tbody>
-                </table>
-            </div>
+                                </thead>
+                                <tbody id="kuriniai-list">
+                                {% if programos_kuriniai %}
+                                    {% for pk in programos_kuriniai %}
+                                        <tr>
+                                            <td class="align-middle text-end">{{ pk.eile }}</td>
+                                            <td class="align-middle text-start fw-bold">{{ pk.kurinys.pavadinimas }}</td>
+                                            <td class="align-middle text-center">{{ pk.kurinys.tipas }}</td>
+                                            <td class="align-middle text-center" data-duration="{{ pk.kurinys.trukme }}">{{ pk.kurinys.trukme }}</td>
 
-            <!-- Total Time -->
-            <div class="d-flex justify-content-end mt-3">
-                <p class="total-time">Bendra trukmė: <span id="total-time">00:00</span></p>
+                                            <!-- ✅ Centered "Peržiūrėti" Button -->
+                                            <td class="align-middle text-center">
+                                                {% if pk.kurinys.youtube_url %}
+                                                    <div class="d-flex justify-content-center">
+                                                        <a href="{{ pk.kurinys.youtube_url }}" target="_blank"
+                                                           class="btn btn-primary d-flex align-items-center">
+                                                            <span class="material-symbols-outlined me-2">visibility</span>
+                                                            Peržiūrėti
+                                                        </a>
+                                                    </div>
+                                                {% else %}
+                                                    <span class="text-muted">—</span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <td colspan="5" class="text-center text-muted">Nėra pridėtų kūrinių šiai programai.</td>
+                                    </tr>
+                                {% endif %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- ✅ Total Time -->
+                        <div class="d-flex justify-content-end mt-3">
+                            <p class="total-time fw-bold text-primary">Bendra trukmė: <span id="total-time">00:00</span></p>
+                        </div>
+
+                        <!-- ✅ Back Button -->
+                        <div class="mt-4 text-end">
+                            <a href="{% url 'programos' %}"
+                               class="btn btn-outline-secondary d-flex align-items-center justify-content-center"
+                               style="width: 130px; height: 40px;">
+                                <span class="material-symbols-outlined me-2">arrow_back</span> Atgal
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-</div>
-{% endblock content %}
-
-{% block javascripts %}
-<script>
+    <script>
     document.addEventListener("DOMContentLoaded", function () {
         function calculateTotalTime() {
             let totalMinutes = 0;
@@ -92,7 +85,7 @@
             let durations = document.querySelectorAll("td[data-duration]");
 
             durations.forEach(cell => {
-                let timeParts = cell.dataset.duration.split(":");
+                let timeParts = cell.dataset.duration ? cell.dataset.duration.split(":") : ["0", "0"];
                 let minutes = parseInt(timeParts[0]) || 0;
                 let seconds = parseInt(timeParts[1]) || 0;
 
@@ -112,4 +105,8 @@
         calculateTotalTime();
     });
 </script>
-{% endblock javascripts %}
+{% endblock %}
+
+
+
+
