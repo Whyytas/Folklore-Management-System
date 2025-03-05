@@ -1,10 +1,39 @@
 {% extends 'layouts/base.html' %}
 
-{% block title %}Dashboard{% endblock %}
+{% block title %}Pagrindinis puslapis{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-    <h1>Welcome</h1>
-    <p>Main content goes here...</p>
-</div>
+    <div class="container mt-5">
+        <div class="card p-4 shadow-lg border-0 rounded-3">
+            <div class="text-center">
+                <h1 class="fw-bold text-primary">Sveiki, {{ user.username }}!</h1>
+                <p class="lead text-muted">Džiaugiamės jus matydami</p>
+            </div>
+
+            <hr>
+
+            <div class="mt-3">
+                <h4 class="text-secondary">👤 Jūsų rolė:</h4>
+                <p class="fs-5 fw-semibold text-dark">{{ user.get_role_display }}</p>
+            </div>
+
+            <div class="mt-3">
+                <h4 class="text-secondary">🎵 Jūsų ansambliai:</h4>
+                <ul class="list-group list-group-flush">
+                    {% if user.get_role_display == "Administratorius" %}
+                        <li class="list-group-item text-success">Jums priklauso visi ansambliai.</li>
+                    {% else %}
+                        {% for ansamblis in user.ansambliai.all %}
+                            <li class="list-group-item">
+                                <strong>{{ ansamblis.pavadinimas }}</strong> -
+                                <span class="text-muted">{{ ansamblis.miestas }}</span>
+                            </li>
+                        {% empty %}
+                            <li class="list-group-item text-danger">Jums nepriklauso jokie ansambliai.</li>
+                        {% endfor %}
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
 {% endblock %}
