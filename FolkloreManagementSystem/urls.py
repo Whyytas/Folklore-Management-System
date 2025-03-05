@@ -26,8 +26,8 @@ from Initial.views import CustomLoginView
 urlpatterns = [
     path("admin/", admin.site.urls),
     path('main/', include('mainPage.urls')),  # Include app-specific URLs
-    path('', CustomLoginView.as_view(), name='login'),
-    path('logout/', auth_views.LogoutView.as_view(), name='logout'),  # Logout pag
+    path('', CustomLoginView.as_view(template_name='login.html'), name='login'),
+    path('logout/', auth_views.LogoutView.as_view(next_page='/'), name='logout'),  # Logout pag
 
     path('ansambliai/', include('Ansambliai.urls')),
     path('nariai/', include('Nariai.urls')),
