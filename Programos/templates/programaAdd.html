@@ -3,281 +3,291 @@
 {% block title %} Pridėti Programą {% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-    <div class="row justify-content-center">
-        <div class="col-md-10">
-            <div class="card shadow">
-                <div class="card-header py-3 text-center bg-primary text-white">
-                    <h4 class="mb-0">Pridėti naują programą</h4>
-                </div>
-                <div class="card-body">
-                    <form id="programa-form">
-                        {% csrf_token %}
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <div class="card shadow">
+                    <div class="card-header py-3 text-center bg-primary text-white">
+                        <h4 class="mb-0">Pridėti naują programą</h4>
+                    </div>
+                    <div class="card-body">
+                        <form id="programa-form">
+                            {% csrf_token %}
 
-                        <!-- ✅ Pavadinimas Input -->
-                        <div class="mb-4">
-                            <label for="pavadinimas" class="form-label d-flex align-items-center">
-                                <span class="material-symbols-outlined me-2">music_note</span> Pavadinimas
-                            </label>
-                            <input type="text" class="form-control" id="pavadinimas" name="pavadinimas"
-                                   placeholder="Įveskite programos pavadinimą" required autocomplete="off">
-                        </div>
-
-                        <!-- ✅ Tipas Dropdown -->
-                        <div class="mb-4">
-                            <label for="tipasDropdown" class="form-label d-flex align-items-center">
-                                <span class="material-symbols-outlined me-2">category</span> Tipas
-                            </label>
-                            <div class="dropdown">
-                                <button class="btn btn-outline-secondary dropdown-toggle w-100" type="button"
-                                        id="tipasDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Pasirinkite tipą
-                                </button>
-                                <ul class="dropdown-menu w-100" id="tipasDropdownMenu">
-                                    {% if TIPAS_CHOICES %}
-                                        {% for choice_value, choice_label in TIPAS_CHOICES %}
-                                            <li>
-                                                <a class="dropdown-item"
-                                                   href="javascript:void(0);"
-                                                   onclick="selectTipas('{{ choice_value }}', '{{ choice_label }}')">
-                                                    {{ choice_label }}
-                                                </a>
-                                            </li>
-                                        {% endfor %}
-                                    {% else %}
-                                        <li class="text-muted dropdown-item disabled">Nėra galimų tipų</li>
-                                    {% endif %}
-                                </ul>
-                                <input type="hidden" id="tipasInput" name="tipas" value="">
+                            <!-- ✅ Pavadinimas Input -->
+                            <div class="mb-4">
+                                <label for="pavadinimas" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">music_note</span> Pavadinimas
+                                </label>
+                                <input type="text" class="form-control" id="pavadinimas" name="pavadinimas"
+                                       placeholder="Įveskite programos pavadinimą" required autocomplete="off">
                             </div>
-                        </div>
 
-                        <!-- ✅ Kūriniai Selection (LEFT) & Selected Kūriniai (RIGHT) -->
-                        <div class="row">
-                            <!-- Available Kūriniai -->
-                            <div class="col-md-6">
-                                <div class="card shadow-sm">
-                                    <div class="card-header bg-light">
-                                        <h5 class="mb-0">Visi kūriniai</h5>
-                                    </div>
-                                    <div class="card-body kuriniai-list" id="all-kuriniai">
-                                        {% for kurinys in kuriniai %}
-                                            <div class="kuriniai-item card mb-2" id="kurinys-{{ kurinys.id }}"
-                                                 data-id="{{ kurinys.id }}">
-                                                <div class="card-body d-flex justify-content-between align-items-center">
-                                                    <span class="fw-bold">{{ kurinys.pavadinimas }}</span>
-                                                    <!-- Use consistent add button style -->
-                                                    <button type="button"
-                                                            class="btn btn-outline-primary d-flex align-items-center justify-content-center"
-                                                            style="width: 40px; height: 40px;"
-                                                            onclick="moveKurinys({{ kurinys.id }}, '{{ kurinys.pavadinimas }}')">
-                                                        <span class="material-symbols-outlined">add_circle</span>
-                                                    </button>
+                            <!-- ✅ Trukmė Input -->
+                            <div class="mb-4">
+                                <label for="trukme" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">schedule</span> Trukmė (MM:SS)
+                                </label>
+                                <input type="text" class="form-control" id="trukme" name="trukme"
+                                       placeholder="Įveskite trukmę (MM:SS)" autocomplete="off">
+                            </div>
+
+
+                            <!-- ✅ Tipas Dropdown -->
+                            <div class="mb-4">
+                                <label for="tipasDropdown" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">category</span> Tipas
+                                </label>
+                                <div class="dropdown">
+                                    <button class="btn btn-outline-secondary dropdown-toggle w-100" type="button"
+                                            id="tipasDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <span id="tipasText">Pasirinkite tipą</span> <!-- ✅ Text updates dynamically -->
+                                    </button>
+                                    <ul class="dropdown-menu w-100" id="tipasDropdownMenu">
+                                        {% if TIPAS_CHOICES %}
+                                            {% for choice_value, choice_label in TIPAS_CHOICES %}
+                                                <li>
+                                                    <a class="dropdown-item" href="javascript:void(0);"
+                                                       onclick="selectTipas('{{ choice_value }}', '{{ choice_label }}')">
+                                                        {{ choice_label }}
+                                                    </a>
+                                                </li>
+                                            {% endfor %}
+                                        {% else %}
+                                            <li class="text-muted dropdown-item disabled">Nėra galimų tipų</li>
+                                        {% endif %}
+                                    </ul>
+                                    <input type="hidden" id="tipasInput" name="tipas" value="">
+                                </div>
+                            </div>
+
+                            <!-- ✅ Kūriniai Selection (LEFT) & Selected Kūriniai (RIGHT) -->
+                            <div class="row">
+                                <!-- Available Kūriniai -->
+                                <div class="col-md-6">
+                                    <div class="card shadow-sm">
+                                        <div class="card-header bg-light">
+                                            <h5 class="mb-0">Visi kūriniai</h5>
+                                        </div>
+                                        <div class="card-body kuriniai-list" id="all-kuriniai">
+                                            {% for kurinys in kuriniai %}
+                                                <div class="kuriniai-item card mb-2" id="kurinys-{{ kurinys.id }}"
+                                                     data-id="{{ kurinys.id }}" data-trukme="{{ kurinys.trukme }}">
+                                                    <div class="card-body d-flex justify-content-between align-items-center">
+                                                        <span class="fw-bold">{{ kurinys.pavadinimas }}</span>
+                                                        <button type="button"
+                                                                class="btn btn-outline-primary d-flex align-items-center justify-content-center"
+                                                                onclick="moveKurinys({{ kurinys.id }}, '{{ kurinys.pavadinimas }}', '{{ kurinys.trukme }}')">
+                                                            <span class="material-symbols-outlined me-1">add_circle</span>
+                                                            <span class="kurinys-trukme">{{ kurinys.trukme|default:"00:00" }}</span>
+                                                        </button>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        {% endfor %}
+                                            {% endfor %}
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <!-- Selected Kūriniai -->
-                            <div class="col-md-6">
-                                <div class="card shadow-sm">
-                                    <div class="card-header bg-light">
-                                        <h5 class="mb-0">Pasirinkti kūriniai</h5>
-                                    </div>
-                                    <div class="card-body selected-kuriniai" id="selected-kuriniai">
-                                        <p id="empty-message" class="text-muted text-center">Nėra pasirinktų kūrinių</p>
+
+                                <!-- Selected Kūriniai -->
+                                <!-- Selected Kūriniai -->
+                                <div class="col-md-6">
+                                    <div class="card shadow-sm">
+                                        <div class="card-header bg-light">
+                                            <h5 class="mb-0">Pasirinkti kūriniai</h5>
+                                        </div>
+                                        <div class="card-body selected-kuriniai" id="selected-kuriniai">
+                                            <p id="empty-message" class="text-muted text-center">Nėra pasirinktų
+                                                kūrinių</p>
+                                        </div>
+                                        <div class="card-footer text-end">
+                                            <strong>Bendra trukmė: <span id="total-trukme">00:00</span></strong>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
 
-                        <!-- ✅ Form Actions -->
-                        <div class="d-flex justify-content-between mt-4">
-                            <a href="{% url 'programos' %}"
-                               class="btn btn-outline-secondary d-flex align-items-center">
-                                <span class="material-symbols-outlined me-1">arrow_back</span> Atšaukti
-                            </a>
-                            <button type="submit" class="btn btn-outline-dark d-flex align-items-center">
-                                <span class="material-symbols-outlined me-1">save</span> Išsaugoti programą
-                            </button>
-                        </div>
-                    </form>
+                            </div>
+
+                            <!-- ✅ Form Actions -->
+                            <div class="d-flex justify-content-between mt-4">
+                                <a href="{% url 'programos' %}"
+                                   class="btn btn-outline-secondary d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-1">arrow_back</span> Atšaukti
+                                </a>
+                                <button type="submit" class="btn btn-outline-dark d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-1">save</span> Išsaugoti programą
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<!-- ✅ JavaScript for Tipas Dropdown -->
-<script>
-    function selectTipas(value, label) {
-        const dropdownButton = document.getElementById("tipasDropdown");
-        const hiddenInput = document.getElementById("tipasInput");
+    <!-- ✅ JavaScript for Tipas Dropdown -->
+    <script>
+        function selectTipas(value, label) {
+            const dropdownButton = document.getElementById("tipasDropdown");
+            const dropdownText = document.getElementById("tipasText"); // ✅ Update text
+            const hiddenInput = document.getElementById("tipasInput");
 
-        if (!dropdownButton || !hiddenInput) {
-            console.error("Dropdown elements are missing.");
-            return;
+            if (!dropdownButton || !dropdownText || !hiddenInput) {
+                console.error("Dropdown elements are missing.");
+                return;
+            }
+
+            dropdownText.innerText = label;  // ✅ Update button text dynamically
+            hiddenInput.value = value;  // ✅ Store selected value
         }
 
-        dropdownButton.innerText = label;
-        hiddenInput.value = value;
-    }
+        document.addEventListener("DOMContentLoaded", function () {
+            function updateTotalTrukme() {
+                let totalMinutes = 0;
+                let totalSeconds = 0;
+                let selectedKuriniai = document.querySelectorAll("#selected-kuriniai .kuriniai-item");
 
-    document.addEventListener("DOMContentLoaded", function () {
-        const tipasDropdownMenu = document.getElementById("tipasDropdownMenu");
-        if (!tipasDropdownMenu || tipasDropdownMenu.children.length === 0) {
-            console.warn("No options found for Tipas dropdown.");
-        }
-    });
-</script>
+                selectedKuriniai.forEach(item => {
+                    let duration = item.dataset.trukme ? item.dataset.trukme.trim() : "0:00";
+                    let timeParts = duration.split(":");
 
-<!-- ✅ JavaScript for Kūriniai and Form Submission -->
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-    // Update the "Nėra pasirinktų kūrinių" message dynamically
-    function updateEmptyMessage() {
-        let emptyMessage = document.getElementById("empty-message");
-        let selectedContainer = document.getElementById("selected-kuriniai");
+                    if (timeParts.length === 2) {
+                        let minutes = parseInt(timeParts[0]) || 0;
+                        let seconds = parseInt(timeParts[1]) || 0;
 
-        if (!emptyMessage || !selectedContainer) return;
+                        totalMinutes += minutes;
+                        totalSeconds += seconds;
+                    }
+                });
 
-        // If at least one kūrinys exists, hide the message
-        if (selectedContainer.children.length > 1) { // The first child is the message itself
-            emptyMessage.style.display = "none";
-        } else {
-            emptyMessage.style.display = "block";
-        }
-    }
+                // Convert excess seconds into minutes
+                totalMinutes += Math.floor(totalSeconds / 60);
+                totalSeconds = totalSeconds % 60;
 
-    // Add Kūrinys to the selected list
-    window.moveKurinys = function (id, name) {
-    let selectedContainer = document.getElementById("selected-kuriniai");
-    let kurinysItem = document.getElementById(`kurinys-${id}`);
-    if (!selectedContainer || !kurinysItem) return;
-    if (document.getElementById(`selected-${id}`)) return; // Prevent duplicates
+                document.getElementById("total-trukme").textContent =
+                    String(totalMinutes).padStart(2, "0") + ":" + String(totalSeconds).padStart(2, "0");
+            }
 
-    // Remove the item from "Visi kūriniai"
-    kurinysItem.style.display = "none";
+            // ✅ Move Kūrinys to "Pasirinkti kūriniai"
+            window.moveKurinys = function (id, name, trukme) {
+                let selectedContainer = document.getElementById("selected-kuriniai");
+                let availableItem = document.getElementById(`kurinys-${id}`);
 
-    // Create the selected item for "Pasirinkti kūriniai"
-    let listItem = document.createElement("div");
-    listItem.className = "kuriniai-item card mb-2";
-    listItem.id = `selected-${id}`;
-    listItem.setAttribute("data-id", id);
-    listItem.draggable = true;
-    listItem.innerHTML = `
-        <div class="card-body d-flex justify-content-between align-items-center">
-            <span class="fw-bold">${name}</span>
-            <button type="button"
-                    class="btn btn-outline-danger d-flex align-items-center justify-content-center"
-                    style="width: 40px; height: 40px;"
-                    onclick="removeKurinys(${id})">
-                <span class="material-symbols-outlined">remove_circle</span>
-            </button>
-        </div>
-    `;
+                if (!name || document.getElementById(`selected-${id}`)) return;
 
-    // Add Drag Events
-    listItem.addEventListener("dragstart", dragStart);
-    listItem.addEventListener("dragover", dragOver);
-    listItem.addEventListener("drop", dropItem);
-    listItem.addEventListener("dragend", dragEnd);
+                let listItem = document.createElement("div");
+                listItem.className = "kuriniai-item card mb-2";
+                listItem.id = `selected-${id}`;
+                listItem.dataset.id = id;
+                listItem.dataset.trukme = trukme || "00:00";  // ✅ Store Trukmė
 
-    selectedContainer.appendChild(listItem);
-    updateEmptyMessage();
-};
+                listItem.innerHTML = `
+            <div class="card-body d-flex justify-content-between align-items-center">
+                <span class="fw-bold">${name}</span>
+                <button type="button" class="btn btn-outline-danger d-flex align-items-center justify-content-center"
+                        onclick="removeKurinys(${id})">
+                    <span class="material-symbols-outlined me-1">remove_circle</span>
+                    <span class="kurinys-trukme">${trukme || "00:00"}</span>
+                </button>
+            </div>
+        `;
 
+                selectedContainer.appendChild(listItem);
+                if (availableItem) availableItem.remove();
+                updateTotalTrukme();  // ✅ Recalculate Trukmė
+            };
 
-    // Remove Kūrinys from the selected list
-    window.removeKurinys = function (id) {
-        let item = document.getElementById(`selected-${id}`);
-        if (item) item.remove();
-        updateEmptyMessage();
-    };
+            // ✅ Remove Kūrinys and return to "Visi kūriniai"
+            window.removeKurinys = function (id) {
+                let item = document.getElementById(`selected-${id}`);
+                let availableContainer = document.getElementById("all-kuriniai");
 
-    // Drag & Drop Handling
-    function dragStart(event) {
-        event.dataTransfer.setData("text/plain", event.target.getAttribute("data-id"));
-        event.target.classList.add("dragging");
-    }
+                if (!item) return;
 
-    function dragOver(event) {
-        event.preventDefault();
-        const draggingItem = document.querySelector(".dragging");
-        if (draggingItem) {
-            const dropTarget = event.target.closest(".kuriniai-item");
-            if (dropTarget && dropTarget !== draggingItem) {
-                let parent = document.getElementById("selected-kuriniai");
-                let children = [...parent.children];
-                let draggingIndex = children.indexOf(draggingItem);
-                let targetIndex = children.indexOf(dropTarget);
+                let name = item.querySelector("span.fw-bold").innerText;
+                let trukme = item.dataset.trukme;
+                item.remove();
 
-                if (draggingIndex < targetIndex) {
-                    parent.insertBefore(draggingItem, dropTarget.nextSibling);
-                } else {
-                    parent.insertBefore(draggingItem, dropTarget);
+                let newAvailableItem = document.createElement("div");
+                newAvailableItem.className = "kuriniai-item card mb-2";
+                newAvailableItem.id = `kurinys-${id}`;
+                newAvailableItem.dataset.id = id;
+
+                newAvailableItem.innerHTML = `
+            <div class="card-body d-flex justify-content-between align-items-center">
+                <span class="fw-bold">${name}</span>
+                <button type="button" class="btn btn-outline-primary d-flex align-items-center justify-content-center"
+                        onclick="moveKurinys(${id}, '${name}', '${trukme}')">
+                    <span class="material-symbols-outlined me-1">add_circle</span>
+                    <span class="kurinys-trukme">${trukme || "00:00"}</span>
+                </button>
+            </div>
+        `;
+
+                availableContainer.appendChild(newAvailableItem);
+                updateTotalTrukme();  // ✅ Recalculate Trukmė
+            };
+
+            updateTotalTrukme();  // ✅ Ensure initial calculation
+
+            // ✅ Handle Form Submission - Save and Redirect
+            document.getElementById("programa-form").addEventListener("submit", function (event) {
+                event.preventDefault();
+
+                let pavadinimas = document.getElementById("pavadinimas").value.trim();
+                let tipas = document.getElementById("tipasInput").value.trim();
+                let trukme = document.getElementById("trukme").value.trim();
+                let csrfToken = document.querySelector("[name=csrfmiddlewaretoken]").value;
+
+                let selectedKuriniai = [];
+                document.querySelectorAll("#selected-kuriniai .kuriniai-item").forEach((item, index) => {
+                    selectedKuriniai.push({id: item.dataset.id, eile: index + 1});
+                });
+
+                // ✅ Ensure all required fields are filled
+                if (!pavadinimas || !tipas || selectedKuriniai.length === 0) {
+                    alert("Užpildykite visus laukus ir pasirinkite bent vieną kūrinį!");
+                    return;
                 }
-            }
-        }
-    }
 
-    function dropItem(event) {
-        event.preventDefault();
-    }
+                let requestData = {
+                    pavadinimas: pavadinimas,
+                    tipas: tipas,
+                    trukme: trukme || null,  // ✅ Allow empty trukme
+                    kuriniai: selectedKuriniai
+                };
 
-    function dragEnd(event) {
-        event.target.classList.remove("dragging");
-    }
+                console.log("Sending JSON:", requestData);  // ✅ Debugging
 
-    // Handle Form Submission
-    document.getElementById("programa-form").addEventListener("submit", function (event) {
-        event.preventDefault();
+                fetch("{% url 'program_create' %}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": csrfToken
+                    },
+                    body: JSON.stringify(requestData)
+                }).then(response => {
+                    if (!response.ok) {
+                        return response.json().then(data => {
+                            throw new Error(data.error || "Nežinoma klaida");
+                        });
+                    }
+                    return response.json();
+                }).then(data => {
+                    if (data.redirect) {
+                        window.location.href = data.redirect;
+                    } else {
+                        alert("Nepavyko sukurti programos.");
+                    }
+                }).catch(error => {
+                    console.error("Klaida:", error);
+                    alert("Įvyko klaida siunčiant užklausą.");
+                });
+            });
 
-        let pavadinimas = document.getElementById("pavadinimas").value;
-        let tipas = document.getElementById("tipasInput").value;
-        let csrfToken = document.querySelector("[name=csrfmiddlewaretoken]").value;
-
-        if (!tipas) {
-            alert("Pasirinkite tipą!");
-            return;
-        }
-
-        let sortedKuriniai = [];
-        document.querySelectorAll("#selected-kuriniai .kuriniai-item").forEach((item, index) => {
-            sortedKuriniai.push({id: item.getAttribute("data-id"), eile: index + 1});
         });
+    </script>
 
-        if (sortedKuriniai.length === 0) {
-            alert("Pridėkite bent vieną kūrinį į programą!");
-            return;
-        }
 
-        fetch("{% url 'program_create' %}", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRFToken": csrfToken
-            },
-            body: JSON.stringify({
-                pavadinimas: pavadinimas,
-                tipas: tipas,
-                kuriniai: sortedKuriniai
-            })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.redirect) {
-                window.location.replace(data.redirect);
-            } else {
-                alert("Nepavyko išsaugoti programos.");
-            }
-        })
-        .catch(error => console.error("Klaida:", error));
-    });
 
-    updateEmptyMessage();
-});
-</script>
 {% endblock content %}

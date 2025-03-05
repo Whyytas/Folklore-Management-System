@@ -22,6 +22,8 @@
                                 <tr>
                                     <th class="text-end">#</th>  <!-- Align ID to the right -->
                                     <th class="text-start">Pavadinimas</th>  <!-- Align Pavadinimas to the left -->
+                                    <th class="text-center">Įrašo trukmė</th>
+                                    <th class="text-center">Trukmė</th>
                                     <th class="text-center">Tipas</th>
                                     <th class="text-center">Peržiūra</th>
                                     <th class="text-center">Valdyti</th>
@@ -33,23 +35,25 @@
                                     <tr>
                                         <td class="align-middle text-end">{{ forloop.counter }}</td>
                                         <td class="align-middle text-start fw-bold">{{ programa.pavadinimas }}</td>
+                                        <td class="text-center">{{ programa.calculate_trukme }}</td>
+                                        <!-- ✅ Calculated from kūriniai -->
+                                        <td class="text-center">{{ programa.trukme }}</td>  <!-- ✅ Stored in DB -->
                                         <td class="align-middle text-center">{{ programa.tipas }}</td>
 
-                                         <td class="align-middle text-center">
-                                                <div class="d-flex justify-content-center">
-                                                    <a href="{% url 'programos_kuriniai' programa.id %}"
-                                                       class="btn btn-primary d-flex align-items-center">
-                                                        <span class="material-symbols-outlined me-2">visibility</span>
-                                                        Peržiūrėti
-                                                    </a>
-                                                </div>
+                                        <td class="align-middle text-center">
+                                            <div class="d-flex justify-content-center">
+                                                <a href="{% url 'programos_kuriniai' programa.id %}"
+                                                   class="btn btn-primary d-flex align-items-center">
+                                                    <span class="material-symbols-outlined me-2">visibility</span>
+                                                    Peržiūrėti
+                                                </a>
+                                            </div>
 
                                         </td>
 
                                         <!-- ✅ Full Bootstrap Edit & Delete Buttons -->
                                         <td class="align-middle text-center">
                                             <div class="d-flex justify-content-center gap-2">
-
 
 
                                                 <!-- Edit Button -->

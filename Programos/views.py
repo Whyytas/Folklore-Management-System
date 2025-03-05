@@ -1,35 +1,38 @@
-import json
-
-from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import ProgramaForm
 from Kuriniai.models import Kurinys
 from .models import Programa, ProgramosKurinys
-from django.views.decorators.csrf import csrf_exempt
-
+import json
+from django.http import JsonResponse
 
 def programos_page(request):
-    programos = Programa.objects.all()  # ✅ Fetch programs from the database
+    programos = Programa.objects.all()
     return render(request, 'programos.html', {'programos': programos})
+
 
 def program_create(request):
     if request.method == "POST":
         try:
             data = json.loads(request.body)
+
             pavadinimas = data.get("pavadinimas")
             tipas = data.get("tipas")
-            kuriniai_data = data.get("kuriniai", [])
+            trukme = data.get("trukme") or None  # ✅ Allow empty input
 
+            if not pavadinimas or not tipas:
+                return JsonResponse({"error": "Trūksta reikiamų laukų!"}, status=400)
+
+            # ✅ Create Programa
             programa = Programa.objects.create(
                 pavadinimas=pavadinimas,
-                tipas=tipas
+                tipas=tipas,
+                trukme=trukme  # ✅ Save user input trukme
             )
 
             programos_kuriniai = []
-            kurinys_ids = [item["id"] for item in kuriniai_data]
+            kurinys_ids = [item["id"] for item in data.get("kuriniai", [])]
             kuriniai = {k.id: k for k in Kurinys.objects.filter(id__in=kurinys_ids)}
 
-            for item in kuriniai_data:
+            for item in data.get("kuriniai", []):
                 kurinys = kuriniai.get(int(item["id"]))
                 if kurinys:
                     programos_kuriniai.append(
@@ -49,14 +52,12 @@ def program_create(request):
 
     kuriniai = Kurinys.objects.all()
     tipai = Programa.PROGRAM_TIPAS  # ✅ Fetch from model dynamically
+
     return render(request, "programaAdd.html", {
         "kuriniai": kuriniai,
-        "TIPAS_CHOICES": tipai  # ✅ Ensure choices are passed to template
+        "TIPAS_CHOICES": tipai
     })
-from django.http import JsonResponse
 
-from django.http import JsonResponse
-import json
 
 def program_edit(request, pk):
     programa = get_object_or_404(Programa, pk=pk)
@@ -68,15 +69,17 @@ def program_edit(request, pk):
             data = json.loads(request.body)
             programa.pavadinimas = data.get("pavadinimas")
             programa.tipas = data.get("tipas")
+            programa.trukme = data.get("trukme") or None  # ✅ Save only user input, default to None
+
             programa.save()
 
             # ✅ Update kūriniai ordering
-            ProgramosKurinys.objects.filter(programa=programa).delete()  # Remove old entries
+            ProgramosKurinys.objects.filter(programa=programa).delete()
             for index, kurinys_data in enumerate(data.get("kuriniai", []), start=1):
                 kurinys = Kurinys.objects.get(id=kurinys_data["id"])
                 ProgramosKurinys.objects.create(programa=programa, kurinys=kurinys, eile=index)
 
-            return JsonResponse({"redirect": "/programos"}, status=200)  # ✅ JSON response for frontend redirect
+            return JsonResponse({"redirect": "/programos"}, status=200)
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=400)
 
@@ -88,7 +91,6 @@ def program_edit(request, pk):
         "TIPAS_CHOICES": Programa.PROGRAM_TIPAS,
     }
     return render(request, "programEdit.html", context)
-
 
 def istrinti_programa(request, pk):
     programa = get_object_or_404(Programa, pk=pk)

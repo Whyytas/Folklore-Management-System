@@ -31,7 +31,8 @@
                                             <td class="align-middle text-end">{{ pk.eile }}</td>
                                             <td class="align-middle text-start fw-bold">{{ pk.kurinys.pavadinimas }}</td>
                                             <td class="align-middle text-center">{{ pk.kurinys.tipas }}</td>
-                                            <td class="align-middle text-center" data-duration="{{ pk.kurinys.trukme }}">{{ pk.kurinys.trukme }}</td>
+                                            <td class="align-middle text-center"
+                                                data-duration="{{ pk.kurinys.trukme }}">{{ pk.kurinys.trukme }}</td>
 
                                             <!-- ✅ Centered "Peržiūrėti" Button -->
                                             <td class="align-middle text-center">
@@ -51,17 +52,25 @@
                                     {% endfor %}
                                 {% else %}
                                     <tr>
-                                        <td colspan="5" class="text-center text-muted">Nėra pridėtų kūrinių šiai programai.</td>
+                                        <td colspan="5" class="text-center text-muted">Nėra pridėtų kūrinių šiai
+                                            programai.
+                                        </td>
                                     </tr>
                                 {% endif %}
                                 </tbody>
                             </table>
                         </div>
 
-                        <!-- ✅ Total Time -->
-                        <div class="d-flex justify-content-end mt-3">
-                            <p class="total-time fw-bold text-primary">Bendra trukmė: <span id="total-time">00:00</span></p>
+                        <!-- ✅ Total Time Section -->
+                        <div class="d-flex justify-content-between mt-3">
+                            <p class="fw-bold text-secondary">
+                                Įrašų trukmė: <span id="recorded-time">00:00</span>
+                            </p>
+                            <p class="fw-bold text-primary">
+                                Bendra trukmė: <span id="total-time">{{ programa.trukme|default:"00:00" }}</span>
+                            </p>
                         </div>
+
 
                         <!-- ✅ Back Button -->
                         <div class="mt-4 text-end">
@@ -78,33 +87,33 @@
         </div>
     </div>
     <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        function calculateTotalTime() {
-            let totalMinutes = 0;
-            let totalSeconds = 0;
-            let durations = document.querySelectorAll("td[data-duration]");
+        document.addEventListener("DOMContentLoaded", function () {
+            function calculateRecordedTime() {
+                let totalMinutes = 0;
+                let totalSeconds = 0;
+                let durations = document.querySelectorAll("td[data-duration]");
 
-            durations.forEach(cell => {
-                let timeParts = cell.dataset.duration ? cell.dataset.duration.split(":") : ["0", "0"];
-                let minutes = parseInt(timeParts[0]) || 0;
-                let seconds = parseInt(timeParts[1]) || 0;
+                durations.forEach(cell => {
+                    let timeParts = cell.dataset.duration ? cell.dataset.duration.split(":") : ["0", "0"];
+                    let minutes = parseInt(timeParts[0]) || 0;
+                    let seconds = parseInt(timeParts[1]) || 0;
 
-                totalMinutes += minutes;
-                totalSeconds += seconds;
-            });
+                    totalMinutes += minutes;
+                    totalSeconds += seconds;
+                });
 
-            // Convert excess seconds into minutes
-            totalMinutes += Math.floor(totalSeconds / 60);
-            totalSeconds = totalSeconds % 60;
+                // Convert excess seconds into minutes
+                totalMinutes += Math.floor(totalSeconds / 60);
+                totalSeconds = totalSeconds % 60;
 
-            document.getElementById("total-time").textContent =
-                (totalMinutes < 10 ? "0" : "") + totalMinutes + ":" +
-                (totalSeconds < 10 ? "0" : "") + totalSeconds;
-        }
+                document.getElementById("recorded-time").textContent =
+                    String(totalMinutes).padStart(2, "0") + ":" + String(totalSeconds).padStart(2, "0");
+            }
 
-        calculateTotalTime();
-    });
-</script>
+            calculateRecordedTime();
+        });
+
+    </script>
 {% endblock %}
 
 
