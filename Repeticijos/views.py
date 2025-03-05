@@ -43,17 +43,17 @@ def repeticija_edit(request, pk):
 
     if request.method == "POST":
         try:
-            if not request.body.strip():  # ✅ Fix: Prevents empty JSON decoding error
+            if not request.body:
                 return JsonResponse({"error": "Empty request body"}, status=400)
 
-            data = json.loads(request.body.decode("utf-8"))  # ✅ Decode request body correctly
+            data = json.loads(request.body)
 
             repeticija.pavadinimas = data.get("pavadinimas", repeticija.pavadinimas)
             repeticija.data = data.get("data", repeticija.data)
 
-            # ✅ Ensure kūriniai list exists before updating
+            # ✅ Ensure kūriniai list exists and is valid
             kuriniai_ids = data.get("kuriniai", [])
-            if isinstance(kuriniai_ids, list):  # Ensure valid list
+            if isinstance(kuriniai_ids, list):
                 selected_kuriniai = Kurinys.objects.filter(id__in=kuriniai_ids)
                 repeticija.kuriniai.set(selected_kuriniai)
             else:
@@ -64,13 +64,18 @@ def repeticija_edit(request, pk):
 
         except json.JSONDecodeError as e:
             return JsonResponse({"error": f"Invalid JSON data: {str(e)}"}, status=400)
+        except Exception as e:
+            return JsonResponse({"error": f"Unexpected error: {str(e)}"}, status=500)
 
-    all_kuriniai = Kurinys.objects.all()
-    return render(request, "repeticija_edit.html", {
-        "repeticija": repeticija,
-        "all_kuriniai": all_kuriniai
-    })
+    # ✅ Return the edit page correctly on GET request
+    if request.method == "GET":
+        all_kuriniai = Kurinys.objects.all()
+        return render(request, "repeticija_edit.html", {
+            "repeticija": repeticija,
+            "all_kuriniai": all_kuriniai
+        })
 
+    return JsonResponse({"error": "Invalid request method"}, status=405)
 def repeticija_delete(request, pk):
     repeticija = get_object_or_404(Repeticija, pk=pk)
 
