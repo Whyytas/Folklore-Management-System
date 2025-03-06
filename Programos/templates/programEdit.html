@@ -188,96 +188,125 @@
     })
     .catch(error => console.error("Klaida:", error));
 });
+document.addEventListener("DOMContentLoaded", function () {
+    let selectedContainer = document.getElementById("selected-kuriniai");
+    let availableContainer = document.getElementById("all-kuriniai");
+    let emptyMessage = document.getElementById("empty-message");
 
-    document.addEventListener("DOMContentLoaded", function () {
-        function updateTotalTrukme() {
-            let totalMinutes = 0;
-            let totalSeconds = 0;
-            let selectedKuriniai = document.querySelectorAll("#selected-kuriniai .kuriniai-item");
+    function updateEmptyMessage() {
+        emptyMessage.style.display = selectedContainer.children.length > 0 ? "none" : "block";
+    }
 
-            selectedKuriniai.forEach(item => {
-                let duration = item.dataset.trukme ? item.dataset.trukme.trim() : "0:00";
-                let timeParts = duration.split(":");
+    function updateTotalTrukme() {
+        let totalMinutes = 0, totalSeconds = 0;
+        document.querySelectorAll("#selected-kuriniai .kuriniai-item").forEach(item => {
+            let duration = item.dataset.trukme || "00:00";
+            let [minutes, seconds] = duration.split(":").map(num => parseInt(num) || 0);
+            totalMinutes += minutes;
+            totalSeconds += seconds;
+        });
 
-                if (timeParts.length === 2) {
-                    let minutes = parseInt(timeParts[0]) || 0;
-                    let seconds = parseInt(timeParts[1]) || 0;
+        totalMinutes += Math.floor(totalSeconds / 60);
+        totalSeconds %= 60;
+        document.getElementById("total-trukme").textContent =
+            String(totalMinutes).padStart(2, "0") + ":" + String(totalSeconds).padStart(2, "0");
+    }
 
-                    totalMinutes += minutes;
-                    totalSeconds += seconds;
-                }
-            });
+    window.moveKurinys = function (id, name, trukme) {
+        if (document.getElementById(`selected-${id}`)) return;
 
-            // Convert excess seconds into minutes
-            totalMinutes += Math.floor(totalSeconds / 60);
-            totalSeconds = totalSeconds % 60;
+        let selectedItem = document.createElement("div");
+        selectedItem.className = "kuriniai-item card mb-2";
+        selectedItem.id = `selected-${id}`;
+        selectedItem.dataset.id = id;
+        selectedItem.dataset.trukme = trukme || "00:00";
+        selectedItem.draggable = true;
 
-            document.getElementById("total-trukme").textContent =
-                String(totalMinutes).padStart(2, "0") + ":" + String(totalSeconds).padStart(2, "0");
+        selectedItem.innerHTML = `
+            <div class="card-body d-flex justify-content-between align-items-center">
+                <span class="fw-bold">${name}</span>
+                <button type="button" class="btn btn-outline-danger"
+                        onclick="removeKurinys(${id}, '${name}', '${trukme}')">
+                    <span class="material-symbols-outlined me-1">remove_circle</span>
+                    <span class="kurinys-trukme">${trukme || "00:00"}</span>
+                </button>
+            </div>
+        `;
+
+        selectedItem.addEventListener("dragstart", dragStart);
+        selectedItem.addEventListener("dragover", dragOver);
+        selectedItem.addEventListener("drop", dropItem);
+        selectedItem.addEventListener("dragend", dragEnd);
+
+        selectedContainer.appendChild(selectedItem);
+        document.getElementById(`kurinys-${id}`).remove();
+        updateEmptyMessage();
+        updateTotalTrukme();
+    };
+
+    window.removeKurinys = function (id, name, trukme) {
+        let item = document.getElementById(`selected-${id}`);
+        if (!item) return;
+
+        let newAvailableItem = document.createElement("div");
+        newAvailableItem.className = "kuriniai-item card mb-2";
+        newAvailableItem.id = `kurinys-${id}`;
+        newAvailableItem.dataset.id = id;
+
+        newAvailableItem.innerHTML = `
+            <div class="card-body d-flex justify-content-between align-items-center">
+                <span class="fw-bold">${name}</span>
+                <button type="button" class="btn btn-outline-primary"
+                        onclick="moveKurinys(${id}, '${name}', '${trukme}')">
+                    <span class="material-symbols-outlined me-1">add_circle</span>
+                    <span class="kurinys-trukme">${trukme || "00:00"}</span>
+                </button>
+            </div>
+        `;
+
+        availableContainer.appendChild(newAvailableItem);
+        item.remove();
+        updateEmptyMessage();
+        updateTotalTrukme();
+    };
+
+    function dragStart(event) {
+        event.dataTransfer.setData("text", event.target.dataset.id);
+        event.target.classList.add("dragging");
+    }
+
+    function dragOver(event) {
+        event.preventDefault();
+        let draggingItem = document.querySelector(".dragging");
+        if (!draggingItem) return;
+
+        let dropTarget = event.target.closest(".kuriniai-item");
+        if (dropTarget && dropTarget !== draggingItem) {
+            let parent = document.getElementById("selected-kuriniai");
+            let children = [...parent.children];
+            let draggingIndex = children.indexOf(draggingItem);
+            let targetIndex = children.indexOf(dropTarget);
+            if (draggingIndex < targetIndex) {
+                parent.insertBefore(draggingItem, dropTarget.nextSibling);
+            } else {
+                parent.insertBefore(draggingItem, dropTarget);
+            }
         }
+    }
 
-        // ✅ Move Kūrinys to "Pasirinkti kūriniai"
-        window.moveKurinys = function (id, name, trukme) {
-            let selectedContainer = document.getElementById("selected-kuriniai");
-            let availableItem = document.getElementById(`kurinys-${id}`);
+    function dropItem(event) {
+        event.preventDefault();
+    }
 
-            if (!name || document.getElementById(`selected-${id}`)) return;
+    function dragEnd(event) {
+        event.target.classList.remove("dragging");
+    }
 
-            let listItem = document.createElement("div");
-            listItem.className = "kuriniai-item card mb-2";
-            listItem.id = `selected-${id}`;
-            listItem.dataset.id = id;
-            listItem.dataset.trukme = trukme || "00:00";  // ✅ Store Trukmė
+    updateEmptyMessage();
+    updateTotalTrukme();
+});
 
-            listItem.innerHTML = `
-                <div class="card-body d-flex justify-content-between align-items-center">
-                    <span class="fw-bold">${name}</span>
-                    <button type="button" class="btn btn-outline-danger d-flex align-items-center justify-content-center"
-                            onclick="removeKurinys(${id})">
-                        <span class="material-symbols-outlined me-1">remove_circle</span>
-                        <span class="kurinys-trukme">${trukme || "00:00"}</span>
-                    </button>
-                </div>
-            `;
 
-            selectedContainer.appendChild(listItem);
-            if (availableItem) availableItem.remove();
-            updateTotalTrukme();  // ✅ Recalculate Trukmė
-        };
-
-        // ✅ Remove Kūrinys and return to "Visi kūriniai"
-        window.removeKurinys = function (id) {
-            let item = document.getElementById(`selected-${id}`);
-            let availableContainer = document.getElementById("all-kuriniai");
-
-            if (!item) return;
-
-            let name = item.querySelector("span.fw-bold").innerText;
-            let trukme = item.dataset.trukme;
-            item.remove();
-
-            let newAvailableItem = document.createElement("div");
-            newAvailableItem.className = "kuriniai-item card mb-2";
-            newAvailableItem.id = `kurinys-${id}`;
-            newAvailableItem.dataset.id = id;
-
-            newAvailableItem.innerHTML = `
-                <div class="card-body d-flex justify-content-between align-items-center">
-                    <span class="fw-bold">${name}</span>
-                    <button type="button" class="btn btn-outline-primary d-flex align-items-center justify-content-center"
-                            onclick="moveKurinys(${id}, '${name}', '${trukme}')">
-                        <span class="material-symbols-outlined me-1">add_circle</span>
-                        <span class="kurinys-trukme">${trukme || "00:00"}</span>
-                    </button>
-                </div>
-            `;
-
-            availableContainer.appendChild(newAvailableItem);
-            updateTotalTrukme();  // ✅ Recalculate Trukmė
-        };
-
-        updateTotalTrukme();  // ✅ Ensure initial calculation
-    });
 </script>
 
 
