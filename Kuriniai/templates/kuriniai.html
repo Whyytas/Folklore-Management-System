@@ -1,10 +1,6 @@
 {% extends "layouts/base.html" %}
-
 {% block title %} Kūriniai Sąrašas {% endblock %}
-
-
 {% block content %}
-
     <div class="container-fluid mt-4">
         <div class="row justify-content-center">
             <div class="col-lg-10">
@@ -16,28 +12,34 @@
                             <span class="material-symbols-outlined me-2">add</span> Pridėti
                         </a>
                     </div>
-
+                    <!-- ✅ Styled Search Input (Left-Aligned, Icon Inside) -->
+                    <div class="d-flex justify-content-start mt-3 ms-2">
+                        <div class="input-group w-25">
+                            <span class="input-group-text">
+                                <span class="material-symbols-outlined">search</span>
+                            </span>
+                            <input type="text" id="searchInput" class="form-control"
+                                   placeholder="Ieškoti pagal pavadinimą...">
+                        </div>
+                    </div>
                     <div class="card-body">
                         <div class="table-responsive">
                             <table class="table table-hover table-striped align-middle">
                                 <thead class="thead-dark">
                                 <tr>
-                                    <th class="text-end">#</th>  <!-- Align ID to the right -->
-                                    <th class="text-start">Pavadinimas</th>  <!-- Align Pavadinimas to the left -->
+                                    <th class="text-end">#</th>
+                                    <th class="text-start">Pavadinimas</th>
                                     <th class="text-center">Tipas</th>
                                     <th class="text-center">Trukmė</th>
                                     <th class="text-center">Peržiūra</th>
                                     <th class="text-center">Valdyti</th>
                                 </tr>
                                 </thead>
-
                                 <tbody id="table-body">
                                 {% for kurinys in kuriniai %}
                                     <tr data-video="{{ kurinys.youtube_url }}">
                                         <td class="align-middle text-end">{{ forloop.counter }}</td>
-                                        <!-- Align ID to the right -->
-                                        <td class="align-middle text-start fw-bold">{{ kurinys.pavadinimas }}</td>
-                                        <!-- Align Pavadinimas to the left -->
+                                        <td class="align-middle text-start fw-bold kurinys-name">{{ kurinys.pavadinimas }}</td>
                                         <td class="align-middle text-center">{{ kurinys.tipas }}</td>
                                         <td class="align-middle text-center">
                                             {% if kurinys.trukme %}
@@ -46,8 +48,7 @@
                                                 ⏳ Loading...
                                             {% endif %}
                                         </td>
-
-                                        <!-- ✅ Centered "Peržiūrėti" Button with Text -->
+                                        <!-- ✅ Buttons for "Peržiūrėti" and "Žodžiai" -->
                                         <td class="align-middle text-center">
                                             <div class="d-flex justify-content-center gap-2">
                                                 {% if kurinys.youtube_url %}
@@ -59,8 +60,6 @@
                                                 {% else %}
                                                     <span class="text-muted">—</span>
                                                 {% endif %}
-
-                                                <!-- ✅ Show "Žodžiai" Button only for "Daina" type -->
                                                 {% if kurinys.tipas == "Daina" and kurinys.lyrics %}
                                                     <button class="btn btn-info d-flex align-items-center"
                                                             data-bs-toggle="modal" data-bs-target="#lyricsModal"
@@ -71,19 +70,14 @@
                                                 {% endif %}
                                             </div>
                                         </td>
-
-
-                                        <!-- ✅ Full Bootstrap Edit & Delete Buttons -->
+                                        <!-- ✅ Edit & Delete Buttons -->
                                         <td class="align-middle text-center">
                                             <div class="d-flex justify-content-center gap-2">
-                                                <!-- Edit Button -->
                                                 <a href="{% url 'kuriniai_edit' kurinys.id %}"
                                                    class="btn btn-success d-flex align-items-center justify-content-center"
                                                    style="width: 130px; height: 40px;">
                                                     <span class="material-symbols-outlined me-2">edit</span> Redaguoti
                                                 </a>
-
-                                                <!-- Delete Button -->
                                                 <button type="button"
                                                         class="btn btn-danger d-flex align-items-center justify-content-center"
                                                         data-bs-toggle="modal" data-bs-target="#deleteModal"
@@ -100,19 +94,17 @@
                                     </tr>
                                 {% endfor %}
                                 </tbody>
-
-
                             </table>
                         </div>
                     </div>
                 </div>
-
                 <!-- ✅ Improved DELETE CONFIRMATION MODAL -->
                 <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel"
                      aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered"> <!-- ✅ Center Modal -->
-                        <div class="modal-content shadow-lg border-0 rounded-4"> <!-- ✅ Softened corners -->
-
+                    <div class="modal-dialog modal-dialog-centered">
+                        <!-- ✅ Center Modal -->
+                        <div class="modal-content shadow-lg border-0 rounded-4">
+                            <!-- ✅ Softened corners -->
                             <!-- 🔴 Modal Header with Warning Icon -->
                             <div class="modal-header bg-danger text-white">
                                 <h5 class="modal-title d-flex align-items-center">
@@ -122,13 +114,11 @@
                                 <button type="button" class="btn-close btn-close-white"
                                         data-bs-dismiss="modal"></button>
                             </div>
-
                             <!-- 📝 Modal Body with More Padding -->
                             <div class="modal-body text-center py-4">
                                 <p class="fs-5">Ar tikrai norite ištrinti <strong id="kurinysName"></strong>?</p>
                                 <p class="text-muted">Šio veiksmo nebegalėsite atšaukti.</p>
                             </div>
-
                             <!-- ✅ Modal Footer with Centered Buttons -->
                             <div class="modal-footer d-flex justify-content-center border-0 pb-4">
                                 <button type="button"
@@ -136,7 +126,6 @@
                                         data-bs-dismiss="modal">
                                     <span class="material-symbols-outlined me-2">close</span> Atšaukti
                                 </button>
-
                                 <form id="deleteForm" method="post" onsubmit="delete_kurinys(event)">
                                     {% csrf_token %}
                                     <button type="submit"
@@ -145,7 +134,6 @@
                                     </button>
                                 </form>
                             </div>
-
                         </div>
                     </div>
                 </div>
@@ -165,7 +153,6 @@
                     </h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
-
                 <!-- Modal Body with Centered Content -->
                 <div class="modal-body text-center py-4">
                     <h5 class="fw-bold" id="lyricsTitle"></h5>
@@ -173,7 +160,6 @@
                     <pre class="text-wrap text-break text-center" id="lyricsText"
                          style="white-space: pre-line; font-size: 1.1rem;"></pre>
                 </div>
-
                 <!-- Modal Footer -->
                 <div class="modal-footer d-flex justify-content-center border-0 pb-4">
                     <button type="button" class="btn btn-outline-dark px-4 py-2 d-flex align-items-center"
@@ -185,6 +171,20 @@
         </div>
     </div>
     <script>
+        document.getElementById("searchInput").addEventListener("keyup", function () {
+            let searchValue = this.value.toLowerCase();
+            let rows = document.querySelectorAll("#table-body tr");
+
+            rows.forEach(row => {
+                let name = row.querySelector(".kurinys-name").textContent.toLowerCase();
+                if (name.includes(searchValue)) {
+                    row.style.display = "";
+                } else {
+                    row.style.display = "none";
+                }
+            });
+        });
+
         // ✅ Make these functions global
         function setDeleteUrl(kurinysId, kurinysName) {
             document.getElementById("kurinysName").innerText = kurinysName;
@@ -223,8 +223,4 @@
         });
     </script>
 {% endblock content %}
-
 <!-- ✅ JavaScript for Delete Confirmation -->
-
-
-
