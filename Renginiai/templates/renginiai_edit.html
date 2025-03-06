@@ -32,7 +32,8 @@
                                             </a></li>
                                         {% endfor %}
                                     </ul>
-                                    <input type="hidden" id="ansamblisInput" name="ansamblis" value="{{ renginys.ansamblis.id }}">
+                                    <input type="hidden" id="ansamblisInput" name="ansamblis"
+                                           value="{{ renginys.ansamblis.id }}">
                                 </div>
                             </div>
 
@@ -54,14 +55,15 @@
                                        value="{{ renginys.adresas }}" required>
                             </div>
 
-                            <!-- ✅ Data ir Laikas -->
+                            <!-- ✅ Data ir Laikas Input (Flatpickr for Calendar UI) -->
                             <div class="mb-4">
-                                <label for="data_laikas" class="form-label d-flex align-items-center">
+                                <label for="id_data_laikas" class="form-label d-flex align-items-center">
                                     <span class="material-symbols-outlined me-2">schedule</span> Data ir laikas
                                 </label>
-                                <input type="datetime-local" name="data_laikas" id="data_laikas" class="form-control"
-                                       value="{{ renginys.data_laikas|date:'Y-m-d\TH:i' }}" required>
+                                <input type="text" class="form-control" id="id_data_laikas" name="data_laikas"
+                                       value="{{ renginys.data_laikas }}" required autocomplete="off">
                             </div>
+
 
                             <!-- ✅ Programa Dropdown -->
                             <div class="mb-4">
@@ -92,7 +94,8 @@
 
                             <!-- ✅ Buttons -->
                             <div class="d-flex justify-content-between mt-4">
-                                <a href="{% url 'renginiai' %}" class="btn btn-outline-secondary d-flex align-items-center">
+                                <a href="{% url 'renginiai' %}"
+                                   class="btn btn-outline-secondary d-flex align-items-center">
                                     <span class="material-symbols-outlined me-1">arrow_back</span> Atšaukti
                                 </a>
                                 <button type="submit" class="btn btn-outline-dark d-flex align-items-center">
@@ -107,39 +110,29 @@
     </div>
 
     <!-- ✅ JavaScript for Dropdown Selection & Submitting Form -->
+
     <script>
-        function selectAnsamblis(value, label) {
-            document.getElementById("ansamblisDropdown").innerText = label;
-            document.getElementById("ansamblisInput").value = value;
-        }
-
-        function selectPrograma(value, label) {
-            document.getElementById("programaDropdown").innerText = label;
-            document.getElementById("programaInput").value = value;
-        }
-
-        document.getElementById("editRenginysForm").addEventListener("submit", async function(event) {
-            event.preventDefault();
-
-            const form = event.target;
-            const formData = new FormData(form);
-            const renginysId = "{{ renginys.id }}";
-
-            const response = await fetch(`/renginiai/${renginysId}/edit/`, {
-                method: "POST",
-                body: formData,
-                headers: {
-                    "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value
+    document.addEventListener("DOMContentLoaded", function () {
+        flatpickr("#id_data_laikas", {
+            enableTime: true, // ✅ Enables time selection
+            dateFormat: "Y-m-d H:i", // ✅ Lithuanian format
+            time_24hr: true, // ✅ Uses 24-hour format
+            minDate: "today", // ✅ Prevents past dates
+            locale: flatpickr.l10ns.lt, // ✅ Lithuanian localization
+            onClose: function(selectedDates, dateStr, instance) {
+                // ✅ Ensure correct format before submitting
+                let localDate = selectedDates[0];
+                if (localDate) {
+                    let formattedDate = localDate.getFullYear() + "-" +
+                                        String(localDate.getMonth() + 1).padStart(2, '0') + "-" +
+                                        String(localDate.getDate()).padStart(2, '0') + " " +
+                                        String(localDate.getHours()).padStart(2, '0') + ":" +
+                                        String(localDate.getMinutes()).padStart(2, '0');
+                    instance.input.value = formattedDate; // ✅ Ensure proper format
                 }
-            });
-
-            const data = await response.json();
-            if (data.success) {
-                alert("Renginys sėkmingai atnaujintas!");
-                window.location.href = "/renginiai/";
-            } else {
-                alert("Klaida atnaujinant renginį!");
             }
         });
-    </script>
+    });
+</script>
+
 {% endblock content %}

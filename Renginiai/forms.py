@@ -1,6 +1,5 @@
 from django import forms
 from .models import Renginys, Ansamblis, Programa
-from django.utils.timezone import localtime
 
 class RenginysForm(forms.ModelForm):
     ansamblis = forms.ModelChoiceField(
@@ -16,9 +15,13 @@ class RenginysForm(forms.ModelForm):
         widget=forms.Select(attrs={'class': 'form-control'})
     )
 
-    data_laikas = forms.DateTimeField(
-        widget=forms.DateTimeInput(attrs={"type": "datetime-local", "class": "form-control"}),
-        input_formats=["%Y-%m-%dT%H:%M"],  # ✅ Lithuanian format enforced
+    data_laikas = forms.CharField(
+        widget=forms.TextInput(attrs={
+            "class": "form-control",
+            "placeholder": "YYYY-MM-DD HH:MM",
+            "autocomplete": "off"
+        }),
+        required=True
     )
 
     class Meta:
@@ -27,5 +30,4 @@ class RenginysForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        if self.instance and self.instance.pk:
-            self.fields["data_laikas"].initial = localtime(self.instance.data_laikas).strftime("%Y-%m-%dT%H:%M")
+        self.fields["data_laikas"].initial = ""  # ✅ Force empty value

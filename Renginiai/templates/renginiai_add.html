@@ -42,13 +42,13 @@
                                        spellcheck="false">
                             </div>
 
-                            <!-- ✅ Data ir Laikas Input (Lithuanian Format, No Seconds) -->
+                            <!-- ✅ Data ir Laikas Input (Now Uses a Calendar Picker) -->
                             <div class="mb-4">
                                 <label for="id_data_laikas" class="form-label d-flex align-items-center">
                                     <span class="material-symbols-outlined me-2">schedule</span> Data ir laikas
                                 </label>
-                                <input type="datetime-local" class="form-control" id="id_data_laikas" name="data_laikas"
-                                       value="{{ form.data_laikas.value|date:'Y-m-d\TH:i' }}" required>
+                                <input type="text" class="form-control" id="id_data_laikas" name="data_laikas"
+                                       placeholder="Pasirinkite datą ir laiką" autocomplete="off" required>
                             </div>
 
 
@@ -76,29 +76,31 @@
             </div>
         </div>
     </div>
+
     <script>
     document.addEventListener("DOMContentLoaded", function () {
-        let dateInput = document.getElementById("id_data_laikas");
-
-        // Set min date to today (without seconds)
-        let now = new Date();
-        let minDate = now.toISOString().slice(0, 16); // YYYY-MM-DDTHH:MM
-        dateInput.min = minDate;
-
-        // Set max date to 2 years from now (without seconds)
-        let maxDate = new Date();
-        maxDate.setFullYear(now.getFullYear() + 2);
-        dateInput.max = maxDate.toISOString().slice(0, 16);
-
-        // Remove seconds from manually entered values
-        dateInput.addEventListener("change", function () {
-            let val = dateInput.value;
-            if (val.length === 16) {  // Ensure correct format
-                dateInput.value = val.substring(0, 16);
+        flatpickr("#id_data_laikas", {
+            enableTime: true,
+            dateFormat: "Y-m-d H:i", // ✅ Lithuanian format
+            time_24hr: true, // ✅ 24-hour time format
+            minDate: "today",
+            locale: flatpickr.l10ns.lt, // ✅ Lithuanian localization
+            onClose: function(selectedDates, dateStr, instance) {
+                // ✅ Convert selected time to UTC before submission
+                let localDate = selectedDates[0];
+                if (localDate) {
+                    let utcDate = new Date(localDate.getTime() - localDate.getTimezoneOffset() * 60000);
+                    instance.input.value = utcDate.toISOString().slice(0, 16).replace("T", " ");
+                }
             }
         });
     });
 </script>
+
+
+
+
+
 
 
 {% endblock content %}
