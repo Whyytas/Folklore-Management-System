@@ -20,6 +20,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 import os
+# settings.py
+TIME_ZONE = "Europe/Vilnius"
+USE_TZ = True  # Use timezone-aware datetime handling
 
 # ✅ Define the static URL
 STATIC_URL = '/static/'

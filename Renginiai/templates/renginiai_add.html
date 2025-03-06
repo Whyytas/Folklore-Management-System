@@ -19,21 +19,7 @@
                                 <label for="ansamblisDropdown" class="form-label d-flex align-items-center">
                                     <span class="material-symbols-outlined me-2">group</span> Ansamblis
                                 </label>
-                                <div class="dropdown">
-                                    <button class="btn btn-outline-secondary dropdown-toggle w-100" type="button"
-                                            id="ansamblisDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                        Pasirinkti ansamblį
-                                    </button>
-                                    <ul class="dropdown-menu w-100" id="ansamblisDropdownMenu">
-                                        {% for ansamblis in form.ansamblis.field.queryset %}
-                                            <li><a class="dropdown-item" href="#"
-                                                   onclick="selectAnsamblis('{{ ansamblis.id }}', '{{ ansamblis.pavadinimas }}')">
-                                                {{ ansamblis.pavadinimas }}
-                                            </a></li>
-                                        {% endfor %}
-                                    </ul>
-                                    <input type="hidden" id="ansamblisInput" name="ansamblis" value="">
-                                </div>
+                                {{ form.ansamblis }}
                             </div>
 
                             <!-- ✅ Pavadinimas Input -->
@@ -42,7 +28,8 @@
                                     <span class="material-symbols-outlined me-2">event</span> Pavadinimas
                                 </label>
                                 <input type="text" class="form-control" id="id_pavadinimas" name="pavadinimas"
-                                       placeholder="Įveskite renginio pavadinimą" required autocomplete="off" spellcheck="false">
+                                       placeholder="Įveskite renginio pavadinimą" required autocomplete="off"
+                                       spellcheck="false">
                             </div>
 
                             <!-- ✅ Adresas Input -->
@@ -51,21 +38,32 @@
                                     <span class="material-symbols-outlined me-2">location_on</span> Adresas
                                 </label>
                                 <input type="text" class="form-control" id="id_adresas" name="adresas"
-                                       placeholder="Įveskite renginio adresą" required autocomplete="off" spellcheck="false">
+                                       placeholder="Įveskite renginio adresą" required autocomplete="off"
+                                       spellcheck="false">
                             </div>
 
-                            <!-- ✅ Data ir Laikas Input -->
+                            <!-- ✅ Data ir Laikas Input (Lithuanian Format, No Seconds) -->
                             <div class="mb-4">
                                 <label for="id_data_laikas" class="form-label d-flex align-items-center">
                                     <span class="material-symbols-outlined me-2">schedule</span> Data ir laikas
                                 </label>
                                 <input type="datetime-local" class="form-control" id="id_data_laikas" name="data_laikas"
-                                       required>
+                                       value="{{ form.data_laikas.value|date:'Y-m-d\TH:i' }}" required>
+                            </div>
+
+
+                            <!-- ✅ Programa Dropdown -->
+                            <div class="mb-4">
+                                <label for="programaDropdown" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">playlist_add</span> Programa
+                                </label>
+                                {{ form.programa }}
                             </div>
 
                             <!-- ✅ Form Actions -->
                             <div class="d-flex justify-content-between mt-4">
-                                <a href="{% url 'renginiai' %}" class="btn btn-outline-secondary d-flex align-items-center">
+                                <a href="{% url 'renginiai' %}"
+                                   class="btn btn-outline-secondary d-flex align-items-center">
                                     <span class="material-symbols-outlined me-1">arrow_back</span> Atšaukti
                                 </a>
                                 <button type="submit" class="btn btn-outline-dark d-flex align-items-center">
@@ -78,12 +76,29 @@
             </div>
         </div>
     </div>
-
-    <!-- ✅ JavaScript for Dropdown -->
     <script>
-        function selectAnsamblis(value, label) {
-            document.getElementById("ansamblisDropdown").innerText = label;
-            document.getElementById("ansamblisInput").value = value;
-        }
-    </script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let dateInput = document.getElementById("id_data_laikas");
+
+        // Set min date to today (without seconds)
+        let now = new Date();
+        let minDate = now.toISOString().slice(0, 16); // YYYY-MM-DDTHH:MM
+        dateInput.min = minDate;
+
+        // Set max date to 2 years from now (without seconds)
+        let maxDate = new Date();
+        maxDate.setFullYear(now.getFullYear() + 2);
+        dateInput.max = maxDate.toISOString().slice(0, 16);
+
+        // Remove seconds from manually entered values
+        dateInput.addEventListener("change", function () {
+            let val = dateInput.value;
+            if (val.length === 16) {  // Ensure correct format
+                dateInput.value = val.substring(0, 16);
+            }
+        });
+    });
+</script>
+
+
 {% endblock content %}

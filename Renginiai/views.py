@@ -1,5 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
+
+from Ansambliai.models import Ansamblis
+from Programos.models import Programa
 from .models import Renginys
 from .forms import RenginysForm
 
@@ -18,11 +21,11 @@ def renginiai_add(request):
         form = RenginysForm()
 
     return render(request, 'renginiai_add.html', {'form': form})
-
-
 def renginiai_edit(request, renginys_id):
     """ Handles editing an existing Renginys """
     renginys = get_object_or_404(Renginys, id=renginys_id)
+    ansambliai = Ansamblis.objects.all()  # Fetch all ansambliai for the dropdown
+    programos = Programa.objects.all()  # Fetch all programos for selection
 
     if request.method == "POST":
         form = RenginysForm(request.POST, instance=renginys)
@@ -30,7 +33,11 @@ def renginiai_edit(request, renginys_id):
             form.save()
             return JsonResponse({"success": True})
 
-    return render(request, "renginiai_edit.html", {"renginys": renginys})
+    return render(request, "renginiai_edit.html", {
+        "renginys": renginys,
+        "ansambliai": ansambliai,
+        "programos": programos
+    })
 
 def delete_renginys(request, renginys_id):
     """ Deletes the selected Renginys """

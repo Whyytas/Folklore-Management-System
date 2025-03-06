@@ -20,9 +20,9 @@
                             <thead class="thead-dark">
                                 <tr>
                                     <th class="text-end">#</th>
-                                    <th class="text-start">Ansamblis</th>
                                     <th class="text-start">Pavadinimas</th>
                                     <th class="text-start">Adresas</th>
+                                    <th class="text-center">Programa</th>
                                     <th class="text-center">Data ir laikas</th>
                                     <th class="text-center">Valdyti</th>
                                 </tr>
@@ -32,10 +32,18 @@
                                 {% for renginys in renginiai %}
                                 <tr>
                                     <td class="align-middle text-end">{{ forloop.counter }}</td>
-                                    <td class="align-middle text-start">{{ renginys.ansamblis }}</td>
                                     <td class="align-middle text-start fw-bold">{{ renginys.pavadinimas }}</td>
                                     <td class="align-middle text-start">{{ renginys.adresas }}</td>
-                                    <td class="align-middle text-center">{{ renginys.data_laikas }}</td>
+                                    <td class="align-middle text-center">
+                                        {% if renginys.programa %}
+                                            {{ renginys.programa.pavadinimas }}
+                                        {% else %}
+                                            <span class="text-muted">Nėra programos</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="align-middle text-center">
+                                        {{ renginys.data_laikas|date:"Y-m-d H:i" }}
+                                    </td>
 
                                     <td class="align-middle text-center">
                                         <div class="d-flex justify-content-center gap-2">

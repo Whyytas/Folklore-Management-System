@@ -63,6 +63,33 @@
                                        value="{{ renginys.data_laikas|date:'Y-m-d\TH:i' }}" required>
                             </div>
 
+                            <!-- ✅ Programa Dropdown -->
+                            <div class="mb-4">
+                                <label for="programaDropdown" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">playlist_add</span> Programa
+                                </label>
+                                <div class="dropdown">
+                                    <button class="btn btn-outline-secondary dropdown-toggle w-100" type="button"
+                                            id="programaDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                        {% if renginys.programa %}
+                                            {{ renginys.programa.pavadinimas }}
+                                        {% else %}
+                                            Pasirinkti programą...
+                                        {% endif %}
+                                    </button>
+                                    <ul class="dropdown-menu w-100" id="programaDropdownMenu">
+                                        {% for programa in programos %}
+                                            <li><a class="dropdown-item" href="#"
+                                                   onclick="selectPrograma('{{ programa.id }}', '{{ programa.pavadinimas }}')">
+                                                {{ programa.pavadinimas }}
+                                            </a></li>
+                                        {% endfor %}
+                                    </ul>
+                                    <input type="hidden" id="programaInput" name="programa"
+                                           value="{% if renginys.programa %}{{ renginys.programa.id }}{% endif %}">
+                                </div>
+                            </div>
+
                             <!-- ✅ Buttons -->
                             <div class="d-flex justify-content-between mt-4">
                                 <a href="{% url 'renginiai' %}" class="btn btn-outline-secondary d-flex align-items-center">
@@ -84,6 +111,11 @@
         function selectAnsamblis(value, label) {
             document.getElementById("ansamblisDropdown").innerText = label;
             document.getElementById("ansamblisInput").value = value;
+        }
+
+        function selectPrograma(value, label) {
+            document.getElementById("programaDropdown").innerText = label;
+            document.getElementById("programaInput").value = value;
         }
 
         document.getElementById("editRenginysForm").addEventListener("submit", async function(event) {
