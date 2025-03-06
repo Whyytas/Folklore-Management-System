@@ -28,7 +28,9 @@
                                 <label for="data" class="form-label d-flex align-items-center">
                                     <span class="material-symbols-outlined me-2">event</span> Data
                                 </label>
-                                <input type="date" class="form-control" id="data" name="data" required>
+                                <input type="text" class="form-control" id="data" name="data"
+                                       placeholder="Pasirinkite datą ir laiką" autocomplete="off" required>
+
                             </div>
 
                             <!-- ✅ Kūriniai Selection -->
@@ -96,6 +98,22 @@
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             let kuriniaiMap = {};
+
+            flatpickr("#data", {
+                enableTime: true,
+                dateFormat: "Y-m-d H:i", // ✅ Lithuanian format
+                time_24hr: true, // ✅ Use 24-hour time format
+                minDate: "today",
+                locale: flatpickr.l10ns.lt, // ✅ Set Lithuanian localization
+                onClose: function (selectedDates, dateStr, instance) {
+                    // ✅ Convert local time to UTC before submission
+                    let localDate = selectedDates[0];
+                    if (localDate) {
+                        let utcDate = new Date(localDate.getTime() - localDate.getTimezoneOffset() * 60000);
+                        instance.input.value = utcDate.toISOString().slice(0, 16).replace("T", " ");
+                    }
+                }
+            });
 
             function updateEmptyMessage() {
                 let emptyMessage = document.getElementById("empty-message");

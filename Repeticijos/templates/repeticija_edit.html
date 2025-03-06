@@ -28,8 +28,10 @@
                                 <label for="data" class="form-label d-flex align-items-center">
                                     <span class="material-symbols-outlined me-2">event</span> Data
                                 </label>
-                                <input type="date" class="form-control" id="data" name="data"
-                                       value="{{ repeticija.data|date:'Y-m-d' }}" required>
+                                <input type="text" class="form-control" id="data" name="data"
+                                       value="{{ repeticija.data|date:'Y-m-d H:i' }}" required autocomplete="off">
+
+
                             </div>
 
                             <!-- ✅ Kūriniai Selection -->
@@ -144,7 +146,12 @@
                     "Content-Type": "application/json",
                     "X-CSRFToken": csrfToken
                 },
-                body: JSON.stringify(requestData)
+                body: JSON.stringify({
+                    pavadinimas: pavadinimas,
+                    data: data.trim().slice(0, 16),  // ✅ Ensure correct format (YYYY-MM-DD HH:MM)
+                    kuriniai: selectedKuriniai
+                })
+
             }).then(response => {
                 if (!response.ok) {
                     return response.json().then(data => {
@@ -175,7 +182,21 @@
 
                 totalMinutes += Math.floor(totalSeconds / 60);
                 totalSeconds %= 60;
-
+                flatpickr("#data", {
+                    enableTime: true,
+                    dateFormat: "Y-m-d H:i", // ✅ Lithuanian format with time
+                    time_24hr: true, // ✅ Use 24-hour format
+                    minDate: "today",
+                    locale: flatpickr.l10ns.lt, // ✅ Lithuanian localization
+                    onClose: function (selectedDates, dateStr, instance) {
+                        // ✅ Convert local time to UTC before submission
+                        let localDate = selectedDates[0];
+                        if (localDate) {
+                            let utcDate = new Date(localDate.getTime() - localDate.getTimezoneOffset() * 60000);
+                            instance.input.value = utcDate.toISOString().slice(0, 16).replace("T", " ");
+                        }
+                    }
+                });
                 document.getElementById("total-trukme").textContent =
                     String(totalMinutes).padStart(2, "0") + ":" + String(totalSeconds).padStart(2, "0");
             }

@@ -34,7 +34,7 @@
                                     <tr>
                                         <td class="align-middle text-end">{{ forloop.counter }}</td>
                                         <td class="align-middle text-start fw-bold">{{ repeticija.pavadinimas }}</td>
-                                        <td class="align-middle text-center">{{ repeticija.data }}</td>
+                                        <td class="align-middle text-center">{{ repeticija.data|date:"Y-m-d" }} {{ repeticija.data|time:"H:i" }}</td>
                                         <td class="align-middle text-center">
                                             {% for kurinys in repeticija.kuriniai.all %}
                                                 <span class="badge bg-secondary">{{ kurinys.pavadinimas }}</span>

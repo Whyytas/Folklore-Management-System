@@ -2,7 +2,7 @@ import json
 
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
-
+from datetime import datetime
 from Kuriniai.models import Kurinys
 from Repeticijos.forms import RepeticijaForm
 from Repeticijos.models import Repeticija
@@ -37,7 +37,6 @@ def repeticija_create(request):
     kuriniai = Kurinys.objects.all()  # ✅ Fetch all kūriniai
     return render(request, "repeticija_add.html", {"kuriniai": kuriniai})
 
-
 def repeticija_edit(request, pk):
     repeticija = get_object_or_404(Repeticija, pk=pk)
 
@@ -49,9 +48,17 @@ def repeticija_edit(request, pk):
             data = json.loads(request.body)
 
             repeticija.pavadinimas = data.get("pavadinimas", repeticija.pavadinimas)
-            repeticija.data = data.get("data", repeticija.data)
 
-            # ✅ Ensure kūriniai list exists and is valid
+            # 🔥 Convert string to datetime format
+            date_value = data.get("data", repeticija.data.strftime('%Y-%m-%d %H:%M'))
+
+            # 🔥 Ensure the string is in the correct format (remove extra "00:00")
+            date_value = date_value.strip()  # Remove extra spaces
+            date_value = date_value[:16]  # Keep only 'YYYY-MM-DD HH:MM'
+
+            # 🔥 Convert to datetime
+            repeticija.data = datetime.strptime(date_value, '%Y-%m-%d %H:%M')
+
             kuriniai_ids = data.get("kuriniai", [])
             if isinstance(kuriniai_ids, list):
                 selected_kuriniai = Kurinys.objects.filter(id__in=kuriniai_ids)
@@ -62,12 +69,11 @@ def repeticija_edit(request, pk):
             repeticija.save()
             return JsonResponse({"redirect": "/repeticijos"})
 
-        except json.JSONDecodeError as e:
-            return JsonResponse({"error": f"Invalid JSON data: {str(e)}"}, status=400)
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Invalid JSON data"}, status=400)
         except Exception as e:
-            return JsonResponse({"error": f"Unexpected error: {str(e)}"}, status=500)
+            return JsonResponse({"error": str(e)}, status=500)
 
-    # ✅ Return the edit page correctly on GET request
     if request.method == "GET":
         all_kuriniai = Kurinys.objects.all()
         return render(request, "repeticija_edit.html", {
@@ -76,6 +82,8 @@ def repeticija_edit(request, pk):
         })
 
     return JsonResponse({"error": "Invalid request method"}, status=405)
+
+
 def repeticija_delete(request, pk):
     repeticija = get_object_or_404(Repeticija, pk=pk)
 
