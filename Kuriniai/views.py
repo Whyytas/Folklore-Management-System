@@ -3,6 +3,10 @@ import logging
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import KurinysForm
 from django.conf import settings
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from .models import Kurinys
+import re
 
 # Set up logging
 logger = logging.getLogger(__name__)
@@ -35,22 +39,36 @@ def kuriniai_add(request):
 
     return render(request, 'kuriniaiAdd.html', {'form': form})
 
+
 def kuriniai_edit(request, kurinys_id):
+    """Handles displaying the edit form (GET) and saving updates (POST)"""
+
     kurinys = get_object_or_404(Kurinys, id=kurinys_id)
 
-    if request.method == "POST":
-        kurinys.pavadinimas = request.POST.get("pavadinimas")
-        kurinys.tipas = request.POST.get("tipas")
-        kurinys.youtube_url = request.POST.get("youtube_url", "").strip()
-        kurinys.trukme = request.POST.get("trukme")
+    # ✅ Serve the edit page with a form for GET requests
+    if request.method == "GET":
+        form = KurinysForm(instance=kurinys)
+        return render(request, "kuriniaiEdit.html", {"kurinys": kurinys, "form": form})
 
-        kurinys.save()
-        return JsonResponse({"success": True})
+    # ✅ Handle the form submission via POST
+    elif request.method == "POST":
+        form = KurinysForm(request.POST, instance=kurinys)
+        if form.is_valid():
+            kurinys = form.save(commit=False)
 
-    return render(request, "kuriniaiEdit.html", {
-        "kurinys": kurinys,
-        "TIPAS_CHOICES": Kurinys.TIPAS_CHOICES  # Pass choices dynamically
-    })
+            # ✅ Always update `trukmė` if YouTube URL exists
+            video_id = extract_video_id(kurinys.youtube_url)
+            if video_id:
+                new_trukme = get_video_duration(video_id)
+                if new_trukme:
+                    kurinys.trukme = new_trukme
+
+            kurinys.save()
+            return JsonResponse({"success": True, "trukme": kurinys.trukme})
+
+        return JsonResponse({"success": False, "error": "Invalid form data"}, status=400)
+
+    return JsonResponse({"success": False, "error": "Invalid request method"}, status=405)
 
 def delete_kurinys(request, kurinys_id):
     """ Deletes the selected Kūrinys """
@@ -61,10 +79,7 @@ def delete_kurinys(request, kurinys_id):
 
     return JsonResponse({"error": "Neteisingas užklausos metodas"}, status=400)
 
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from .models import Kurinys
-import re
+
 
 def extract_video_id(url):
     """ Extract video ID from YouTube URL """
@@ -112,3 +127,18 @@ def refresh_trukme(request):
 
     return JsonResponse({"success": True, "updated": updated_count})
 
+def fetch_trukme(request):
+    """API: Fetch YouTube duration based on URL"""
+    if request.method != "POST":
+        return JsonResponse({"success": False, "error": "Invalid request method"}, status=405)
+
+    youtube_url = request.POST.get("youtube_url", "").strip()
+    if not youtube_url:
+        return JsonResponse({"success": False, "error": "No URL provided"}, status=400)
+
+    video_id = extract_video_id(youtube_url)
+    if not video_id:
+        return JsonResponse({"success": False, "error": "Invalid YouTube URL"}, status=400)
+
+    trukme = get_video_duration(video_id)
+    return JsonResponse({"success": True, "trukme": trukme})

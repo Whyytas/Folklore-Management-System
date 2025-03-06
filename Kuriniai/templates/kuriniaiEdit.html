@@ -46,18 +46,20 @@
                                        value="{{ kurinys.youtube_url }}">
                             </div>
 
-                            <!-- ✅ Trukmė -->
-                            <div class="mb-4">
-                                <label for="trukme" class="form-label d-flex align-items-center">
-                                    <span class="material-symbols-outlined me-2">timer</span> Trukmė
+                            <!-- ✅ "Žodžiai" Textarea (Hidden by Default) -->
+                            <div class="mb-4" id="lyricsContainer"
+                                 style="display: {% if kurinys.tipas == 'Daina' %}block{% else %}none{% endif %};">
+                                <label for="lyrics" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">library_books</span> Žodžiai
                                 </label>
-                                <input type="text" name="trukme" id="trukme" class="form-control"
-                                       value="{{ kurinys.trukme }}">
+                                <textarea class="form-control" id="lyrics" name="lyrics" rows="5"
+                                          placeholder="Įveskite dainos žodžius">{{ kurinys.lyrics }}</textarea>
                             </div>
 
                             <!-- ✅ Buttons -->
                             <div class="d-flex justify-content-between mt-4">
-                                <a href="{% url 'kuriniai' %}" class="btn btn-outline-secondary d-flex align-items-center">
+                                <a href="{% url 'kuriniai' %}"
+                                   class="btn btn-outline-secondary d-flex align-items-center">
                                     <span class="material-symbols-outlined me-1">arrow_back</span> Atšaukti
                                 </a>
                                 <button type="submit" class="btn btn-outline-dark d-flex align-items-center">
@@ -73,28 +75,58 @@
 
     <!-- ✅ JavaScript for Submitting Form -->
     <script>
-        document.getElementById("editKurinysForm").addEventListener("submit", async function(event) {
-            event.preventDefault();
+        document.addEventListener("DOMContentLoaded", function () {
+            const form = document.getElementById("editKurinysForm");
+            const trukmeInput = document.getElementById("trukme");
+            const tipasSelect = document.getElementById("tipas");
+            const lyricsContainer = document.getElementById("lyricsContainer");
 
-            const form = event.target;
-            const formData = new FormData(form);
-            const kurinysId = "{{ kurinys.id }}"; 
+            if (!form) {
+                console.error("Form element not found!");
+                return;
+            }
 
-            const response = await fetch(`/kuriniai/${kurinysId}/edit/`, {
-                method: "POST",
-                body: formData,
-                headers: {
-                    "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value
+            // ✅ Show or hide lyrics box based on selected tipas
+            tipasSelect.addEventListener("change", function () {
+                if (this.value === "Daina") {
+                    lyricsContainer.style.display = "block";
+                } else {
+                    lyricsContainer.style.display = "none";
                 }
             });
 
-            const data = await response.json();
-            if (data.success) {
-                alert("Kūrinys sėkmingai atnaujintas!");
-                window.location.href = "/kuriniai/";
-            } else {
-                alert("Klaida atnaujinant kūrinį!");
-            }
+            form.addEventListener("submit", async function (event) {
+                event.preventDefault();
+
+                const formData = new FormData(form);
+                const kurinysId = "{{ kurinys.id }}";
+
+                if (trukmeInput) {
+                    trukmeInput.value = "⏳ Atnaujinama...";
+                }
+
+                const response = await fetch(`/kuriniai/${kurinysId}/edit/`, {
+                    method: "POST",
+                    body: formData,
+                    headers: {
+                        "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value
+                    }
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    if (trukmeInput) {
+                        trukmeInput.value = data.trukme || "—";
+                    }
+                    alert("Kūrinys sėkmingai atnaujintas!");
+                    setTimeout(() => {
+                        window.location.href = "/kuriniai/";
+                    }, 1000);
+                } else {
+                    alert("Klaida: " + data.error);
+                }
+            });
         });
     </script>
+
 {% endblock content %}

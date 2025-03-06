@@ -49,17 +49,27 @@
 
                                         <!-- ✅ Centered "Peržiūrėti" Button with Text -->
                                         <td class="align-middle text-center">
-                                            {% if kurinys.youtube_url %}
-                                                <div class="d-flex justify-content-center">
+                                            <div class="d-flex justify-content-center gap-2">
+                                                {% if kurinys.youtube_url %}
                                                     <a href="{{ kurinys.youtube_url }}" target="_blank"
                                                        class="btn btn-primary d-flex align-items-center">
                                                         <span class="material-symbols-outlined me-2">visibility</span>
                                                         Peržiūrėti
                                                     </a>
-                                                </div>
-                                            {% else %}
-                                                <span class="text-muted">—</span>
-                                            {% endif %}
+                                                {% else %}
+                                                    <span class="text-muted">—</span>
+                                                {% endif %}
+
+                                                <!-- ✅ Show "Žodžiai" Button only for "Daina" type -->
+                                                {% if kurinys.tipas == "Daina" and kurinys.lyrics %}
+                                                    <button class="btn btn-info d-flex align-items-center"
+                                                            data-bs-toggle="modal" data-bs-target="#lyricsModal"
+                                                            onclick="showLyrics('{{ kurinys.pavadinimas }}', `{{ kurinys.lyrics|escapejs }}`)">
+                                                        <span class="material-symbols-outlined me-2">library_books</span>
+                                                        Žodžiai
+                                                    </button>
+                                                {% endif %}
+                                            </div>
                                         </td>
 
 
@@ -139,12 +149,36 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+    <!-- ✅ Lyrics Modal -->
+    <div class="modal fade" id="lyricsModal" tabindex="-1" aria-labelledby="lyricsModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content shadow-lg border-0 rounded-4">
+                <!-- Modal Header -->
+                <div class="modal-header bg-info text-white">
+                    <h5 class="modal-title d-flex align-items-center">
+                        <span class="material-symbols-outlined me-2">library_books</span>
+                        Dainos Žodžiai
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
 
+                <!-- Modal Body with Centered Content -->
+                <div class="modal-body text-center py-4">
+                    <h5 class="fw-bold" id="lyricsTitle"></h5>
+                    <hr>
+                    <pre class="text-wrap text-break text-center" id="lyricsText"
+                         style="white-space: pre-line; font-size: 1.1rem;"></pre>
+                </div>
 
-                <!-- ✅ Button to Refresh Trukmė -->
-                <div class="text-end p-3">
-                    <button id="refresh-trukme-btn" class="btn btn-warning d-flex align-items-center action-btn">
-                        <span class="material-symbols-outlined me-2">refresh</span> Atnaujinti Trukmę
+                <!-- Modal Footer -->
+                <div class="modal-footer d-flex justify-content-center border-0 pb-4">
+                    <button type="button" class="btn btn-outline-dark px-4 py-2 d-flex align-items-center"
+                            data-bs-dismiss="modal">
+                        <span class="material-symbols-outlined me-2">close</span> Uždaryti
                     </button>
                 </div>
             </div>
@@ -155,6 +189,11 @@
         function setDeleteUrl(kurinysId, kurinysName) {
             document.getElementById("kurinysName").innerText = kurinysName;
             document.getElementById("deleteForm").setAttribute("action", `/kuriniai/${kurinysId}/delete/`);
+        }
+
+        function showLyrics(title, lyrics) {
+            document.getElementById("lyricsTitle").innerText = title;
+            document.getElementById("lyricsText").innerText = lyrics || "Žodžių nėra.";
         }
 
         async function delete_kurinys(event) {
