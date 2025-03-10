@@ -10,9 +10,13 @@
                     <!-- ✅ Header with Add Button -->
                     <div class="card-header d-flex justify-content-between align-items-center py-3 table-header-custom">
                         <h4>Programų Sąrašas</h4>
-                        <a href="{% url 'program_create' %}" class="btn btn-light d-flex align-items-center action-btn">
-                            <span class="material-symbols-outlined me-2">add</span> Pridėti
-                        </a>
+                        {% if request.user.role != "narys" %}
+                            <a href="{% url 'program_create' %}"
+                               class="btn btn-light d-flex align-items-center action-btn">
+                                <span class="material-symbols-outlined me-2">add</span> Pridėti
+                            </a>
+                        {% endif %}
+
                     </div>
 
                     <div class="card-body">
@@ -36,7 +40,10 @@
                                     <th class="text-center">Trukmė</th>
                                     <th class="text-center">Tipas</th>
                                     <th class="text-center">Peržiūra</th>
-                                    <th class="text-center">Valdyti</th>
+                                    {% if request.user.role != "narys" %}
+                                        <th class="text-center">Valdyti</th>
+                                    {% endif %}
+
                                 </tr>
                                 </thead>
 
@@ -62,28 +69,27 @@
                                         </td>
 
                                         <!-- ✅ Full Bootstrap Edit & Delete Buttons -->
-                                        <td class="align-middle text-center">
-                                            <div class="d-flex justify-content-center gap-2">
+                                        {% if request.user.role != "narys" %}
+                                            <td class="align-middle text-center">
+                                                <div class="d-flex justify-content-center gap-2">
+                                                    <a href="{% url 'program_edit' programa.id %}"
+                                                       class="btn btn-success d-flex align-items-center justify-content-center"
+                                                       style="width: 130px; height: 40px;">
+                                                        <span class="material-symbols-outlined me-2">edit</span>
+                                                        Redaguoti
+                                                    </a>
+                                                    <button type="button"
+                                                            class="btn btn-danger d-flex align-items-center justify-content-center"
+                                                            data-bs-toggle="modal" data-bs-target="#deleteModal"
+                                                            onclick="setDeleteUrl({{ programa.id }}, '{{ programa.pavadinimas }}')"
+                                                            style="width: 130px; height: 40px;">
+                                                        <span class="material-symbols-outlined me-2">delete</span>
+                                                        Ištrinti
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        {% endif %}
 
-
-                                                <!-- Edit Button -->
-                                                <a href="{% url 'program_edit' programa.id %}"
-                                                   class="btn btn-success d-flex align-items-center justify-content-center"
-                                                   style="width: 130px; height: 40px;">
-                                                    <span class="material-symbols-outlined me-2">edit</span> Redaguoti
-                                                </a>
-
-
-                                                <!-- Delete Button -->
-                                                <button type="button"
-                                                        class="btn btn-danger d-flex align-items-center justify-content-center"
-                                                        data-bs-toggle="modal" data-bs-target="#deleteModal"
-                                                        onclick="setDeleteUrl({{ programa.id }}, '{{ programa.pavadinimas }}')"
-                                                        style="width: 130px; height: 40px;">
-                                                    <span class="material-symbols-outlined me-2">delete</span> Ištrinti
-                                                </button>
-                                            </div>
-                                        </td>
                                     </tr>
                                 {% empty %}
                                     <tr>

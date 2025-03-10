@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from Kuriniai.models import Kurinys
 from .models import Programa, ProgramosKurinys
 import json
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseForbidden
 
 def programos_page(request):
     programos = Programa.objects.all()
@@ -10,22 +10,23 @@ def programos_page(request):
 
 
 def program_create(request):
+    if request.user.role == "narys":
+        return HttpResponseForbidden("Jūs neturite teisės pridėti programų.")
+
     if request.method == "POST":
         try:
             data = json.loads(request.body)
-
             pavadinimas = data.get("pavadinimas")
             tipas = data.get("tipas")
-            trukme = data.get("trukme") or None  # ✅ Allow empty input
+            trukme = data.get("trukme") or None
 
             if not pavadinimas or not tipas:
                 return JsonResponse({"error": "Trūksta reikiamų laukų!"}, status=400)
 
-            # ✅ Create Programa
             programa = Programa.objects.create(
                 pavadinimas=pavadinimas,
                 tipas=tipas,
-                trukme=trukme  # ✅ Save user input trukme
+                trukme=trukme
             )
 
             programos_kuriniai = []
@@ -44,14 +45,13 @@ def program_create(request):
                     )
 
             ProgramosKurinys.objects.bulk_create(programos_kuriniai)
-
             return JsonResponse({"redirect": "/programos"}, status=201)
 
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=400)
 
     kuriniai = Kurinys.objects.all()
-    tipai = Programa.PROGRAM_TIPAS  # ✅ Fetch from model dynamically
+    tipai = Programa.PROGRAM_TIPAS
 
     return render(request, "programaAdd.html", {
         "kuriniai": kuriniai,
@@ -61,19 +61,19 @@ def program_create(request):
 
 def program_edit(request, pk):
     programa = get_object_or_404(Programa, pk=pk)
-    kuriniai = Kurinys.objects.all()
-    selected_kuriniai = ProgramosKurinys.objects.filter(programa=programa).order_by("eile")
+
+    if request.user.role == "narys":
+        return HttpResponseForbidden("Jūs neturite teisės redaguoti programų.")
 
     if request.method == "POST":
         try:
             data = json.loads(request.body)
             programa.pavadinimas = data.get("pavadinimas")
             programa.tipas = data.get("tipas")
-            programa.trukme = data.get("trukme") or None  # ✅ Save only user input, default to None
+            programa.trukme = data.get("trukme") or None
 
             programa.save()
 
-            # ✅ Update kūriniai ordering
             ProgramosKurinys.objects.filter(programa=programa).delete()
             for index, kurinys_data in enumerate(data.get("kuriniai", []), start=1):
                 kurinys = Kurinys.objects.get(id=kurinys_data["id"])
@@ -82,6 +82,9 @@ def program_edit(request, pk):
             return JsonResponse({"redirect": "/programos"}, status=200)
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=400)
+
+    kuriniai = Kurinys.objects.all()
+    selected_kuriniai = ProgramosKurinys.objects.filter(programa=programa).order_by("eile")
 
     context = {
         "programa": programa,
@@ -93,11 +96,14 @@ def program_edit(request, pk):
     return render(request, "programEdit.html", context)
 
 def istrinti_programa(request, pk):
+    if request.user.role == "narys":
+        return HttpResponseForbidden("Jūs neturite teisės ištrinti programų.")
+
     programa = get_object_or_404(Programa, pk=pk)
 
     if request.method == "POST":
         programa.delete()
-        return JsonResponse({"success": True})  # ✅ Return JSON response
+        return JsonResponse({"success": True})
 
     return JsonResponse({"success": False, "error": "Invalid request"}, status=400)
 

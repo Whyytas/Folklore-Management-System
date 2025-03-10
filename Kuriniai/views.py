@@ -7,6 +7,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from .models import Kurinys
 import re
+from django.http import HttpResponseForbidden
 
 # Set up logging
 logger = logging.getLogger(__name__)
@@ -19,59 +20,50 @@ def kuriniai_list(request):
     return render(request, 'kuriniai.html', {'kuriniai': kuriniai})
 
 def kuriniai_add(request):
-    """ Handles the creation of a new Kūrinys """
+    if request.user.role == "narys":
+        return HttpResponseForbidden("Jūs neturite teisės pridėti kūrinių.")
+
     if request.method == "POST":
         form = KurinysForm(request.POST)
         if form.is_valid():
             kurinys = form.save(commit=False)
-
-            # ✅ Fetch video duration if YouTube URL is provided
             if kurinys.youtube_url:
                 video_id = extract_video_id(kurinys.youtube_url)
                 if video_id:
                     kurinys.trukme = get_video_duration(video_id)
-
             kurinys.save()
-            return redirect('/kuriniai')  # ✅ Redirect back to the list view
+            return redirect('/kuriniai')
 
-    else:
-        form = KurinysForm()
-
+    form = KurinysForm()
     return render(request, 'kuriniaiAdd.html', {'form': form})
 
-
 def kuriniai_edit(request, kurinys_id):
-    """Handles displaying the edit form (GET) and saving updates (POST)"""
-
     kurinys = get_object_or_404(Kurinys, id=kurinys_id)
 
-    # ✅ Serve the edit page with a form for GET requests
-    if request.method == "GET":
-        form = KurinysForm(instance=kurinys)
-        return render(request, "kuriniaiEdit.html", {"kurinys": kurinys, "form": form})
+    if request.user.role == "narys":
+        return HttpResponseForbidden("Jūs neturite teisės redaguoti kūrinių.")
 
-    # ✅ Handle the form submission via POST
-    elif request.method == "POST":
+    if request.method == "POST":
         form = KurinysForm(request.POST, instance=kurinys)
         if form.is_valid():
             kurinys = form.save(commit=False)
-
-            # ✅ Always update `trukmė` if YouTube URL exists
             video_id = extract_video_id(kurinys.youtube_url)
             if video_id:
                 new_trukme = get_video_duration(video_id)
                 if new_trukme:
                     kurinys.trukme = new_trukme
-
             kurinys.save()
             return JsonResponse({"success": True, "trukme": kurinys.trukme})
 
         return JsonResponse({"success": False, "error": "Invalid form data"}, status=400)
 
-    return JsonResponse({"success": False, "error": "Invalid request method"}, status=405)
+    form = KurinysForm(instance=kurinys)
+    return render(request, "kuriniaiEdit.html", {"kurinys": kurinys, "form": form})
 
 def delete_kurinys(request, kurinys_id):
-    """ Deletes the selected Kūrinys """
+    if request.user.role == "narys":
+        return HttpResponseForbidden("Jūs neturite teisės ištrinti kūrinių.")
+
     if request.method == "POST":
         kurinys = get_object_or_404(Kurinys, id=kurinys_id)
         kurinys.delete()
