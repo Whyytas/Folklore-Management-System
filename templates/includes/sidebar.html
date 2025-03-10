@@ -58,27 +58,33 @@
                 {% trans 'Instrumentai' %}
             </a>
         </li>
-        <li class="nav-item">
-            <a href="/padaliniai/"
-               class="nav-link d-flex align-items-center mb-1 text-dark {% if request.path == '/padaliniai/' %}bg-secondary-subtle rounded-pill{% endif %}">
-                <span class="material-symbols-outlined me-2 text-dark">domain</span>
-                {% trans 'Padaliniai' %}
-            </a>
-        </li>
-        <li class="nav-item">
-            <a href="/nariai/"
-               class="nav-link d-flex align-items-center mb-1 text-dark {% if request.path == '/nariai/' %}bg-secondary-subtle rounded-pill{% endif %}">
-                <span class="material-symbols-outlined me-2 text-dark">group</span>
-                {% trans 'Nariai' %}
-            </a>
-        </li>
-        <li class="nav-item">
-            <a href="/ansambliai/"
-               class="nav-link d-flex align-items-center mb-1 text-dark {% if request.path == '/ansambliai/' %}bg-secondary-subtle rounded-pill{% endif %}">
-                <span class="material-symbols-outlined me-2 text-dark">groups</span>
-                {% trans 'Ansambliai' %}
-            </a>
-        </li>
+        {% if request.user.role == "administratorius" %}
+            <li class="nav-item">
+                <a href="/padaliniai/"
+                   class="nav-link d-flex align-items-center mb-1 text-dark {% if request.path == '/padaliniai/' %}bg-secondary-subtle rounded-pill{% endif %}">
+                    <span class="material-symbols-outlined me-2 text-dark">domain</span>
+                    {% trans 'Padaliniai' %}
+                </a>
+            </li>
+        {% endif %}
+        {% if request.user.role != "narys" %}
+            <li class="nav-item">
+                <a href="/nariai/"
+                   class="nav-link d-flex align-items-center mb-1 text-dark {% if request.path == '/nariai/' %}bg-secondary-subtle rounded-pill{% endif %}">
+                    <span class="material-symbols-outlined me-2 text-dark">group</span>
+                    {% trans 'Nariai' %}
+                </a>
+            </li>
+        {% endif %}
+        {% if request.user.role == "administratorius" %}
+            <li class="nav-item">
+                <a href="/ansambliai/"
+                   class="nav-link d-flex align-items-center mb-1 text-dark {% if request.path == '/ansambliai/' %}bg-secondary-subtle rounded-pill{% endif %}">
+                    <span class="material-symbols-outlined me-2 text-dark">groups</span>
+                    {% trans 'Ansambliai' %}
+                </a>
+            </li>
+        {% endif %}
     </ul>
 </aside>
 
@@ -126,27 +132,33 @@
                     {% trans 'Instrumentai' %}
                 </a>
             </li>
-            <li class="nav-item">
-                <a href="/padaliniai/"
-                   class="nav-link text-dark {% if request.path == '/padaliniai/' %}bg-light rounded-pill{% endif %}">
-                    <span class="material-symbols-outlined me-2 text-dark">domain</span>
-                    {% trans 'Padaliniai' %}
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="/nariai/"
-                   class="nav-link text-dark {% if request.path == '/nariai/' %}bg-light rounded-pill{% endif %}">
-                    <span class="material-symbols-outlined me-2 text-dark">group</span>
-                    {% trans 'Nariai' %}
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="/ansambliai/"
-                   class="nav-link text-dark {% if request.path == '/ansambliai/' %}bg-light rounded-pill{% endif %}">
-                    <span class="material-symbols-outlined me-2 text-dark">groups</span>
-                    {% trans 'Ansambliai' %}
-                </a>
-            </li>
+            {% if request.user.role == "administratorius" %}
+                <li class="nav-item">
+                    <a href="/padaliniai/"
+                       class="nav-link text-dark {% if request.path == '/padaliniai/' %}bg-light rounded-pill{% endif %}">
+                        <span class="material-symbols-outlined me-2 text-dark">domain</span>
+                        {% trans 'Padaliniai' %}
+                    </a>
+                </li>
+            {% endif %}
+            {% if request.user.role != "narys" %}
+                <li class="nav-item">
+                    <a href="/nariai/"
+                       class="nav-link text-dark {% if request.path == '/nariai/' %}bg-light rounded-pill{% endif %}">
+                        <span class="material-symbols-outlined me-2 text-dark">group</span>
+                        {% trans 'Nariai' %}
+                    </a>
+                </li>
+            {% endif %}
+            {% if request.user.role == "administratorius" %}
+                <li class="nav-item">
+                    <a href="/ansambliai/"
+                       class="nav-link text-dark {% if request.path == '/ansambliai/' %}bg-light rounded-pill{% endif %}">
+                        <span class="material-symbols-outlined me-2 text-dark">groups</span>
+                        {% trans 'Ansambliai' %}
+                    </a>
+                </li>
+            {% endif %}
         </ul>
     </div>
 </div>

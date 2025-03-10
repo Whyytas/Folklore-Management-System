@@ -1,24 +1,25 @@
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseForbidden
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
 from Ansambliai.models import Ansamblis
-
 from django.contrib.auth import get_user_model
-import logging
-
-logger = logging.getLogger(__name__)
-
-
 
 User = get_user_model()  # ✅ Ensure you're using the correct model
 
 
 @login_required
 def nariai_list(request):
-    users = User.objects.all()  # Get all users
+    if request.user.role == "narys":
+        return HttpResponseForbidden("Jūs neturite teisės peržiūrėti narių.")
+
+    if request.user.role == "vadovas":
+        users = User.objects.filter(ansambliai__in=request.user.ansambliai.all()).distinct()
+    else:
+        users = User.objects.all()
+
     return render(request, 'nariai.html', {'users': users})
 
 
@@ -51,32 +52,31 @@ class CustomUserCreationForm(UserCreationForm):
         self.fields['password2'].widget.attrs.update({'class': 'form-control'})# ✅ View to Add a New User
 @login_required
 def nariai_add(request):
-    all_ansambliai = Ansamblis.objects.all()
-    visi_ansamblis = Ansamblis.objects.filter(pavadinimas="Visi").first()
+    if request.user.role == "narys":
+        return HttpResponseForbidden("Jūs neturite teisės pridėti narių.")
+
+    if request.user.role == "vadovas":
+        all_ansambliai = request.user.ansambliai.all()
+    else:
+        all_ansambliai = Ansamblis.objects.all()
 
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
-            user = form.save(commit=False)  # ✅ Prevent immediate save
-
-            # ✅ Assign vardas and pavarde
+            user = form.save(commit=False)
             user.vardas = form.cleaned_data['vardas']
             user.pavarde = form.cleaned_data['pavarde']
-            user.save()  # ✅ Save after adding fields
+            user.save()
 
-            # ✅ Assign ansambliai
             selected_ansambliai_ids = request.POST.getlist("ansambliai")
             selected_ansambliai = Ansamblis.objects.filter(id__in=selected_ansambliai_ids)
 
-            if user.role == "administratorius" and visi_ansamblis:
-                user.ansambliai.set([visi_ansamblis])
-            else:
-                user.ansambliai.set(selected_ansambliai)
+            if request.user.role == "vadovas":
+                selected_ansambliai = selected_ansambliai.filter(id__in=request.user.ansambliai.values_list('id', flat=True))
 
+            user.ansambliai.set(selected_ansambliai)
             messages.success(request, "Naujas vartotojas sėkmingai pridėtas!")
             return redirect('nariai')
-        else:
-            messages.error(request, "Klaida: Patikrinkite formą ir bandykite dar kartą.")
 
     else:
         form = CustomUserCreationForm()
@@ -88,6 +88,14 @@ def nariai_add(request):
 @login_required
 def nariai_view(request, user_id):
     user = get_object_or_404(User, id=user_id)
+
+    if request.user.role == "narys":
+        return HttpResponseForbidden("Jūs neturite teisės peržiūrėti šio nario informacijos.")
+
+    if request.user.role == "vadovas":
+        if not user.ansambliai.filter(id__in=request.user.ansambliai.values_list('id', flat=True)).exists():
+            return HttpResponseForbidden("Jūs galite peržiūrėti tik savo ansamblio narius.")
+
     return render(request, 'nariai_view.html', {'user': user})
 
 # ✅ Custom User Edit Form
@@ -115,26 +123,35 @@ class CustomUserEditForm(forms.ModelForm):
 @login_required
 def nariai_edit(request, user_id):
     user = get_object_or_404(User, id=user_id)
+
+    if request.user.role == "narys":
+        return HttpResponseForbidden("Jūs neturite teisės redaguoti narių.")
+
+    if request.user.role == "vadovas":
+        if not user.ansambliai.filter(id__in=request.user.ansambliai.values_list('id', flat=True)).exists():
+            return HttpResponseForbidden("Jūs galite redaguoti tik savo ansamblio narius.")
+
     all_ansambliai = Ansamblis.objects.all()
-    visi_ansamblis = Ansamblis.objects.filter(pavadinimas="Visi").first()
 
     if request.method == 'POST':
         user.username = request.POST.get('username', user.username)
         user.email = request.POST.get('email', user.email)
         user.phone_number = request.POST.get('phone_number', user.phone_number)
         user.role = request.POST.get('role', user.role)
-
-        # ✅ Fix KeyError for vardas and pavarde
-        user.vardas = request.POST.get('vardas', user.vardas)  # Safely get field
+        user.vardas = request.POST.get('vardas', user.vardas)
         user.pavarde = request.POST.get('pavarde', user.pavarde)
 
         selected_ansambliai_ids = request.POST.getlist('ansambliai')
 
-        if user.role == "administratorius" and visi_ansamblis:
-            user.ansambliai.set([visi_ansamblis])
-        else:
-            user.ansambliai.set(Ansamblis.objects.filter(id__in=selected_ansambliai_ids))
+        if request.user.role == "vadovas":
+            selected_ansambliai = Ansamblis.objects.filter(id__in=selected_ansambliai_ids).intersection(
+                Ansamblis.objects.filter(id__in=request.user.ansambliai.values_list('id', flat=True))
+            )
 
+        else:
+            selected_ansambliai = Ansamblis.objects.filter(id__in=selected_ansambliai_ids)
+
+        user.ansambliai.set(selected_ansambliai)
         user.save()
         messages.success(request, "Vartotojas atnaujintas sėkmingai.")
         return redirect('nariai')
@@ -145,10 +162,17 @@ def nariai_edit(request, user_id):
 def nariai_delete(request, user_id):
     user = get_object_or_404(User, id=user_id)
 
+    if request.user.role == "narys":
+        return HttpResponseForbidden("Jūs neturite teisės ištrinti narių.")
+
+    if request.user.role == "vadovas":
+        if not user.ansambliai.filter(id__in=request.user.ansambliai.values_list('id', flat=True)).exists():
+            return HttpResponseForbidden("Jūs galite ištrinti tik savo ansamblio narius.")
+
     if request.method == "POST":
         user.delete()
         messages.success(request, "Vartotojas sėkmingai ištrintas.")
-        return redirect('nariai')  # Redirect to user list
+        return redirect('nariai')
 
     messages.error(request, "Negalima ištrinti vartotojo.")
     return redirect('nariai')
