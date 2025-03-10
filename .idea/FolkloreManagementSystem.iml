@@ -24,6 +24,10 @@
     <orderEntry type="library" name="core-js" level="application" />
     <orderEntry type="library" name="sortablejs" level="application" />
     <orderEntry type="library" name="flatpickr" level="application" />
+    <orderEntry type="library" name="jquery-3.6.0" level="application" />
+    <orderEntry type="library" name="rrule" level="application" />
+    <orderEntry type="library" name="fullcalendar" level="application" />
+    <orderEntry type="library" name="@fullcalendar/rrule" level="application" />
   </component>
   <component name="PackageRequirementsSettings">
     <option name="removeUnused" value="true" />

@@ -1,0 +1,132 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Kalendorius {% endblock %}
+
+{% block content %}
+    <div class="container-fluid mt-4">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="card shadow">
+                    <div class="card-header d-flex justify-content-between align-items-center bg-primary text-white">
+                        <h5 class="mb-0">Kalendorius</h5>
+                    </div>
+                    <div class="card-body d-flex justify-content-between">
+                        <!-- ✅ Calendar Container -->
+                        <div id="responsive-calendar" style="width: 75%;"></div>
+
+                        <!-- ✅ Auto-Updating Color Legend -->
+                        <!-- ✅ This must exist for the legend to work -->
+                        <div class="legend-container border rounded p-3" style="width: 22%;">
+                            <h6 class="text-center fw-bold">Legenda</h6>
+                            <ul class="list-unstyled" id="event-legend"></ul> <!-- ✅ The script updates this -->
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ✅ Legend Styles -->
+    <style>
+    .legend-container {
+        font-size: 0.9rem;
+        background: #f8f9fa;
+    }
+
+    .legend-color {
+        width: 15px;
+        height: 15px;
+        display: inline-block;
+        border-radius: 50%;
+        margin-right: 8px;
+    }
+</style>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var calendarEl = document.getElementById('responsive-calendar');
+        var legendEl = document.getElementById('event-legend');
+        var eventColors = {}; // ✅ Store event colors dynamically
+
+        function getCalendarHeight() {
+            return window.innerWidth < 768 ? window.innerHeight * 0.4 : 450;
+        }
+
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            themeSystem: 'bootstrap5',
+            height: getCalendarHeight(),
+            contentHeight: 'auto',
+            aspectRatio: 1.5,
+            headerToolbar: {
+                left: 'prev,next',
+                center: 'title',
+                right: ''
+            },
+            events: '/kalendorius/events/', // ✅ Fetch events dynamically
+            locale: 'lt',
+            eventClick: function(info) {  // ✅ Redirect to detail page
+                if (info.event.url) {
+                    window.location.href = info.event.url;
+                    info.jsEvent.preventDefault();  // ✅ Prevent default browser behavior
+                }
+            },
+            eventDidMount: function (info) {
+                let eventType = info.event.extendedProps?.type;
+                let eventColor = info.event.extendedProps?.color;
+
+                if (!eventType || !eventColor) {
+                    console.warn("⚠️ Event missing type or color:", info.event);
+                    return;
+                }
+
+                console.log(`✅ Processing Event: ${info.event.title}, Type: ${eventType}, Color: ${eventColor}`);
+
+                // ✅ Ensure the event dot (bubble) inside the calendar gets the correct color
+                let dotElement = info.el.querySelector(".fc-daygrid-event-dot");
+                if (dotElement) {
+                    dotElement.style.backgroundColor = eventColor;
+                } else {
+                    // ✅ Create dot if missing
+                    let newDot = document.createElement("div");
+                    newDot.classList.add("fc-daygrid-event-dot");
+                    newDot.style.width = "8px";
+                    newDot.style.height = "8px";
+                    newDot.style.borderRadius = "50%";
+                    newDot.style.backgroundColor = eventColor;
+                    newDot.style.marginRight = "5px";
+                    newDot.style.display = "inline-block";
+                    info.el.prepend(newDot);
+                }
+
+                // ✅ Prevent duplicate legend items and ensure bubble is visible
+                if (!eventColors.hasOwnProperty(eventType)) {
+                    eventColors[eventType] = eventColor;
+
+                    console.log(`🎨 Adding legend item for type: ${eventType}, Color: ${eventColor}`);
+
+                    let legendItem = document.createElement("li");
+                    legendItem.classList.add("d-flex", "align-items-center");
+                    legendItem.setAttribute("data-event-type", eventType);
+                    legendItem.innerHTML = `
+                        <span class="legend-color" style="background-color: ${eventColor}; width: 15px; height: 15px; border-radius: 50%; display: inline-block;"></span>
+                        <span class="ms-2">${eventType}</span>
+                    `;
+                    legendEl.appendChild(legendItem);
+                }
+            }
+        });
+
+        calendar.render();
+
+        // ✅ Resize dynamically
+        window.addEventListener('resize', function () {
+            calendar.setOption('height', getCalendarHeight());
+        });
+    });
+</script>
+
+
+
+{% endblock content %}

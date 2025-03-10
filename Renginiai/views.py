@@ -80,3 +80,4 @@ def delete_renginys(request, renginys_id):
 
 def publicEvents(request):
     return render(request, 'renginiaiPublic.html', )
+

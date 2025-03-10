@@ -38,6 +38,7 @@ urlpatterns = [
     path('padaliniai/', include('Padaliniai.urls')),
     path('paskyra/', include('Paskyra.urls')),
     path('repeticijos/', include('Repeticijos.urls')),
+    path('kalendorius/', include('Kalendorius.urls')),
 
 ]
 

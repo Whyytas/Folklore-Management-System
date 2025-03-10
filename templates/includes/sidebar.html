@@ -45,6 +45,13 @@
             </a>
         </li>
         <li class="nav-item">
+            <a href="/kalendorius/"
+               class="nav-link d-flex align-items-center mb-1 text-dark {% if request.path == '/kalendorius/' %} bg-secondary-subtle rounded-pill{% endif %}">
+                <span class="material-symbols-outlined me-2 text-dark">calendar_month</span>
+                {% trans 'Kalendorius' %}
+            </a>
+        </li>
+        <li class="nav-item">
             <a href="/instrumentai/"
                class="nav-link d-flex align-items-center mb-1 text-dark {% if request.path == '/instrumentai/' %}bg-secondary-subtle rounded-pill{% endif %}">
                 <span class="material-symbols-outlined me-2 text-dark">piano</span>
