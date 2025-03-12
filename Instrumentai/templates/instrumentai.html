@@ -7,7 +7,6 @@
         <div class="row justify-content-center">
             <div class="col-lg-10">
                 <div class="card shadow">
-                    <!-- ✅ Green Header with Add Button -->
                     <div class="card-header d-flex justify-content-between align-items-center py-3 table-header-custom">
                         <h4>Instrumentų Sąrašas</h4>
                         {% if request.user.role != "narys" %}
@@ -16,7 +15,6 @@
                                 <span class="material-symbols-outlined me-2">add</span> Pridėti
                             </a>
                         {% endif %}
-
                     </div>
 
                     <div class="card-body">
@@ -31,7 +29,6 @@
                                     {% if request.user.role != "narys" %}
                                         <th class="text-center">Valdyti</th>
                                     {% endif %}
-
                                 </tr>
                                 </thead>
 
@@ -45,18 +42,16 @@
                                         <td class="align-middle text-center">
                                             {% if instrumentas.nuotrauka %}
                                                 <a href="#" data-bs-toggle="modal" data-bs-target="#imageModal"
-                                                   onclick="showImage('{{ instrumentas.nuotrauka }}', '{{ instrumentas.pavadinimas }}')">
-                                                    <img src="{{ instrumentas.nuotrauka }}"
-                                                         alt="{{ instrumentas.pavadinimas }}"
-                                                         class="img-thumbnail rounded"
-                                                         style="width: 80px; height: 80px;">
+                                                   onclick="showImage('{{ instrumentas.nuotrauka.url }}', '{{ instrumentas.pavadinimas }}')">
+                                                    <img src="{{ instrumentas.nuotrauka.url }}"
+                                                         class="img-thumbnail rounded shadow-sm"
+                                                         style="width: 80px; height: 80px; object-fit: cover; cursor: pointer;">
                                                 </a>
                                             {% else %}
                                                 <span class="text-muted">Nėra nuotraukos</span>
                                             {% endif %}
                                         </td>
 
-                                        <!-- ✅ Display Ansamblis Name -->
                                         <td class="align-middle text-center">
                                             {{ instrumentas.ansamblis.pavadinimas }}
                                         </td>
@@ -70,7 +65,6 @@
                                                         <span class="material-symbols-outlined me-2">edit</span>
                                                         Redaguoti
                                                     </a>
-
                                                     <button type="button"
                                                             class="btn btn-danger d-flex align-items-center justify-content-center"
                                                             data-bs-toggle="modal" data-bs-target="#deleteModal"
@@ -82,7 +76,6 @@
                                                 </div>
                                             </td>
                                         {% endif %}
-
                                     </tr>
                                 {% empty %}
                                     <tr>
@@ -105,7 +98,8 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                             </div>
                             <div class="modal-body text-center">
-                                <img id="modalImage" src="" class="img-fluid rounded shadow">
+                                <img id="modalImage" src="" class="img-fluid rounded shadow-lg"
+                                     style="max-width: 100%; height: auto;">
                             </div>
                         </div>
                     </div>
@@ -137,7 +131,8 @@
                                     <span class="material-symbols-outlined me-2">close</span> Atšaukti
                                 </button>
 
-                                <form id="deleteForm" method="post" onsubmit="delete_instrumentas(event)">
+                                <!-- ✅ Form for DELETE -->
+                                <form id="deleteForm" method="post">
                                     {% csrf_token %}
                                     <button type="submit"
                                             class="btn btn-danger px-4 py-2 d-flex align-items-center justify-content-center">
@@ -148,6 +143,8 @@
                         </div>
                     </div>
                 </div>
+
+
             </div>
         </div>
     </div>
@@ -157,27 +154,6 @@
         function setDeleteUrl(instrumentasId, instrumentasName) {
             document.getElementById("instrumentasName").innerText = instrumentasName;
             document.getElementById("deleteForm").setAttribute("action", `/instrumentai/${instrumentasId}/delete/`);
-        }
-
-        async function delete_instrumentas(event) {
-            event.preventDefault();
-            try {
-                const response = await fetch(document.getElementById("deleteForm").action, {
-                    method: "POST",
-                    headers: {
-                        "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value,
-                    }
-                });
-
-                if (response.ok) {
-                    bootstrap.Modal.getInstance(document.getElementById("deleteModal")).hide();
-                    setTimeout(() => window.location.reload(), 500);
-                } else {
-                    alert("Klaida: Nepavyko ištrinti instrumento!");
-                }
-            } catch (error) {
-                console.error("Klaida ištrinant instrumentą:", error);
-            }
         }
 
         function showImage(imageUrl, title) {

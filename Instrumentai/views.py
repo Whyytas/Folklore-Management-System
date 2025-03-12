@@ -10,38 +10,63 @@ def instrumentai_list(request):
     instrumentai = Instrumentas.objects.all()
     return render(request, "instrumentai.html", {"instrumentai": instrumentai})
 
+
 def instrumentai_add(request):
     if request.user.role == "narys":
-        return HttpResponseForbidden("Jūs neturite teisės pridėti instrumentų.")
+        return HttpResponseForbidden("Jūs neturite teisės sukurti instrumentų.")
 
     ansambliai = Ansamblis.objects.all()
+
     if request.method == "POST":
-        form = InstrumentasForm(request.POST)
+        form = InstrumentasForm(request.POST, request.FILES)  # ✅ Include request.FILES to handle file uploads
         if form.is_valid():
-            form.save()
+            instrumentas = form.save(commit=False)
+
+            # ✅ Ensure the file is assigned properly
+            if "nuotrauka" in request.FILES:
+                instrumentas.nuotrauka = request.FILES["nuotrauka"]
+
+            # ✅ Save ansamblis selection
+            ansamblis_id = request.POST.get("ansamblis")
+            if ansamblis_id:
+                instrumentas.ansamblis = get_object_or_404(Ansamblis, pk=ansamblis_id)
+
+            instrumentas.save()
             messages.success(request, "Instrumentas sėkmingai pridėtas!")
             return redirect("instrumentai_list")
+
     else:
         form = InstrumentasForm()
 
     return render(request, "instrumentai_add.html", {"form": form, "ansambliai": ansambliai})
+
+
 def instrumentai_edit(request, pk):
-    instrumentas = get_object_or_404(Instrumentas, pk=pk)
 
     if request.user.role == "narys":
         return HttpResponseForbidden("Jūs neturite teisės redaguoti instrumentų.")
 
+    instrumentas = get_object_or_404(Instrumentas, pk=pk)
+    ansambliai = Ansamblis.objects.all()
+
     if request.method == "POST":
-        form = InstrumentasForm(request.POST, instance=instrumentas)
+        form = InstrumentasForm(request.POST, request.FILES, instance=instrumentas)
         if form.is_valid():
-            form.save()
+            instrumentas = form.save(commit=False)
+
+            # ✅ Ensure nuotrauka is updated if a new file is uploaded
+            if "nuotrauka" in request.FILES:
+                instrumentas.nuotrauka = request.FILES["nuotrauka"]
+
+            instrumentas.save()
             messages.success(request, "Instrumentas sėkmingai atnaujintas!")
             return redirect("instrumentai_list")
+
     else:
         form = InstrumentasForm(instance=instrumentas)
 
-    return render(request, "instrumentai_edit.html", {"form": form})
-
+    return render(request, "instrumentai_edit.html",
+                  {"form": form, "instrumentas": instrumentas, "ansambliai": ansambliai})
 def instrumentai_delete(request, pk):
     if request.user.role == "narys":
         return HttpResponseForbidden("Jūs neturite teisės ištrinti instrumentų.")

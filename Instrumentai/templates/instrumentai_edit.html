@@ -11,7 +11,7 @@
                         <h4 class="mb-0">Redaguoti Instrumentą</h4>
                     </div>
                     <div class="card-body">
-                        <form method="post" id="editInstrumentasForm">
+                        <form method="post" enctype="multipart/form-data" id="editInstrumentasForm">
                             {% csrf_token %}
 
                             <!-- ✅ Pavadinimas -->
@@ -23,13 +23,25 @@
                                        value="{{ instrumentas.pavadinimas }}" required>
                             </div>
 
-                            <!-- ✅ Nuotrauka (URL) -->
+                            <!-- ✅ Nuotrauka (File Upload) -->
                             <div class="mb-4">
                                 <label for="nuotrauka" class="form-label d-flex align-items-center">
-                                    <span class="material-symbols-outlined me-2">image</span> Nuotrauka (URL)
+                                    <span class="material-symbols-outlined me-2">image</span> Nuotrauka
                                 </label>
-                                <input type="url" name="nuotrauka" id="nuotrauka" class="form-control"
-                                       value="{{ instrumentas.nuotrauka }}">
+                                <input type="file" name="nuotrauka" id="nuotrauka" class="form-control"
+                                       accept="image/*" onchange="previewImage(event)">
+
+                                <!-- ✅ Image Preview -->
+                                <div class="mt-3 text-center">
+                                    {% if instrumentas.nuotrauka %}
+                                        <img id="imagePreview" src="{{ instrumentas.nuotrauka.url }}"
+                                             class="img-fluid rounded shadow-sm"
+                                             style="max-width: 100%; height: auto; max-height: 250px;">
+                                    {% else %}
+                                        <img id="imagePreview" src="#" class="img-fluid rounded shadow-sm d-none"
+                                             style="max-width: 100%; height: auto; max-height: 250px;">
+                                    {% endif %}
+                                </div>
                             </div>
 
                             <!-- ✅ Ansamblis Dropdown -->
@@ -50,7 +62,8 @@
                                             </a></li>
                                         {% endfor %}
                                     </ul>
-                                    <input type="hidden" id="ansamblisInput" name="ansamblis" value="{{ instrumentas.ansamblis.id }}">
+                                    <input type="hidden" id="ansamblisInput" name="ansamblis"
+                                           value="{{ instrumentas.ansamblis.id }}">
                                 </div>
                             </div>
 
@@ -70,36 +83,28 @@
         </div>
     </div>
 
-    <!-- ✅ JavaScript for Dropdown Selection & Form Submission -->
+    <!-- ✅ JavaScript for Image Preview & Dropdown -->
     <script>
         function selectAnsamblis(value, label) {
             document.getElementById("ansamblisDropdown").innerText = label;
             document.getElementById("ansamblisInput").value = value;
         }
 
-        document.getElementById("editInstrumentasForm").addEventListener("submit", async function(event) {
-            event.preventDefault();
+        function previewImage(event) {
+            var input = event.target;
+            var preview = document.getElementById("imagePreview");
 
-            const form = event.target;
-            const formData = new FormData(form);
-            const instrumentasId = "{{ instrumentas.id }}";
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
 
-            const response = await fetch(`/instrumentai/${instrumentasId}/edit/`, {
-                method: "POST",
-                body: formData,
-                headers: {
-                    "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value
-                }
-            });
+                reader.onload = function (e) {
+                    preview.src = e.target.result;
+                    preview.classList.remove("d-none");
+                };
 
-            const data = await response.json();
-            if (data.success) {
-                alert("Instrumentas sėkmingai atnaujintas!");
-                window.location.href = "/instrumentai/";
-            } else {
-                alert("Klaida atnaujinant instrumentą!");
+                reader.readAsDataURL(input.files[0]);
             }
-        });
+        }
     </script>
 
 {% endblock content %}
