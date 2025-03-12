@@ -32,6 +32,9 @@
     .legend-container {
         font-size: 0.9rem;
         background: #f8f9fa;
+        padding: 10px;
+        border-radius: 8px;
+
     }
 
     .legend-color {
@@ -40,14 +43,46 @@
         display: inline-block;
         border-radius: 50%;
         margin-right: 8px;
+        border: none !important;
+        outline: none !important;
+    }
+
+    .fc-event-custom {
+        font-size: 16px;
+        line-height: 1.2;
+        text-align: left;
+        white-space: normal;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 4px 6px;
+        margin-bottom: 5px;
+        background-color: rgba(255, 255, 255, 0.8);
+        border-radius: 4px;
+    }
+
+    .event-time, .event-title {
+        font-size: 14px;
+        line-height: 1.1;
+    }
+
+    .fc-daygrid-event-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        display: inline-block;
+        border: none !important;
+        outline: none !important;
+        margin-right: 5px;
     }
 </style>
+
 
     <script>
     document.addEventListener('DOMContentLoaded', function () {
         var calendarEl = document.getElementById('responsive-calendar');
         var legendEl = document.getElementById('event-legend');
-        var eventColors = {}; // ✅ Store event colors dynamically
+        var eventColors = {}; // ✅ Store unique event types to prevent duplicates
 
         function getCalendarHeight() {
             return window.innerWidth < 768 ? window.innerHeight * 0.4 : 450;
@@ -66,41 +101,37 @@
             },
             events: '/kalendorius/events/', // ✅ Fetch events dynamically
             locale: 'lt',
-            eventClick: function(info) {  // ✅ Redirect to detail page
+            eventClick: function(info) {
                 if (info.event.url) {
                     window.location.href = info.event.url;
-                    info.jsEvent.preventDefault();  // ✅ Prevent default browser behavior
+                    info.jsEvent.preventDefault();
                 }
+            },
+            eventContent: function(info) {
+                let eventType = info.event.extendedProps?.type || "Tipas";
+                let eventTime = new Date(info.event.start).toLocaleTimeString('lt-LT', {hour: '2-digit', minute: '2-digit'});
+                let eventTitle = info.event.title;
+
+                return {
+                    html: `<div class="fc-event-custom">
+                                <strong>${eventType}</strong>
+                                <div class="event-time">${eventTime}</div>
+                                <div class="event-title">${eventTitle}</div>
+                           </div>`
+                };
             },
             eventDidMount: function (info) {
                 let eventType = info.event.extendedProps?.type;
                 let eventColor = info.event.extendedProps?.color;
 
                 if (!eventType || !eventColor) {
-                    console.warn("⚠️ Event missing type or color:", info.event);
+                    console.warn("⚠️ Missing type or color:", info.event);
                     return;
                 }
 
                 console.log(`✅ Processing Event: ${info.event.title}, Type: ${eventType}, Color: ${eventColor}`);
 
-                // ✅ Ensure the event dot (bubble) inside the calendar gets the correct color
-                let dotElement = info.el.querySelector(".fc-daygrid-event-dot");
-                if (dotElement) {
-                    dotElement.style.backgroundColor = eventColor;
-                } else {
-                    // ✅ Create dot if missing
-                    let newDot = document.createElement("div");
-                    newDot.classList.add("fc-daygrid-event-dot");
-                    newDot.style.width = "8px";
-                    newDot.style.height = "8px";
-                    newDot.style.borderRadius = "50%";
-                    newDot.style.backgroundColor = eventColor;
-                    newDot.style.marginRight = "5px";
-                    newDot.style.display = "inline-block";
-                    info.el.prepend(newDot);
-                }
-
-                // ✅ Prevent duplicate legend items and ensure bubble is visible
+                // ✅ Fix legend (prevent duplicates)
                 if (!eventColors.hasOwnProperty(eventType)) {
                     eventColors[eventType] = eventColor;
 
@@ -110,10 +141,26 @@
                     legendItem.classList.add("d-flex", "align-items-center");
                     legendItem.setAttribute("data-event-type", eventType);
                     legendItem.innerHTML = `
-                        <span class="legend-color" style="background-color: ${eventColor}; width: 15px; height: 15px; border-radius: 50%; display: inline-block;"></span>
-                        <span class="ms-2">${eventType}</span>
+                        <span class="legend-color" style="background-color: ${eventColor}; width: 15px; height: 15px; border-radius: 50%; display: inline-block; margin-right: 8px;"></span>
+                        <span>${eventType}</span>
                     `;
                     legendEl.appendChild(legendItem);
+                }
+
+                // ✅ Fix event dot color inside calendar
+                let dotElement = info.el.querySelector(".fc-daygrid-event-dot");
+                if (dotElement) {
+                    dotElement.style.backgroundColor = eventColor;
+                } else {
+                    let newDot = document.createElement("div");
+                    newDot.classList.add("fc-daygrid-event-dot");
+                    newDot.style.width = "8px";
+                    newDot.style.height = "8px";
+                    newDot.style.borderRadius = "50%";
+                    newDot.style.backgroundColor = eventColor;
+                    newDot.style.marginRight = "5px";
+                    newDot.style.display = "inline-block";
+                    info.el.prepend(newDot);
                 }
             }
         });
@@ -126,6 +173,8 @@
         });
     });
 </script>
+
+
 
 
 
