@@ -12,6 +12,7 @@ from pathlib import Path
 import os
 from dotenv import load_dotenv
 
+
 # Load environment variables from .env in local development
 if os.getenv("ENV") != "PRODUCTION":
     load_dotenv()
@@ -66,6 +67,25 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 LOGIN_URL = "/"
 LOGIN_REDIRECT_URL = "/main"
 LOGOUT_REDIRECT_URL = "/"
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "file": {
+            "level": "ERROR",
+            "class": "logging.FileHandler",
+            "filename": os.path.join(BASE_DIR, "django-errors.log"),
+        },
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["file"],
+            "level": "ERROR",
+            "propagate": True,
+        },
+    },
+}
 
 # CSRF trusted origins
 CSRF_TRUSTED_ORIGINS = ["https://folklore.azurewebsites.net"]
@@ -128,6 +148,9 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
+
+# Catch unhandled errors
+    "FolkloreManagementSystem.middlewares.CatchAllExceptionsMiddleware",
 ]
 
 # URL configuration
