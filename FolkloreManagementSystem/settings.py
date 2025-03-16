@@ -136,6 +136,7 @@ INSTALLED_APPS = [
     "Nariai",
     "Repeticijos",
     "Kalendorius",
+    "mainPage",
 ]
 
 # Middleware

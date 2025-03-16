@@ -23,12 +23,24 @@
                 {% endif %}
             {% endwith %}
         </div>
+        <!-- Profile & Logout Buttons -->
+        <div class="d-flex align-items-center">
 
-        <!-- Logout Button -->
-        <form action="{% url 'logout' %}" method="post" style="display: inline;">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-outline-danger btn-sm">Logout</button>
-        </form>
+            <!-- Profile Button -->
+            <a href="{% url 'profilis_edit' %}" class="btn btn-outline-dark btn-sm d-flex align-items-center me-2">
+                <span class="material-symbols-outlined me-1">account_circle</span> Mano Profilis
+            </a>
+
+            <!-- Logout Button -->
+            <form action="{% url 'logout' %}" method="post" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-outline-danger btn-sm d-flex align-items-center">
+                    <span class="material-symbols-outlined me-1">logout</span> Atsijungti
+                </button>
+            </form>
+
+        </div>
+
 
     </div>
 </nav>

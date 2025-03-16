@@ -1,0 +1,154 @@
+{% extends "layouts/base.html" %}
+{% block title %}Redaguoti Profilį{% endblock %}
+
+{% block content %}
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <!-- Cards Row -->
+            <div class="col-12">
+                <div class="row g-4">
+
+                    <!-- User Info Card -->
+                    <div class="col-md-6">
+                        <div class="card shadow h-100">
+                            <div class="card-header py-3 table-header-custom">
+                                <h4 class="mb-0 d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">person</span> Redaguoti Profilį
+                                </h4>
+                            </div>
+                            <div class="card-body">
+                                <form method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="which_form" value="info">
+                                    <!-- Vardas -->
+                                    <div class="mb-3">
+                                        <label for="vardas" class="form-label d-flex align-items-center">
+                                            <span class="material-symbols-outlined me-2">badge</span> Vardas
+                                        </label>
+                                        <input type="text" name="vardas" id="vardas" class="form-control"
+                                               value="{{ user.vardas }}">
+                                    </div>
+
+                                    <!-- Pavardė -->
+                                    <div class="mb-3">
+                                        <label for="pavarde" class="form-label d-flex align-items-center">
+                                            <span class="material-symbols-outlined me-2">badge</span> Pavardė
+                                        </label>
+                                        <input type="text" name="pavarde" id="pavarde" class="form-control"
+                                               value="{{ user.pavarde }}">
+                                    </div>
+
+                                    <!-- El. paštas -->
+                                    <div class="mb-3">
+                                        <label for="email" class="form-label d-flex align-items-center">
+                                            <span class="material-symbols-outlined me-2">email</span> El. paštas
+                                        </label>
+                                        <input type="email" name="email" id="email" class="form-control"
+                                               value="{{ user.email }}">
+                                    </div>
+
+                                    <!-- Telefonas -->
+                                    <div class="mb-3">
+                                        <label for="phone_number" class="form-label d-flex align-items-center">
+                                            <span class="material-symbols-outlined me-2">phone</span> Telefonas
+                                        </label>
+                                        <input type="text" name="phone_number" id="phone_number" class="form-control"
+                                               value="{{ user.phone_number }}">
+                                    </div>
+
+
+                                    <div class="d-flex justify-content-between mt-4">
+                                        <a href="/" class="btn btn-outline-secondary d-flex align-items-center">
+                                            <span class="material-symbols-outlined me-1">arrow_back</span> Atšaukti
+                                        </a>
+                                        <button type="submit" class="btn btn-outline-dark d-flex align-items-center">
+                                            <span class="material-symbols-outlined me-1">save</span> Išsaugoti
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Password Change Card -->
+                    <div class="col-md-6">
+                        <div class="card shadow">
+                            <div class="card-header py-3 table-header-custom">
+                                <h4 class="mb-0 d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">lock</span> Keisti Slaptažodį
+                                </h4>
+                            </div>
+                            <div class="card-body">
+                                <form method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="which_form" value="password">
+
+                                    {% if password_error %}
+                                        <div class="alert alert-danger d-flex align-items-center">
+                                            <span class="material-symbols-outlined me-2">error</span> {{ password_error }}
+                                        </div>
+                                    {% endif %}
+
+                                    <!-- Naujas slaptažodis -->
+                                    <div class="mb-3">
+                                        <label for="new_password1" class="form-label d-flex align-items-center">
+                                            <span class="material-symbols-outlined me-2">lock</span> Naujas slaptažodis
+                                        </label>
+                                        <input type="password" name="new_password1" id="new_password1"
+                                               class="form-control">
+                                    </div>
+
+                                    <!-- Pakartoti slaptažodį -->
+                                    <div class="mb-3">
+                                        <label for="new_password2" class="form-label d-flex align-items-center">
+                                            <span class="material-symbols-outlined me-2">lock</span> Pakartoti
+                                            slaptažodį
+                                        </label>
+                                        <input type="password" name="new_password2" id="new_password2"
+                                               class="form-control">
+                                    </div>
+
+
+                                    <div class="d-flex justify-content-end mt-4">
+                                        <button type="submit" class="btn btn-outline-dark d-flex align-items-center">
+                                            <span class="material-symbols-outlined me-1">lock_reset</span> Atnaujinti
+                                            Slaptažodį
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                </div> <!-- row g-4 -->
+            </div> <!-- col-12 -->
+        </div> <!-- row justify-content-center -->
+    </div> <!-- container -->
+
+    <!-- Toasts -->
+    {% if profile_updated %}
+        <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+            <div class="toast show text-bg-success border-0" role="alert">
+                <div class="d-flex">
+                    <div class="toast-body d-flex align-items-center">
+                        <span class="material-symbols-outlined me-2">check_circle</span> Profilis atnaujintas!
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>setTimeout(() => document.querySelector('.toast').remove(), 3000);</script>
+    {% endif %}
+
+    {% if password_updated %}
+        <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+            <div class="toast show text-bg-success border-0" role="alert">
+                <div class="d-flex">
+                    <div class="toast-body d-flex align-items-center">
+                        <span class="material-symbols-outlined me-2">lock_open</span> Slaptažodis atnaujintas!
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>setTimeout(() => document.querySelector('.toast').remove(), 3000);</script>
+    {% endif %}
+{% endblock %}

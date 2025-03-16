@@ -9,4 +9,6 @@ urlpatterns = [
     path('<int:user_id>/edit/', nariai_edit, name='nariai_edit'),
     path('<int:user_id>/delete/', nariai_delete, name='nariai_delete'),
     path('check-username/', check_username, name='check_username'),
+    path('profilis/', views.profilis_edit, name='profilis_edit'),
+
 ]

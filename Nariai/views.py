@@ -186,3 +186,42 @@ def check_username(request):
 
     exists = User.objects.filter(username=username).exists()
     return JsonResponse({'exists': exists})
+
+from django.contrib.auth import update_session_auth_hash
+
+@login_required
+def profilis_edit(request):
+    user = request.user
+    profile_updated = False
+    password_updated = False
+    password_error = None
+
+    if request.method == 'POST':
+        if request.POST.get('which_form') == 'info':
+            user.vardas = request.POST.get('vardas', user.vardas)
+            user.pavarde = request.POST.get('pavarde', user.pavarde)
+            user.email = request.POST.get('email', user.email)
+            user.phone_number = request.POST.get('phone_number', user.phone_number)
+            user.save()
+            profile_updated = True
+
+        elif request.POST.get('which_form') == 'password':
+            new_password1 = request.POST.get('new_password1')
+            new_password2 = request.POST.get('new_password2')
+
+            if new_password1 and new_password1 == new_password2:
+                user.set_password(new_password1)
+                user.save()
+                update_session_auth_hash(request, user)  # ✅ Stay logged in
+                password_updated = True
+            else:
+                password_error = "Slaptažodžiai nesutampa arba tušti."
+
+    context = {
+        'user': user,
+        'profile_updated': profile_updated,
+        'password_updated': password_updated,
+        'password_error': password_error
+    }
+
+    return render(request, 'profilis_edit.html', context)
