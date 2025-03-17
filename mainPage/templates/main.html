@@ -6,7 +6,7 @@
     <!-- Material Icons CDN -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
-    <div class="container px-4 px-md-5 mt-5 pb-5 mb-5">
+    <div class="container-x1 px-4 px-md-5 mt-5 pb-5 mb-5">
         <div class="text-center mb-4">
             <h1 class="fw-bold text-primary">Sveiki, {{ user.username }}!</h1>
             <p class="lead text-muted">Džiaugiamės jus matydami</p>
@@ -14,20 +14,23 @@
 
         <div class="row g-4">
             <!-- Card 1: Events -->
-            <div class="col-md-6">
+            <div class="col-12 col-md-6">
                 <div class="card shadow-sm h-100 d-flex flex-column mb-4">
                     <div class="card-header bg-primary text-white d-flex align-items-center">
                         <span class="material-icons me-2">event</span>
                         Artimiausi renginiai / repeticijos
                     </div>
-                    <div class="card-body flex-grow-1 mt-2">
+                    <div class="card-body flex-grow-1 p-3 p-md-4 fs-6 fs-lg-5">
+
                         <div class="table-responsive" style="max-height: 300px;">
                             <table class="table table-striped table-sm mb-0">
+                                <!-- Renginiai Table -->
                                 <thead class="table-light">
                                 <tr>
                                     <th>Pavadinimas</th>
                                     <th>Data</th>
                                     <th>Programa</th>
+                                    <th>Ansamblis</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -50,9 +53,18 @@
                                                 -
                                             {% endif %}
                                         </td>
+                                        <td>
+                                            {% if event.ansamblis %}
+                                                <span class="badge bg-secondary">{{ event.ansamblis.pavadinimas }}</span>
+                                            {% else %}
+                                                <span class="text-muted">-</span>
+                                            {% endif %}
+                                        </td>
+
                                     </tr>
                                 {% endfor %}
                                 </tbody>
+
                             </table>
                         </div>
                     </div>
@@ -60,19 +72,22 @@
             </div>
 
             <!-- Card 2: Kūriniai -->
-            <div class="col-md-6">
+            <div class="col-12 col-md-6">
                 <div class="card shadow-sm h-100 d-flex flex-column mb-4">
                     <div class="card-header bg-primary text-white d-flex align-items-center">
                         <span class="material-icons me-2">library_music</span>
                         Naujausi kūriniai
                     </div>
-                    <div class="card-body flex-grow-1 mt-2">
+                    <div class="card-body flex-grow-1 p-3 p-md-4 fs-6 fs-lg-5">
+
                         <div class="table-responsive" style="max-height: 300px;">
                             <table class="table table-striped table-sm mb-0">
+                                <!-- Kūriniai Table -->
                                 <thead class="table-light">
                                 <tr>
                                     <th>Pavadinimas</th>
                                     <th>Tipas</th>
+                                    <th>Ansambliai</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -80,9 +95,17 @@
                                     <tr>
                                         <td>{{ kurinys.pavadinimas }}</td>
                                         <td>{{ kurinys.tipas }}</td>
+                                        <td>
+                                            {% for a in kurinys.ansambliai.all %}
+                                                <span class="badge bg-secondary">{{ a.pavadinimas }}</span>
+                                            {% empty %}
+                                                <span class="text-muted">-</span>
+                                            {% endfor %}
+                                        </td>
                                     </tr>
                                 {% endfor %}
                                 </tbody>
+
                             </table>
                         </div>
                     </div>
@@ -90,13 +113,14 @@
             </div>
 
             <!-- Card 3: Instrumentai -->
-            <div class="col-md-6">
+            <div class="col-12 col-md-6">
                 <div class="card shadow-sm h-100 d-flex flex-column mb-4">
                     <div class="card-header bg-primary text-white d-flex align-items-center">
                         <span class="material-icons me-2">music_note</span>
                         Naujausi instrumentai
                     </div>
-                    <div class="card-body flex-grow-1 mt-2">
+                    <div class="card-body flex-grow-1 p-3 p-md-4 fs-6 fs-lg-5">
+
                         <div class="table-responsive" style="max-height: 300px;">
                             <table class="table table-striped table-sm mb-0">
                                 <thead class="table-light">
@@ -109,7 +133,9 @@
                                 {% for instr in instrumentai %}
                                     <tr>
                                         <td>{{ instr.pavadinimas }}</td>
-                                        <td>{{ instr.ansamblis.pavadinimas }}</td>
+                                        <td>
+                                            <span class="badge bg-secondary">{{ instr.ansamblis.pavadinimas }}</span>
+                                        </td>
                                     </tr>
                                 {% endfor %}
                                 </tbody>
@@ -119,13 +145,14 @@
                 </div>
             </div>
             <!-- Card 4: Jūsų informacija -->
-            <div class="col-md-6">
+            <div class="col-12 col-md-6">
                 <div class="card shadow-sm h-100 d-flex flex-column mb-4">
                     <div class="card-header bg-primary text-white d-flex align-items-center">
                         <span class="material-icons me-2">account_circle</span>
                         Jūsų informacija
                     </div>
-                    <div class="card-body flex-grow-1 mt-2">
+                    <div class="card-body flex-grow-1 p-3 p-md-4 fs-6 fs-lg-5">
+
                         <!-- Role Display -->
                         <div class="d-flex align-items-center mb-4">
                             <span class="material-icons text-secondary me-2">badge</span>
@@ -171,11 +198,6 @@
                     </div>
                 </div>
             </div>
-
-
         </div>
-
-        <!-- Spacer to prevent bottom stickiness -->
-        <div style="height: 100px;"></div>
     </div>
 {% endblock %}

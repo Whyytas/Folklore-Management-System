@@ -1,13 +1,13 @@
 <nav class="navbar navbar-expand-lg navbar-light navbar-custom">
     <div class="container-fluid px-4 d-flex align-items-center justify-content-between">
 
-        {% if user.ansambliai.count > 1 %}
-            <!-- LEFT: Ansamblis Dropdown (only if >1) -->
+        {% if user.get_role_display == "Administratorius" or user.ansambliai.count > 1 %}
+            <!-- Ansamblis Dropdown -->
             <form method="get" action="" class="me-auto">
                 <select name="ansamblis_id" class="form-select form-select-lg" style="min-width: 240px;"
                         onchange="this.form.submit()">
                     <option value="">Visi ansambliai</option>
-                    {% for ansamblis in user.ansambliai.all %}
+                    {% for ansamblis in all_ansambliai %}
                         <option value="{{ ansamblis.id }}"
                                 {% if ansamblis.id|stringformat:"s" == request.GET.ansamblis_id %}selected{% endif %}>
                             {{ ansamblis.pavadinimas }}
@@ -16,8 +16,9 @@
                 </select>
             </form>
         {% else %}
-            <div class="me-auto"></div>  <!-- Placeholder for spacing -->
+            <div class="me-auto"></div>  <!-- Placeholder spacing -->
         {% endif %}
+
 
         <!-- RIGHT: Sidebar Toggle + Breadcrumb + Profile -->
         <div class="d-flex align-items-center ms-4">
