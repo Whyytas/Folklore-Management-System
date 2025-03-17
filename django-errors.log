@@ -366,3 +366,4 @@ Traceback (most recent call last):
     ^
 django.template.base.VariableDoesNotExist: Failed lookup for key [data] in <Renginys: TestDate (Ansamblis2)>
 "GET /main/ HTTP/1.1" 500 306
+"GET /kuriniai/2/edit/ HTTP/1.1" 500 306

@@ -11,10 +11,13 @@
                         <h4 class="mb-0">Redaguoti Kūrinį</h4>
                     </div>
                     <div class="card-body">
+                        <!-- Inline error alert -->
+                        <div id="errorAlert" class="alert alert-danger d-none" role="alert"></div>
+
                         <form method="post" id="editKurinysForm">
                             {% csrf_token %}
 
-                            <!-- ✅ Pavadinimas -->
+                            <!-- Pavadinimas -->
                             <div class="mb-4">
                                 <label for="pavadinimas" class="form-label d-flex align-items-center">
                                     <span class="material-symbols-outlined me-2">music_note</span> Pavadinimas
@@ -23,21 +26,20 @@
                                        value="{{ kurinys.pavadinimas }}" required>
                             </div>
 
-                            <!-- ✅ Tipas (Loaded from Backend) -->
+                            <!-- Tipas -->
                             <div class="mb-4">
                                 <label for="tipas" class="form-label d-flex align-items-center">
                                     <span class="material-symbols-outlined me-2">category</span> Tipas
                                 </label>
                                 <select name="tipas" id="tipas" class="form-control" required>
                                     {% for value, label in kurinys.TIPAS_CHOICES %}
-                                        <option value="{{ value }}" {% if kurinys.tipas == value %}selected{% endif %}>
-                                            {{ label }}
-                                        </option>
+                                        <option value="{{ value }}"
+                                                {% if kurinys.tipas == value %}selected{% endif %}>{{ label }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
 
-                            <!-- ✅ YouTube URL -->
+                            <!-- YouTube URL -->
                             <div class="mb-4">
                                 <label for="youtube_url" class="form-label d-flex align-items-center">
                                     <span class="material-symbols-outlined me-2">link</span> YouTube Nuoroda
@@ -46,7 +48,7 @@
                                        value="{{ kurinys.youtube_url }}">
                             </div>
 
-                            <!-- ✅ "Žodžiai" Textarea (Hidden by Default) -->
+                            <!-- Lyrics -->
                             <div class="mb-4" id="lyricsContainer"
                                  style="display: {% if kurinys.tipas == 'Daina' %}block{% else %}none{% endif %};">
                                 <label for="lyrics" class="form-label d-flex align-items-center">
@@ -56,7 +58,28 @@
                                           placeholder="Įveskite dainos žodžius">{{ kurinys.lyrics }}</textarea>
                             </div>
 
-                            <!-- ✅ Buttons -->
+                            <!-- Ansambliai Multi-select -->
+                            <div class="mb-4">
+                                <label class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">groups</span> Pasirinkti ansamblius
+                                </label>
+                                <div class="d-flex flex-column gap-2">
+                                    {% for ansamblis in ansambliai %}
+                                        <input type="checkbox" class="btn-check" name="ansambliai"
+                                               id="ansamblis_{{ ansamblis.id }}" value="{{ ansamblis.id }}"
+                                               {% if ansamblis in kurinys.ansambliai.all %}checked{% endif %}>
+                                        <label class="btn w-100 py-2 d-flex justify-content-between align-items-center fs-5 ansamblis-btn {% if ansamblis in kurinys.ansambliai.all %}btn-success{% else %}btn-outline-dark{% endif %}"
+                                               for="ansamblis_{{ ansamblis.id }}">
+                                            <span>{{ ansamblis.pavadinimas }}</span>
+                                            <span class="material-symbols-outlined">
+                                            {% if ansamblis in kurinys.ansambliai.all %}check{% else %}add{% endif %}
+                                        </span>
+                                        </label>
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                            <!-- Form Actions -->
                             <div class="d-flex justify-content-between mt-4">
                                 <a href="{% url 'kuriniai' %}"
                                    class="btn btn-outline-secondary d-flex align-items-center">
@@ -73,37 +96,73 @@
         </div>
     </div>
 
-    <!-- ✅ JavaScript for Submitting Form -->
+
+    <!-- Toast Message Container -->
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1055;">
+        <div id="toastSuccess" class="toast align-items-center text-white bg-success border-0" role="alert"
+             aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    Kūrinys sėkmingai atnaujintas!
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto"
+                        data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const form = document.getElementById("editKurinysForm");
-            const trukmeInput = document.getElementById("trukme");
             const tipasSelect = document.getElementById("tipas");
             const lyricsContainer = document.getElementById("lyricsContainer");
+            const errorAlert = document.getElementById("errorAlert");
 
-            if (!form) {
-                console.error("Form element not found!");
-                return;
-            }
+            const youtubeInput = document.getElementById("youtube_url");
 
-            // ✅ Show or hide lyrics box based on selected tipas
-            tipasSelect.addEventListener("change", function () {
-                if (this.value === "Daina") {
-                    lyricsContainer.style.display = "block";
+            // Show Lithuanian validation message
+            youtubeInput.addEventListener("invalid", function (event) {
+                event.preventDefault();  // Prevent default message
+                if (event.target.value.trim() !== "") {
+                    event.target.setCustomValidity("Įveskite teisingą YouTube nuorodą.");
                 } else {
-                    lyricsContainer.style.display = "none";
+                    event.target.setCustomValidity("");  // Allow browser to show 'required' message
                 }
+                event.target.reportValidity();  // Force message display
             });
 
+            youtubeInput.addEventListener("input", function () {
+                youtubeInput.setCustomValidity("");  // Clear message when typing
+            });
+
+            // Ansambliai button toggle
+            document.querySelectorAll(".btn-check").forEach(button => {
+                const label = document.querySelector(`label[for="${button.id}"]`);
+                button.addEventListener("change", function () {
+                    const icon = label.querySelector("span.material-symbols-outlined");
+                    if (this.checked) {
+                        label.classList.add("btn-success");
+                        label.classList.remove("btn-outline-dark");
+                        icon.innerText = "check";
+                    } else {
+                        label.classList.remove("btn-success");
+                        label.classList.add("btn-outline-dark");
+                        icon.innerText = "add";
+                    }
+                });
+            });
+
+            // Show/hide lyrics
+            tipasSelect.addEventListener("change", function () {
+                lyricsContainer.style.display = (this.value === "Daina") ? "block" : "none";
+            });
+
+            // AJAX form submit
             form.addEventListener("submit", async function (event) {
                 event.preventDefault();
-
                 const formData = new FormData(form);
                 const kurinysId = "{{ kurinys.id }}";
-
-                if (trukmeInput) {
-                    trukmeInput.value = "⏳ Atnaujinama...";
-                }
 
                 const response = await fetch(`/kuriniai/${kurinysId}/edit/`, {
                     method: "POST",
@@ -115,18 +174,13 @@
 
                 const data = await response.json();
                 if (data.success) {
-                    if (trukmeInput) {
-                        trukmeInput.value = data.trukme || "—";
-                    }
-                    alert("Kūrinys sėkmingai atnaujintas!");
-                    setTimeout(() => {
-                        window.location.href = "/kuriniai/";
-                    }, 1000);
+                    window.location.href = "/kuriniai/?success=true";
                 } else {
-                    alert("Klaida: " + data.error);
+                    errorAlert.textContent = "Klaida: " + data.error;
+                    errorAlert.classList.remove("d-none");
                 }
             });
+
         });
     </script>
-
 {% endblock content %}

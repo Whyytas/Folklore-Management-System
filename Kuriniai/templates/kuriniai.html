@@ -9,10 +9,11 @@
                     <div class="card-header d-flex justify-content-between align-items-center py-3 table-header-custom">
                         <h4>Kūrinių Sąrašas</h4>
                         {% if request.user.role != "narys" %}
-    <a href="{% url 'kuriniai_add' %}" class="btn btn-light d-flex align-items-center action-btn">
-        <span class="material-symbols-outlined me-2">add</span> Pridėti
-    </a>
-{% endif %}
+                            <a href="{% url 'kuriniai_add' %}"
+                               class="btn btn-light d-flex align-items-center action-btn">
+                                <span class="material-symbols-outlined me-2">add</span> Pridėti
+                            </a>
+                        {% endif %}
 
                     </div>
                     <!-- ✅ Styled Search Input (Left-Aligned, Icon Inside) -->
@@ -34,10 +35,12 @@
                                     <th class="text-start">Pavadinimas</th>
                                     <th class="text-center">Tipas</th>
                                     <th class="text-center">Trukmė</th>
+                                    <th class="text-center">Ansamblis</th>  <!-- ✅ New Column -->
+
                                     <th class="text-center">Peržiūra</th>
                                     {% if request.user.role != "narys" %}
-    <th class="text-center">Valdyti</th>
-{% endif %}
+                                        <th class="text-center">Valdyti</th>
+                                    {% endif %}
 
                                 </tr>
                                 </thead>
@@ -54,6 +57,14 @@
                                                 ⏳ Loading...
                                             {% endif %}
                                         </td>
+                                        <td class="align-middle text-center">
+                                            {% for ansamblis in kurinys.ansambliai.all %}
+                                                {{ ansamblis.pavadinimas }}{% if not forloop.last %}, {% endif %}
+                                            {% empty %}
+                                                <span class="text-muted">—</span>
+                                            {% endfor %}
+                                        </td>
+
                                         <!-- ✅ Buttons for "Peržiūrėti" and "Žodžiai" -->
                                         <td class="align-middle text-center">
                                             <div class="d-flex justify-content-center gap-2">
@@ -78,28 +89,31 @@
                                         </td>
                                         <!-- ✅ Edit & Delete Buttons -->
                                         {% if request.user.role != "narys" %}
-    <td class="align-middle text-center">
-        <div class="d-flex justify-content-center gap-2">
-            <a href="{% url 'kuriniai_edit' kurinys.id %}"
-               class="btn btn-success d-flex align-items-center justify-content-center"
-               style="width: 130px; height: 40px;">
-                <span class="material-symbols-outlined me-2">edit</span> Redaguoti
-            </a>
-            <button type="button"
-                    class="btn btn-danger d-flex align-items-center justify-content-center"
-                    data-bs-toggle="modal" data-bs-target="#deleteModal"
-                    onclick="setDeleteUrl({{ kurinys.id }}, '{{ kurinys.pavadinimas }}')"
-                    style="width: 130px; height: 40px;">
-                <span class="material-symbols-outlined me-2">delete</span> Ištrinti
-            </button>
-        </div>
-    </td>
-{% endif %}
+                                            <td class="align-middle text-center">
+                                                <div class="d-flex justify-content-center gap-2">
+                                                    <a href="{% url 'kuriniai_edit' kurinys.id %}"
+                                                       class="btn btn-success d-flex align-items-center justify-content-center"
+                                                       style="width: 130px; height: 40px;">
+                                                        <span class="material-symbols-outlined me-2">edit</span>
+                                                        Redaguoti
+                                                    </a>
+                                                    <button type="button"
+                                                            class="btn btn-danger d-flex align-items-center justify-content-center"
+                                                            data-bs-toggle="modal" data-bs-target="#deleteModal"
+                                                            onclick="setDeleteUrl({{ kurinys.id }}, '{{ kurinys.pavadinimas }}')"
+                                                            style="width: 130px; height: 40px;">
+                                                        <span class="material-symbols-outlined me-2">delete</span>
+                                                        Ištrinti
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        {% endif %}
 
                                     </tr>
                                 {% empty %}
                                     <tr>
-                                        <td colspan="6" class="text-center text-muted">Nėra sukurtų kūrinių.</td>
+                                        <td colspan="7" class="text-center text-muted">Nėra sukurtų kūrinių.</td>
+
                                     </tr>
                                 {% endfor %}
                                 </tbody>
@@ -179,6 +193,20 @@
             </div>
         </div>
     </div>
+
+<!-- Toast Container -->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1055;">
+    <div id="toastSuccess" class="toast align-items-center text-white bg-success border-0" role="alert"
+         aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">Kūrinys sėkmingai atnaujintas!</div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto"
+                    data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+
+
     <script>
         document.getElementById("searchInput").addEventListener("keyup", function () {
             let searchValue = this.value.toLowerCase();
@@ -228,7 +256,11 @@
 
         // ✅ Ensure all event listeners run after the DOM is ready
         document.addEventListener("DOMContentLoaded", function () {
-            console.log("JavaScript loaded successfully!");
+           const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get("success") === "true") {
+            const toast = new bootstrap.Toast(document.getElementById("toastSuccess"));
+            toast.show();
+        }
         });
     </script>
 {% endblock content %}

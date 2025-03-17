@@ -1,6 +1,8 @@
 import requests
 import logging
 from django.shortcuts import render, redirect, get_object_or_404
+
+from Ansambliai.models import Ansamblis
 from .forms import KurinysForm
 from django.conf import settings
 from django.http import JsonResponse
@@ -14,31 +16,53 @@ logger = logging.getLogger(__name__)
 
 YOUTUBE_API_KEY = settings.YOUTUBE_API_KEY  # ⚠️ Replace with your actual API key
 
+
 def kuriniai_list(request):
-    """ Retrieve and display all Kūriniai """
-    kuriniai = Kurinys.objects.all()
+    kuriniai = Kurinys.objects.all().order_by('-created_at', '-id')
     return render(request, 'kuriniai.html', {'kuriniai': kuriniai})
+
 
 def kuriniai_add(request):
     if request.user.role == "narys":
         return HttpResponseForbidden("Jūs neturite teisės pridėti kūrinių.")
 
+    # Admins see all ansambliai; others see only their own
+    if request.user.role == "administratorius":
+        ansambliai_queryset = Ansamblis.objects.all()
+    else:
+        ansambliai_queryset = request.user.ansambliai.all()
+
     if request.method == "POST":
         form = KurinysForm(request.POST)
         if form.is_valid():
             kurinys = form.save(commit=False)
+
+            # Fetch and set trukmė from YouTube URL
             if kurinys.youtube_url:
                 video_id = extract_video_id(kurinys.youtube_url)
                 if video_id:
                     kurinys.trukme = get_video_duration(video_id)
+
             kurinys.save()
-            return redirect('/kuriniai')
 
-    form = KurinysForm()
-    return render(request, 'kuriniaiAdd.html', {'form': form})
+            # Set selected ansambliai (many-to-many)
+            selected_ids = request.POST.getlist("ansambliai")
+            kurinys.ansambliai.set(selected_ids)
 
+            return redirect('kuriniai')
+
+    else:
+        form = KurinysForm()
+
+    return render(request, 'kuriniaiAdd.html', {
+        "form": form,
+        "ansambliai": ansambliai_queryset
+    })
 def kuriniai_edit(request, kurinys_id):
     kurinys = get_object_or_404(Kurinys, id=kurinys_id)
+
+    # ✅ Show correct ansambliai
+    user_ansambliai = Ansamblis.objects.all() if request.user.role == "administratorius" else request.user.ansambliai.all()
 
     if request.user.role == "narys":
         return HttpResponseForbidden("Jūs neturite teisės redaguoti kūrinių.")
@@ -47,18 +71,30 @@ def kuriniai_edit(request, kurinys_id):
         form = KurinysForm(request.POST, instance=kurinys)
         if form.is_valid():
             kurinys = form.save(commit=False)
+            kurinys.save()
+
+            # ✅ Set multiple ansambliai
+            ansamblis_ids = request.POST.getlist("ansambliai")
+            kurinys.ansambliai.set(ansamblis_ids)
+
+            # ✅ Update trukmė from YouTube
             video_id = extract_video_id(kurinys.youtube_url)
             if video_id:
                 new_trukme = get_video_duration(video_id)
                 if new_trukme:
                     kurinys.trukme = new_trukme
-            kurinys.save()
-            return JsonResponse({"success": True, "trukme": kurinys.trukme})
+                    kurinys.save(update_fields=["trukme"])  # Save only trukme update
+
+            return JsonResponse({"success": True})
 
         return JsonResponse({"success": False, "error": "Invalid form data"}, status=400)
 
     form = KurinysForm(instance=kurinys)
-    return render(request, "kuriniaiEdit.html", {"kurinys": kurinys, "form": form})
+    return render(request, "kuriniaiEdit.html", {
+        "kurinys": kurinys,
+        "form": form,
+        "ansambliai": user_ansambliai
+    })
 
 def delete_kurinys(request, kurinys_id):
     if request.user.role == "narys":
@@ -72,11 +108,11 @@ def delete_kurinys(request, kurinys_id):
     return JsonResponse({"error": "Neteisingas užklausos metodas"}, status=400)
 
 
-
 def extract_video_id(url):
     """ Extract video ID from YouTube URL """
     match = re.search(r'(?:youtu\.be/|youtube\.com/(?:.*v=|.*\/|.*embed\/))([\w-]{11})', url)
     return match.group(1) if match else None
+
 
 def get_video_duration(video_id):
     """ Fetch and format video duration from YouTube API """
@@ -91,6 +127,7 @@ def get_video_duration(video_id):
     logger.warning(f"Failed to fetch duration for video ID: {video_id}")
     return None  # Return None if API fails
 
+
 def format_duration(duration):
     """ Convert YouTube ISO 8601 duration to HH:MM:SS or MM:SS format with zero padding """
     match = re.match(r'PT(\d+H)?(\d+M)?(\d+S)?', duration)
@@ -102,6 +139,7 @@ def format_duration(duration):
     if hours > 0:
         return f"{hours:02}:{minutes:02}:{seconds:02}"  # ✅ Show HH:MM:SS if hours exist
     return f"{minutes:02}:{seconds:02}"  # ✅ Show MM:SS if no hours
+
 
 @csrf_exempt
 def refresh_trukme(request):
@@ -118,6 +156,7 @@ def refresh_trukme(request):
                 updated_count += 1
 
     return JsonResponse({"success": True, "updated": updated_count})
+
 
 def fetch_trukme(request):
     """API: Fetch YouTube duration based on URL"""
