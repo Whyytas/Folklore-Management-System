@@ -35,7 +35,7 @@ if not SECRET_KEY:
     raise ValueError("Missing DJANGO_SECRET_KEY environment variable")
 
 # Debug mode (should be False in production)
-DEBUG = os.getenv("DEBUG", "False").lower() == "true"
+DEBUG = True
 
 # Allowed hosts
 ALLOWED_HOSTS = [

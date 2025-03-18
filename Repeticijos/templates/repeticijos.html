@@ -27,11 +27,11 @@
                                     <th class="text-start">Pavadinimas</th>
                                     <th class="text-center">Data</th>
                                     <th class="text-center">Kūriniai</th>
+                                    <th class="text-center">Ansamblis</th> <!-- ✅ NEW COLUMN -->
                                     <th class="text-center">Peržiūra</th>
                                     {% if request.user.role != "narys" %}
                                         <th class="text-center">Valdyti</th>
                                     {% endif %}
-
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -39,7 +39,7 @@
                                     <tr>
                                         <td class="align-middle text-end">{{ forloop.counter }}</td>
                                         <td class="align-middle text-start fw-bold">{{ repeticija.pavadinimas }}</td>
-                                        <td class="align-middle text-center">{{ repeticija.data|date:"Y-m-d" }} {{ repeticija.data|time:"H:i" }}</td>
+                                        <td class="align-middle text-center">{{ repeticija.data|date:"Y-m-d H:i" }}</td>
                                         <td class="align-middle text-center">
                                             {% for kurinys in repeticija.kuriniai.all %}
                                                 <span class="badge bg-secondary">{{ kurinys.pavadinimas }}</span>
@@ -47,8 +47,11 @@
                                                 <span class="text-muted">—</span>
                                             {% endfor %}
                                         </td>
+                                        <td class="align-middle text-center">
+                                            <span class="badge bg-info">{{ repeticija.ansamblis.pavadinimas }}</span>
+                                        </td>
 
-                                        <!-- ✅ Peržiūrėti Button -->
+
                                         <td class="align-middle text-center">
                                             <div class="d-flex justify-content-center">
                                                 <a href="{% url 'repeticija_detail' repeticija.pk %}"
@@ -59,10 +62,9 @@
                                             </div>
                                         </td>
 
-                                        <!-- ✅ Full Bootstrap Edit & Delete Buttons -->
-                                        <td class="align-middle text-center">
-                                            <div class="d-flex justify-content-center gap-2">
-                                                {% if request.user.role != "narys" %}
+                                        {% if request.user.role != "narys" %}
+                                            <td class="align-middle text-center">
+                                                <div class="d-flex justify-content-center gap-2">
                                                     <a href="{% url 'repeticija_edit' repeticija.pk %}"
                                                        class="btn btn-success d-flex align-items-center justify-content-center"
                                                        style="width: 130px; height: 40px;">
@@ -77,16 +79,19 @@
                                                         <span class="material-symbols-outlined me-2">delete</span>
                                                         Ištrinti
                                                     </button>
-                                                {% endif %}
-                                            </div>
-                                        </td>
+                                                </div>
+                                            </td>
+                                        {% endif %}
                                     </tr>
                                 {% empty %}
                                     <tr>
-                                        <td colspan="6" class="text-center text-muted">Nėra sukurtų repeticijų.</td>
+                                        <td colspan="{% if request.user.role != 'narys' %}7{% else %}6{% endif %}"
+                                            class="text-center text-muted">
+                                            Nėra sukurtų repeticijų.
+                                        </td>
+
                                     </tr>
                                 {% endfor %}
-                                </tbody>
                             </table>
                         </div>
                     </div>
