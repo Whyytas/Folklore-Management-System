@@ -4,6 +4,8 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.contrib import messages
+
+from Ansambliai.models import Ansamblis
 from .models import Padalinys
 from .forms import PadalinysForm
 
@@ -17,6 +19,18 @@ class PadaliniaiListView(LoginRequiredMixin, ListView):
             return HttpResponseForbidden("Jūs neturite teisės peržiūrėti padalinių.")
         return super().dispatch(request, *args, **kwargs)
 
+    def get_queryset(self):
+        selected_ansamblis_id = self.request.session.get("selected_ansamblis_id")
+        qs = Padalinys.objects.all().order_by("pavadinimas")
+        if selected_ansamblis_id:
+            qs = qs.filter(ansambliai__id=selected_ansamblis_id).distinct()
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["all_ansambliai"] = Ansamblis.objects.all()
+        context["selected_ansamblis_id"] = self.request.session.get("selected_ansamblis_id")
+        return context
 class PadalinysCreateView(LoginRequiredMixin, CreateView):
     model = Padalinys
     form_class = PadalinysForm

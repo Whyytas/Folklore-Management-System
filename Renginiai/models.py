@@ -12,6 +12,7 @@ class Renginys(models.Model):
     adresas = models.TextField()
     data_laikas = models.DateTimeField()
     programa = models.ForeignKey(Programa, on_delete=models.SET_NULL, null=True, blank=True)  # ✅ One-to-Many
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def formatted_data_laikas(self):
         return localtime(self.data_laikas).strftime("%Y-%m-%d %H:%M")

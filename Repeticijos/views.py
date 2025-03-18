@@ -10,8 +10,18 @@ from Ansambliai.models import Ansamblis  # ✅ Import Ansamblis
 
 
 def repeticijos_list(request):
-    repeticijos = Repeticija.objects.all()
-    return render(request, 'repeticijos.html', {'repeticijos': repeticijos})
+    selected_ansamblis_id = request.session.get("selected_ansamblis_id")
+    repeticijos = Repeticija.objects.all().order_by("-data", "-id")
+
+    if selected_ansamblis_id:
+        repeticijos = repeticijos.filter(ansamblis__id=selected_ansamblis_id)
+
+    all_ansambliai = Ansamblis.objects.all()
+
+    return render(request, 'repeticijos.html', {
+        'repeticijos': repeticijos,
+        'all_ansambliai': all_ansambliai
+    })
 
 
 @login_required

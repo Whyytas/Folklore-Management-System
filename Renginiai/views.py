@@ -11,9 +11,18 @@ import datetime  # ✅ Correct way to import datetime module
 
 
 def renginiai_list(request):
-    """ Retrieve and display all Renginiai """
-    renginiai = Renginys.objects.all()
-    return render(request, 'renginiai.html', {'renginiai': renginiai})
+    selected_ansamblis_id = request.session.get("selected_ansamblis_id")
+    renginiai = Renginys.objects.all().order_by("-created_at", "-id")  # ✅ Now order by created_at
+
+    if selected_ansamblis_id:
+        renginiai = renginiai.filter(ansamblis__id=selected_ansamblis_id)
+
+    all_ansambliai = Ansamblis.objects.all()
+
+    return render(request, 'renginiai.html', {
+        'renginiai': renginiai,
+        'all_ansambliai': all_ansambliai
+    })
 
 def renginiai_add(request):
     if request.user.role == "narys":

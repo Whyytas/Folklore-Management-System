@@ -1,12 +1,24 @@
 from django.shortcuts import render, redirect, get_object_or_404
+
+from Ansambliai.models import Ansamblis
 from Kuriniai.models import Kurinys
 from .models import Programa, ProgramosKurinys
 import json
 from django.http import JsonResponse, HttpResponseForbidden
 
 def programos_page(request):
-    programos = Programa.objects.all()
-    return render(request, 'programos.html', {'programos': programos})
+    selected_ansamblis_id = request.session.get("selected_ansamblis_id")
+    programos = Programa.objects.all().order_by("-sukurtas", "-id")
+
+    if selected_ansamblis_id:
+        programos = programos.filter(ansamblis__id=selected_ansamblis_id)
+
+    all_ansambliai = Ansamblis.objects.all()
+
+    return render(request, 'programos.html', {
+        'programos': programos,
+        'all_ansambliai': all_ansambliai
+    })
 
 
 def program_create(request):

@@ -11,7 +11,7 @@ from Repeticijos.models import Repeticija
 
 
 def main_page(request):
-    ansamblis_id = request.GET.get('ansamblis_id')
+    ansamblis_id = request.GET.get('ansamblis_id') or request.session.get("selected_ansamblis_id")
     all_ansambliai = Ansamblis.objects.all()
 
     renginiai_qs = Renginys.objects.filter(data_laikas__gte=now())
@@ -20,9 +20,17 @@ def main_page(request):
     kuriniai_qs = Kurinys.objects.all()
 
     if ansamblis_id:
-        renginiai_qs = renginiai_qs.filter(ansamblis_id=ansamblis_id)
-        instrumentai_qs = instrumentai_qs.filter(ansamblis_id=ansamblis_id)
-        kuriniai_qs = kuriniai_qs.filter(ansambliai__id=ansamblis_id)
+        # Ensure ansamblis_id is integer to avoid comparison issues
+        try:
+            ansamblis_id = int(ansamblis_id)
+        except ValueError:
+            ansamblis_id = None
+
+        if ansamblis_id:
+            renginiai_qs = renginiai_qs.filter(ansamblis_id=ansamblis_id)
+            repeticijos_qs = repeticijos_qs.filter(ansamblis_id=ansamblis_id)
+            instrumentai_qs = instrumentai_qs.filter(ansamblis_id=ansamblis_id)
+            kuriniai_qs = kuriniai_qs.filter(ansambliai__id=ansamblis_id)
 
     renginiai = renginiai_qs.order_by('data_laikas')[:5]
     repeticijos = repeticijos_qs.order_by('data')[:5]

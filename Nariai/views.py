@@ -10,19 +10,38 @@ from django.contrib.auth import get_user_model
 User = get_user_model()  # ✅ Ensure you're using the correct model
 
 
+ROLE_ORDER = {
+    'administratorius': 1,
+    'vadovas': 2,
+    'narys': 3
+}
+
 @login_required
 def nariai_list(request):
     if request.user.role == "narys":
         return HttpResponseForbidden("Jūs neturite teisės peržiūrėti narių.")
 
-    if request.user.role == "vadovas":
-        users = User.objects.filter(ansambliai__in=request.user.ansambliai.all()).distinct()
+    selected_ansamblis_id = request.session.get("selected_ansamblis_id")
+    users_qs = User.objects.all()
+
+    if selected_ansamblis_id:
+        users_qs = users_qs.filter(ansambliai__id=selected_ansamblis_id).distinct()
+
+    users = list(users_qs)
+
+    # ✅ Custom sort: always by role order first IF visi ansambliai, else surname
+    if not selected_ansamblis_id:
+        users.sort(key=lambda u: (ROLE_ORDER.get(u.role, 4), u.last_name.lower(), u.first_name.lower()))
     else:
-        users = User.objects.all()
+        users.sort(key=lambda u: (u.last_name.lower(), u.first_name.lower()))
 
-    return render(request, 'nariai.html', {'users': users})
+    all_ansambliai = Ansamblis.objects.all()
 
-
+    return render(request, 'nariai.html', {
+        'users': users,
+        'all_ansambliai': all_ansambliai,
+        'selected_ansamblis_id': selected_ansamblis_id
+    })
 # ✅ Custom Form for Creating a User
 class CustomUserCreationForm(UserCreationForm):
     vardas = forms.CharField(max_length=255, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))

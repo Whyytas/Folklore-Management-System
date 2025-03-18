@@ -7,9 +7,19 @@ from .forms import InstrumentasForm
 from django.http import HttpResponseForbidden
 
 def instrumentai_list(request):
-    instrumentai = Instrumentas.objects.all()
-    return render(request, "instrumentai.html", {"instrumentai": instrumentai})
+    selected_ansamblis_id = request.session.get("selected_ansamblis_id")
+    instrumentai = Instrumentas.objects.all().order_by("-id")
 
+    if selected_ansamblis_id:
+        instrumentai = instrumentai.filter(ansamblis__id=selected_ansamblis_id)
+
+    all_ansambliai = Ansamblis.objects.all()
+
+    return render(request, "instrumentai.html", {
+        "instrumentai": instrumentai,
+        "all_ansambliai": all_ansambliai,
+        "selected_ansamblis_id": selected_ansamblis_id
+    })
 
 def instrumentai_add(request):
     if request.user.role == "narys":

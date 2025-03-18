@@ -3,6 +3,9 @@ from datetime import timedelta
 
 from django.db import models
 
+from Ansambliai.models import Ansamblis
+
+
 class Programa(models.Model):
     PROGRAM_TIPAS = [
         ('Adventui', 'Adventui'),
@@ -18,6 +21,7 @@ class Programa(models.Model):
     aprasymas = models.TextField(blank=True, null=True)
     trukme = models.CharField(max_length=10, blank=True, null=True)  # ✅ User-defined trukme
     sukurtas = models.DateTimeField(auto_now_add=True)
+    ansamblis = models.ForeignKey(Ansamblis, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return self.pavadinimas
