@@ -1,8 +1,10 @@
 from django.shortcuts import render, get_object_or_404, redirect
+
+from Kuriniai.models import Kurinys
 from .models import Ansamblis
 from .forms import AnsamblisForm
 
-from django.http import HttpResponseForbidden
+from django.http import HttpResponseForbidden, JsonResponse
 from django.contrib.auth.decorators import login_required
 
 @login_required
@@ -52,3 +54,22 @@ def ansamblis_delete(request, pk):
         return redirect('ansambliai_list')
 
     return render(request, 'ansamblis_confirm_delete.html', {'ansamblis': ansamblis})
+
+@login_required
+def get_kuriniai_by_ansamblis(request, pk):
+    ansamblis = get_object_or_404(Ansamblis, pk=pk)
+
+    # Fetch Kuriniai linked via ManyToMany relationship
+    kuriniai = Kurinys.objects.filter(ansambliai=ansamblis)
+
+    # Prepare the data to return as JSON
+    kuriniai_data = [
+        {
+            "id": kurinys.id,
+            "pavadinimas": kurinys.pavadinimas,
+            "trukme": kurinys.trukme or "00:00",
+        }
+        for kurinys in kuriniai
+    ]
+
+    return JsonResponse(kuriniai_data, safe=False)

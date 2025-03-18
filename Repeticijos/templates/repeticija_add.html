@@ -33,30 +33,28 @@
 
                             </div>
 
-                            <!-- ✅ Kūriniai Selection -->
-                            <div class="row">
+                            <!-- Ansamblis Dropdown -->
+                            <div class="mb-4">
+                                <label for="ansamblis" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">groups</span> Ansamblis
+                                </label>
+                                <select class="form-select" id="ansamblis" name="ansamblis" required>
+                                    <option value="" selected>Nepasirinktas</option>
+                                    {% for ansamblis in ansambliai %}
+                                        <option value="{{ ansamblis.id }}">{{ ansamblis.pavadinimas }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <!-- Kūriniai Selection (initially hidden) -->
+                            <div class="row" id="kuriniai-container" style="display:none;">
                                 <!-- Available Kūriniai -->
                                 <div class="col-md-6">
                                     <div class="card shadow-sm">
                                         <div class="card-header bg-light">
                                             <h5 class="mb-0">Visi kūriniai</h5>
                                         </div>
-                                        <div class="card-body kuriniai-list" id="all-kuriniai">
-                                            {% for kurinys in kuriniai %}
-                                                <div class="kuriniai-item card mb-2" id="kurinys-{{ kurinys.id }}"
-                                                     data-id="{{ kurinys.id }}" data-trukme="{{ kurinys.trukme }}">
-                                                    <div class="card-body d-flex justify-content-between align-items-center">
-                                                        <span class="fw-bold">{{ kurinys.pavadinimas }}</span>
-                                                        <button type="button"
-                                                                class="btn btn-outline-primary d-flex align-items-center justify-content-center"
-                                                                onclick="moveKurinys({{ kurinys.id }}, '{{ kurinys.pavadinimas }}', '{{ kurinys.trukme }}')">
-                                                            <span class="material-symbols-outlined me-1">add_circle</span>
-                                                            <span class="kurinys-trukme">{{ kurinys.trukme|default:"00:00" }}</span>
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            {% endfor %}
-                                        </div>
+                                        <div class="card-body" id="all-kuriniai"></div>
                                     </div>
                                 </div>
 
@@ -66,7 +64,7 @@
                                         <div class="card-header bg-light">
                                             <h5 class="mb-0">Pasirinkti kūriniai</h5>
                                         </div>
-                                        <div class="card-body selected-kuriniai" id="selected-kuriniai">
+                                        <div class="card-body" id="selected-kuriniai">
                                             <p id="empty-message" class="text-muted text-center">Nėra pasirinktų
                                                 kūrinių</p>
                                         </div>
@@ -75,21 +73,6 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-
-                            <!-- Ansamblis Dropdown -->
-                            <div class="mb-4">
-                                <label for="ansamblis" class="form-label d-flex align-items-center">
-                                    <span class="material-symbols-outlined me-2">groups</span> Ansamblis
-                                </label>
-                                <select class="form-select" id="ansamblis" name="ansamblis" required>
-                                    {% for ansamblis in ansambliai %}
-                                        <option value="{{ ansamblis.id }}">
-                                            {{ ansamblis.pavadinimas }}
-                                        </option>
-                                    {% endfor %}
-                                </select>
-
                             </div>
 
 
@@ -112,139 +95,190 @@
 
     <!-- ✅ JavaScript -->
     <script>
-document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function () {
+            flatpickr("#data", {
+                enableTime: true,
+                dateFormat: "Y-m-d H:i",
+                time_24hr: true,
+                minDate: "today",
+                locale: flatpickr.l10ns.lt,
+            });
 
-    // Initialize flatpickr datetime picker with Lithuanian localization
-    flatpickr("#data", {
-        enableTime: true,
-        dateFormat: "Y-m-d H:i",
-        time_24hr: true,
-        minDate: "today",
-        locale: flatpickr.l10ns.lt,
-    });
+            const csrfToken = document.querySelector("[name=csrfmiddlewaretoken]").value;
+            const ansamblisSelect = document.getElementById("ansamblis");
+            const form = document.getElementById("repeticija-form");
+            const kuriniaiContainer = document.getElementById("kuriniai-container");
+            const allKuriniaiEl = document.getElementById("all-kuriniai");
+            const selectedKuriniaiEl = document.getElementById("selected-kuriniai");
+            const emptyMessage = document.getElementById("empty-message");
+            const totalTrukmeEl = document.getElementById("total-trukme");  // Defined to update total duration
 
-    const form = document.getElementById("repeticija-form");
-    const csrfToken = document.querySelector("[name=csrfmiddlewaretoken]").value;
+            kuriniaiContainer.style.display = "none";
 
-    // Update visibility of the empty message
-    function updateEmptyMessage() {
-        const emptyMessage = document.getElementById("empty-message");
-        const selectedKuriniai = document.querySelectorAll("#selected-kuriniai .kuriniai-item");
-        emptyMessage.style.display = selectedKuriniai.length ? "none" : "block";
-    }
+            ansamblisSelect.addEventListener("change", function () {
+                const ansamblisId = this.value;
 
-    // Update total duration of selected kūriniai
-    function updateTotalTrukme() {
-        let totalSeconds = 0;
-        document.querySelectorAll("#selected-kuriniai .kuriniai-item").forEach(item => {
-            const [minutes, seconds] = (item.dataset.trukme || "0:00").split(":").map(Number);
-            totalSeconds += minutes * 60 + seconds;
-        });
-        const minutes = String(Math.floor(totalSeconds / 60)).padStart(2, '0');
-        const seconds = String(totalSeconds % 60).padStart(2, '0');
-        document.getElementById("total-trukme").textContent = `${minutes}:${seconds}`;
-    }
+                if (!ansamblisId) {
+                    kuriniaiContainer.style.display = "none";
+                    allKuriniaiEl.innerHTML = "";
+                    selectedKuriniaiEl.innerHTML = '<p id="empty-message" class="text-muted text-center">Nėra pasirinktų kūrinių</p>';
+                    return;
+                }
 
-    // Move kurinys from available to selected
-    window.moveKurinys = function (id, name, trukme) {
-        if (document.getElementById(`selected-${id}`)) return;
+                fetch(`/ansambliai/${ansamblisId}/kuriniai/`)
+                    .then(res => {
+                        if (!res.ok) throw new Error("Nepavyko gauti kūrinių sąrašo.");
+                        return res.json();
+                    })
+                    .then(kuriniai => {
+                        allKuriniaiEl.innerHTML = "";
+                        selectedKuriniaiEl.innerHTML = '<p id="empty-message" class="text-muted text-center">Nėra pasirinktų kūrinių</p>';
 
-        const selectedContainer = document.getElementById("selected-kuriniai");
-        const availableItem = document.getElementById(`kurinys-${id}`);
+                        kuriniai.forEach(kurinys => {
+                            const kurinysHTML = `
+                        <div class="kuriniai-item card mb-2" id="kurinys-${kurinys.id}" data-id="${kurinys.id}" data-trukme="${kurinys.trukme}">
+                            <div class="card-body d-flex justify-content-between align-items-center">
+                                <span class="fw-bold">${kurinys.pavadinimas}</span>
+                                <button type="button" class="btn btn-outline-primary d-flex align-items-center justify-content-center"
+                                        onclick="moveKurinys(${kurinys.id}, '${kurinys.pavadinimas}', '${kurinys.trukme}')">
+                                    <span class="material-symbols-outlined me-1">add_circle</span>
+                                    <span class="kurinys-trukme">${kurinys.trukme || '00:00'}</span>
+                                </button>
+                            </div>
+                        </div>`;
+                            allKuriniaiEl.insertAdjacentHTML('beforeend', kurinysHTML);
+                        });
 
-        const listItem = document.createElement("div");
-        listItem.className = "kuriniai-item card mb-2";
-        listItem.id = `selected-${id}`;
-        listItem.dataset.id = id;
-        listItem.dataset.trukme = trukme || "00:00";
+                        kuriniaiContainer.style.display = "flex";
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        alert("Nepavyko gauti kūrinių sąrašo.");
+                    });
+            });
 
-        listItem.innerHTML = `
-            <div class="card-body d-flex justify-content-between align-items-center">
-                <span class="fw-bold">${name}</span>
-                <button type="button" class="btn btn-outline-danger d-flex align-items-center justify-content-center"
-                        onclick="removeKurinys(${id})">
-                    <span class="material-symbols-outlined me-1">remove_circle</span>
-                    <span class="kurinys-trukme">${trukme || "00:00"}</span>
-                </button>
+            // Adds selected kūrinys to the right column and updates duration
+            window.moveKurinys = function (id, name, trukme) {
+                if (document.getElementById(`selected-${id}`)) return;
+
+                const selectedHTML = `
+            <div class="kuriniai-item card mb-2" id="selected-${id}" data-id="${id}" data-trukme="${trukme}">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <span class="fw-bold">${name}</span>
+                    <button type="button" class="btn btn-outline-danger d-flex align-items-center justify-content-center"
+                            onclick="removeKurinys(${id})">
+                        <span class="material-symbols-outlined me-1">remove_circle</span>
+                        <span class="kurinys-trukme">${trukme || '00:00'}</span>
+                    </button>
+                </div>
             </div>`;
+                selectedKuriniaiEl.insertAdjacentHTML('beforeend', selectedHTML);
 
-        selectedContainer.appendChild(listItem);
-        if (availableItem) availableItem.remove();
+                const availableItem = document.getElementById(`kurinys-${id}`);
+                if (availableItem) availableItem.remove();
 
-        updateEmptyMessage();
-        updateTotalTrukme();
-    }
+                updateEmptyMessage();
+                updateTotalTrukme();
+            };
 
-    // Remove kūrinys from selection and restore to available
-    window.removeKurinys = function (id) {
-        const item = document.getElementById(`selected-${id}`);
-        if (!item) return;
+            // Moves kūrinys back to available list and updates duration
+            window.removeKurinys = function (id) {
+                const item = document.getElementById(`selected-${id}`);
+                if (!item) return;
 
-        const name = item.querySelector(".fw-bold").innerText;
-        const trukme = item.dataset.trukme;
+                const name = item.querySelector(".fw-bold").innerText;
+                const trukme = item.dataset.trukme;
 
-        const availableContainer = document.getElementById("all-kuriniai");
-        const newAvailableItem = document.createElement("div");
-        newAvailableItem.className = "kuriniai-item card mb-2";
-        newAvailableItem.id = `kurinys-${id}`;
-        newAvailableItem.dataset.id = id;
-        newAvailableItem.dataset.trukme = trukme;
-
-        newAvailableItem.innerHTML = `
-            <div class="card-body d-flex justify-content-between align-items-center">
-                <span class="fw-bold">${name}</span>
-                <button type="button" class="btn btn-outline-primary d-flex align-items-center justify-content-center"
-                        onclick="moveKurinys(${id}, '${name}', '${trukme}')">
-                    <span class="material-symbols-outlined me-1">add_circle</span>
-                    <span class="kurinys-trukme">${trukme}</span>
-                </button>
+                const newItem = `
+            <div class="kuriniai-item card mb-2" id="kurinys-${id}" data-id="${id}" data-trukme="${trukme}">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <span class="fw-bold">${name}</span>
+                    <button type="button" class="btn btn-outline-primary d-flex align-items-center justify-content-center"
+                            onclick="moveKurinys(${id}, '${name}', '${trukme}')">
+                        <span class="material-symbols-outlined me-1">add_circle</span>
+                        ${trukme || "00:00"}
+                    </button>
+                </div>
             </div>`;
+                allKuriniaiEl.insertAdjacentHTML('beforeend', newItem);  // Corrected reference
+                item.remove();
 
-        availableContainer.appendChild(newAvailableItem);
-        item.remove();
+                updateEmptyMessage();
+                updateTotalTrukme();
+            };
 
-        updateEmptyMessage();
-        updateTotalTrukme();
-    };
+            // Shows or hides empty message if no kūriniai selected
+            function updateEmptyMessage() {
+                const emptyMsg = document.getElementById("empty-message");  // Reselect fresh reference
+                const hasItems = selectedKuriniaiEl.querySelectorAll(".kuriniai-item").length > 0;
 
-    // Handle form submission
-    document.getElementById("repeticija-form").addEventListener("submit", function (event) {
-        event.preventDefault();
+                if (emptyMsg) {
+                    emptyMsg.style.display = hasItems ? "none" : "block";
+                }
+            }
 
-        const pavadinimas = document.getElementById("pavadinimas").value.trim();
-        const data = document.getElementById("data").value.trim();
-        const ansamblis = parseInt(document.getElementById("ansamblis").value);
-        const selectedKuriniai = Array.from(document.querySelectorAll("#selected-kuriniai .kuriniai-item"))
-            .map(item => parseInt(item.dataset.id));
 
-        if (!pavadinimas || !data || selectedKuriniai.length === 0) {
-            alert("Užpildykite visus laukus ir pasirinkite bent vieną kūrinį!");
-            return;
-        }
+            // Updates total duration of selected kūriniai
+            function updateTotalTrukme() {
+                let totalSeconds = 0;
+                selectedKuriniaiEl.querySelectorAll(".kuriniai-item").forEach(item => {
+                    const [minutes, seconds] = item.dataset.trukme.split(":").map(Number);
+                    totalSeconds += (minutes * 60 + seconds);
+                });
 
-        fetch("{% url 'repeticija_create' %}", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRFToken": csrfToken
-            },
-            body: JSON.stringify({pavadinimas, data, kuriniai: selectedKuriniai, ansamblis})
-        }).then(response => {
-            if (!response.ok) throw new Error("Klaida išsaugant repeticiją");
-            return response.json();
-        }).then(data => {
-            window.location.href = data.redirect;
-        }).catch(error => {
-            console.error("Klaida:", error);
-            alert("Įvyko klaida siunčiant duomenis.");
+                const minutes = String(Math.floor(totalSeconds / 60)).padStart(2, '0');
+                const seconds = String(totalSeconds % 60).padStart(2, '0');
+                totalTrukmeEl.textContent = `${minutes}:${seconds}`;
+            }
+
+            // Handles form submission and validation
+            form.addEventListener("submit", function (e) {
+                e.preventDefault();
+
+                const payload = {
+                    pavadinimas: document.getElementById("pavadinimas").value.trim(),
+                    data: document.getElementById("data").value.trim(),
+                    ansamblis: parseInt(ansamblisSelect.value),
+                    kuriniai: Array.from(selectedKuriniaiEl.querySelectorAll(".kuriniai-item")).map(item => parseInt(item.dataset.id))
+                };
+
+                if (!payload.pavadinimas || !payload.data || !payload.ansamblis || !payload.kuriniai.length) {
+                    alert("Užpildykite visus laukus ir pasirinkite bent vieną kūrinį!");
+                    return;
+                }
+
+                fetch("{% url 'repeticija_create' %}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": csrfToken
+                    },
+                    body: JSON.stringify(payload)
+                })
+                    .then(res => {
+                        if (!res.ok) throw new Error("Klaida išsaugant repeticiją.");
+                        return res.json();
+                    })
+                    .then(data => {
+                        form.querySelector("button[type=submit]").disabled = true;  // Disable button
+                        ansamblisSelect.disabled = true;  // Disable dropdown
+                        // Prevent accidental DOM changes during redirect delay
+                        window.location.href = data.redirect;
+                    })
+
+                    .catch(err => {
+                        console.error(err);
+                        alert("Įvyko klaida siunčiant duomenis.");
+                    });
+            });
+
+            updateEmptyMessage();
+            updateTotalTrukme();
         });
-    });
 
-    // Initialize states on page load
-    updateEmptyMessage();
-    updateTotalTrukme();
-});
-</script>
+    </script>
+
+
 
 
 {% endblock %}

@@ -6,4 +6,6 @@ urlpatterns = [
     path('add/', views.ansamblis_add, name='ansamblis_add'),
     path('<int:pk>/edit/', views.ansamblis_edit, name='ansamblis_edit'),
     path('<int:pk>/delete/', views.ansamblis_delete, name='ansamblis_delete'),
+    path('<int:pk>/kuriniai/', views.get_kuriniai_by_ansamblis, name='get_kuriniai_by_ansamblis')
+
 ]
