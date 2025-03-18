@@ -41,23 +41,21 @@ def kuriniai_add(request):
         ansambliai_queryset = request.user.ansambliai.all()
 
     if request.method == "POST":
-        form = KurinysForm(request.POST)
+        form = KurinysForm(request.POST, request.FILES)
         if form.is_valid():
             kurinys = form.save(commit=False)
 
-            # Set trukmė from YouTube
+            # Get video duration from YouTube
             if kurinys.youtube_url:
                 video_id = extract_video_id(kurinys.youtube_url)
                 if video_id:
                     kurinys.trukme = get_video_duration(video_id)
 
             kurinys.save()
-
-            # Save ansambliai many-to-many relations
             selected_ids = request.POST.getlist("ansambliai")
             kurinys.ansambliai.set(selected_ids)
 
-            return redirect('/kuriniai/?success=true')  # Redirect with toast trigger
+            return redirect('/kuriniai/?success=true')
     else:
         form = KurinysForm()
 
@@ -77,7 +75,7 @@ def kuriniai_edit(request, kurinys_id):
         return HttpResponseForbidden("Jūs neturite teisės redaguoti kūrinių.")
 
     if request.method == "POST":
-        form = KurinysForm(request.POST, instance=kurinys)
+        form = KurinysForm(request.POST, request.FILES, instance=kurinys)
         if form.is_valid():
             kurinys = form.save(commit=False)
             kurinys.save()

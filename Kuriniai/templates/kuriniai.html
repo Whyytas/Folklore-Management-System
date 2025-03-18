@@ -104,6 +104,16 @@
                                                             </button>
                                                         </li>
                                                     {% endif %}
+                                                    {% if kurinys.natos %}
+                                                        <li>
+                                                            <button class="dropdown-item d-flex align-items-center justify-content-center gap-2"
+                                                                    onclick="showPDF('{{ kurinys.pavadinimas }}', '{{ kurinys.natos.url }}')">
+                                                                <span class="material-symbols-outlined">picture_as_pdf</span>
+                                                                PDF
+                                                            </button>
+                                                        </li>
+                                                    {% endif %}
+
                                                 </ul>
                                             </div>
                                         </td>
@@ -153,6 +163,40 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- PDF Modal -->
+                <div class="modal fade" id="pdfModal" tabindex="-1" aria-labelledby="pdfModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-xl modal-dialog-centered" style="max-width: 95vw; height: 95vh;">
+                        <div class="modal-content shadow-lg border-0 rounded-4"
+                             style="height: 100%; display: flex; flex-direction: column;">
+                            <!-- Modal Header -->
+                            <div class="modal-header bg-dark text-white rounded-top-4">
+                                <h5 class="modal-title d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">picture_as_pdf</span>
+                                    <span id="pdfModalTitle">Kūrinio PDF</span>
+                                </h5>
+                                <button type="button" class="btn-close btn-close-white"
+                                        data-bs-dismiss="modal"></button>
+                            </div>
+
+
+                            <!-- Modal Body -->
+                            <div class="modal-body p-0" style="flex: 1; overflow: hidden;">
+                                <iframe id="pdfViewer" src="" width="100%" height="100%" frameborder="0"
+                                        style="border-radius: 0 0 1rem 1rem;"></iframe>
+                            </div>
+
+                            <!-- Modal Footer -->
+                            <div class="modal-footer d-flex justify-content-center border-0 pb-4">
+                                <button type="button" class="btn btn-outline-dark px-4 py-2 d-flex align-items-center"
+                                        data-bs-dismiss="modal">
+                                    <span class="material-symbols-outlined me-2">close</span> Uždaryti
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
 
                 <!-- Delete Confirmation Modal -->
                 <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel"
@@ -283,6 +327,13 @@
             document.getElementById("descriptionText").innerText = text || "Aprašymo nėra.";
             new bootstrap.Modal(document.getElementById("descriptionModal")).show();
         }
+
+        function showPDF(title, pdfUrl) {
+            document.getElementById("pdfModalTitle").innerText = title;
+            document.getElementById("pdfViewer").src = pdfUrl;
+            new bootstrap.Modal(document.getElementById("pdfModal")).show();
+        }
+
 
         // Delete submission
         async function delete_kurinys(event) {

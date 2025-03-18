@@ -16,6 +16,7 @@ class Kurinys(models.Model):
     youtube_url = models.URLField(blank=True, null=True)
     lyrics = models.TextField(blank=True, null=True)
     aprašymas = models.TextField(blank=True, null=True)  # ✅ Description field
+    natos = models.FileField(upload_to='natos/', blank=True, null=True)
     regionas = models.CharField(
         max_length=20,
         choices=[('Aukštaitija', 'Aukštaitija'), ('Žemaitija', 'Žemaitija'),

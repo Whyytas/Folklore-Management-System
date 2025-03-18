@@ -11,7 +11,7 @@
                         <h4 class="mb-0">Pridėti naują kūrinį</h4>
                     </div>
                     <div class="card-body">
-                        <form method="POST">
+                        <form method="POST" enctype="multipart/form-data">
                             {% csrf_token %}
 
                             <!-- Pavadinimas Input -->
@@ -56,6 +56,16 @@
                                        placeholder="Nukopijuokite YouTube nuorodą" autocomplete="off"
                                        spellcheck="false">
                             </div>
+                            <!-- Upload PDF Natos -->
+                            <div class="mb-4">
+                                <label for="natos" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">upload_file</span> Įkelti natas (PDF)
+                                </label>
+                                <input type="file" class="form-control" id="natos" name="natos"
+                                       accept="application/pdf">
+                                <div id="natosError" class="text-danger mt-2 d-none">Leidžiami tik PDF failai.</div>
+                            </div>
+
 
                             <!-- Lyrics Textarea -->
                             <div class="mb-4" id="lyricsContainer" style="display: none;">
@@ -171,5 +181,18 @@
                 });
             });
         });
+        document.getElementById("natos").addEventListener("change", function () {
+            const fileInput = this;
+            const file = fileInput.files[0];
+            const errorDiv = document.getElementById("natosError");
+
+            if (file && file.type !== "application/pdf") {
+                errorDiv.classList.remove("d-none");
+                fileInput.value = "";  // Clear invalid file
+            } else {
+                errorDiv.classList.add("d-none");
+            }
+        });
+
     </script>
 {% endblock content %}

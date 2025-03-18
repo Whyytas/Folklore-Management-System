@@ -3,216 +3,252 @@
 {% block title %} Redaguoti Kūrinį {% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card shadow">
-                <div class="card-header text-center bg-primary text-white py-3">
-                    <h4 class="mb-0">Redaguoti Kūrinį</h4>
-                </div>
-                <div class="card-body">
-                    <div id="errorAlert" class="alert alert-danger d-none" role="alert"></div>
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card shadow">
+                    <div class="card-header text-center bg-primary text-white py-3">
+                        <h4 class="mb-0">Redaguoti Kūrinį</h4>
+                    </div>
+                    <div class="card-body">
+                        <div id="errorAlert" class="alert alert-danger d-none" role="alert"></div>
 
-                    <form method="post" id="editKurinysForm">
-                        {% csrf_token %}
+                        <form method="post" id="editKurinysForm" enctype="multipart/form-data">
+                            {% csrf_token %}
 
-                        <!-- Pavadinimas -->
-                        <div class="mb-4">
-                            <label for="pavadinimas" class="form-label d-flex align-items-center">
-                                <span class="material-symbols-outlined me-2">music_note</span> Pavadinimas
-                            </label>
-                            <input type="text" name="pavadinimas" id="pavadinimas" class="form-control"
-                                   value="{{ kurinys.pavadinimas }}" required>
-                        </div>
+                            <!-- Pavadinimas -->
+                            <div class="mb-4">
+                                <label for="pavadinimas" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">music_note</span> Pavadinimas
+                                </label>
+                                <input type="text" name="pavadinimas" id="pavadinimas" class="form-control"
+                                       value="{{ kurinys.pavadinimas }}" required>
+                            </div>
 
-                        <!-- Tipas -->
-                        <div class="mb-4">
-                            <label for="tipas" class="form-label d-flex align-items-center">
-                                <span class="material-symbols-outlined me-2">category</span> Tipas
-                            </label>
-                            <select name="tipas" id="tipas" class="form-control" required>
-                                {% for value, label in kurinys.TIPAS_CHOICES %}
-                                    <option value="{{ value }}" {% if kurinys.tipas == value %}selected{% endif %}>
-                                        {{ label }}
-                                    </option>
-                                {% endfor %}
-                            </select>
-                        </div>
+                            <!-- Tipas -->
+                            <div class="mb-4">
+                                <label for="tipas" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">category</span> Tipas
+                                </label>
+                                <select name="tipas" id="tipas" class="form-control" required>
+                                    {% for value, label in kurinys.TIPAS_CHOICES %}
+                                        <option value="{{ value }}" {% if kurinys.tipas == value %}selected{% endif %}>
+                                            {{ label }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
 
-                        <!-- YouTube URL -->
-                        <div class="mb-4">
-                            <label for="youtube_url" class="form-label d-flex align-items-center">
-                                <span class="material-symbols-outlined me-2">link</span> YouTube Nuoroda
-                            </label>
-                            <input type="url" name="youtube_url" id="youtube_url" class="form-control"
-                                   value="{{ kurinys.youtube_url }}" autocomplete="off" spellcheck="false">
-                        </div>
+                            <!-- YouTube URL -->
+                            <div class="mb-4">
+                                <label for="youtube_url" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">link</span> YouTube Nuoroda
+                                </label>
+                                <input type="url" name="youtube_url" id="youtube_url" class="form-control"
+                                       value="{{ kurinys.youtube_url }}" autocomplete="off" spellcheck="false">
+                            </div>
 
-                        <!-- Lyrics -->
-                        <div class="mb-4" id="lyricsContainer"
-                             style="display: {% if kurinys.tipas == 'Daina' %}block{% else %}none{% endif %};">
-                            <label for="lyrics" class="form-label d-flex align-items-center">
-                                <span class="material-symbols-outlined me-2">library_books</span> Žodžiai
-                            </label>
-                            <textarea class="form-control" id="lyrics" name="lyrics" rows="5"
-                                      placeholder="Įveskite dainos žodžius">{{ kurinys.lyrics }}</textarea>
-                        </div>
+                            <!-- Upload PDF Natos -->
+                            <div class="mb-4">
+                                <label for="natos" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">upload_file</span> Įkelti natas (PDF)
+                                </label>
+                                <input type="file" class="form-control" id="natos" name="natos"
+                                       accept="application/pdf">
+                                <div id="natosError" class="text-danger mt-2 d-none">Leidžiami tik PDF failai.</div>
+                                <div id="natosFileName" class="mt-2 text-muted">
+                                    {% if kurinys.natos %}
+                                        Pasirinktas failas: {{ kurinys.natos.name|slice:"6:" }}
+                                    {% endif %}
+                                </div>
 
-                        <!-- Ansambliai -->
-                        <div class="mb-4">
-                            <label class="form-label d-flex align-items-center">
-                                <span class="material-symbols-outlined me-2">groups</span> Pasirinkti ansamblius
-                            </label>
-                            <div class="d-flex flex-column gap-2">
-                                {% for ansamblis in ansambliai %}
-                                    <input type="checkbox" class="btn-check" name="ansambliai"
-                                           id="ansamblis_{{ ansamblis.id }}" value="{{ ansamblis.id }}"
-                                           {% if ansamblis in kurinys.ansambliai.all %}checked{% endif %}>
-                                    <label class="btn w-100 py-2 d-flex justify-content-between align-items-center fs-5 ansamblis-btn {% if ansamblis in kurinys.ansambliai.all %}btn-success{% else %}btn-outline-dark{% endif %}"
-                                           for="ansamblis_{{ ansamblis.id }}">
-                                        <span>{{ ansamblis.pavadinimas }}</span>
-                                        <span class="material-symbols-outlined">
+                            </div>
+
+
+                            <!-- Lyrics -->
+                            <div class="mb-4" id="lyricsContainer"
+                                 style="display: {% if kurinys.tipas == 'Daina' %}block{% else %}none{% endif %};">
+                                <label for="lyrics" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">library_books</span> Žodžiai
+                                </label>
+                                <textarea class="form-control" id="lyrics" name="lyrics" rows="5"
+                                          placeholder="Įveskite dainos žodžius">{{ kurinys.lyrics }}</textarea>
+                            </div>
+
+                            <!-- Ansambliai -->
+                            <div class="mb-4">
+                                <label class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">groups</span> Pasirinkti ansamblius
+                                </label>
+                                <div class="d-flex flex-column gap-2">
+                                    {% for ansamblis in ansambliai %}
+                                        <input type="checkbox" class="btn-check" name="ansambliai"
+                                               id="ansamblis_{{ ansamblis.id }}" value="{{ ansamblis.id }}"
+                                               {% if ansamblis in kurinys.ansambliai.all %}checked{% endif %}>
+                                        <label class="btn w-100 py-2 d-flex justify-content-between align-items-center fs-5 ansamblis-btn {% if ansamblis in kurinys.ansambliai.all %}btn-success{% else %}btn-outline-dark{% endif %}"
+                                               for="ansamblis_{{ ansamblis.id }}">
+                                            <span>{{ ansamblis.pavadinimas }}</span>
+                                            <span class="material-symbols-outlined">
                                             {% if ansamblis in kurinys.ansambliai.all %}check{% else %}add{% endif %}
                                         </span>
-                                    </label>
-                                {% endfor %}
-                            </div>
-                        </div>
-
-                        <!-- Regionas, Vieta, Aprašymas -->
-                        <div class="mb-4">
-                            <div class="card border rounded-3">
-                                <div class="card-header bg-light">
-                                    <h5 class="mb-0 d-flex align-items-center">
-                                        <span class="material-symbols-outlined me-2">map</span> Regionas ir vieta
-                                    </h5>
-                                </div>
-                                <div class="card-body d-flex flex-column gap-3">
-                                    <div>
-                                        <label for="regionas" class="form-label">Regionas</label>
-                                        <select class="form-select" id="regionas" name="regionas">
-                                            <option value="">Pasirinkite regioną (nebūtina)</option>
-                                            {% for value, label in form.fields.regionas.choices %}
-                                                {% if value %}
-                                                    <option value="{{ value }}"
-                                                            {% if form.regionas.value == value %}selected{% endif %}>
-                                                        {{ label }}
-                                                    </option>
-                                                {% endif %}
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-
-                                    <div>
-                                        <label for="vieta" class="form-label">Vieta</label>
-                                        <input type="text" class="form-control" id="vieta" name="vieta"
-                                               placeholder="Įveskite vietą (nebūtina)"
-                                               value="{{ form.vieta.value|default:kurinys.vieta }}">
-                                    </div>
-
-                                    <div>
-                                        <label for="id_aprašymas" class="form-label d-flex align-items-center">
-                                            <span class="material-symbols-outlined me-2">description</span> Aprašymas
                                         </label>
-                                        {{ form.aprašymas }}
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                            <!-- Regionas, Vieta, Aprašymas -->
+                            <div class="mb-4">
+                                <div class="card border rounded-3">
+                                    <div class="card-header bg-light">
+                                        <h5 class="mb-0 d-flex align-items-center">
+                                            <span class="material-symbols-outlined me-2">map</span> Regionas ir vieta
+                                        </h5>
+                                    </div>
+                                    <div class="card-body d-flex flex-column gap-3">
+                                        <div>
+                                            <label for="regionas" class="form-label">Regionas</label>
+                                            <select class="form-select" id="regionas" name="regionas">
+                                                <option value="">Pasirinkite regioną (nebūtina)</option>
+                                                {% for value, label in form.fields.regionas.choices %}
+                                                    {% if value %}
+                                                        <option value="{{ value }}"
+                                                                {% if form.regionas.value == value %}selected{% endif %}>
+                                                            {{ label }}
+                                                        </option>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+
+                                        <div>
+                                            <label for="vieta" class="form-label">Vieta</label>
+                                            <input type="text" class="form-control" id="vieta" name="vieta"
+                                                   placeholder="Įveskite vietą (nebūtina)"
+                                                   value="{{ form.vieta.value|default:kurinys.vieta }}">
+                                        </div>
+
+                                        <div>
+                                            <label for="id_aprašymas" class="form-label d-flex align-items-center">
+                                                <span class="material-symbols-outlined me-2">description</span>
+                                                Aprašymas
+                                            </label>
+                                            {{ form.aprašymas }}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <!-- Form Actions -->
-                        <div class="d-flex justify-content-between mt-4">
-                            <a href="{% url 'kuriniai' %}"
-                               class="btn btn-outline-secondary d-flex align-items-center">
-                                <span class="material-symbols-outlined me-1">arrow_back</span> Atšaukti
-                            </a>
-                            <button type="submit" class="btn btn-outline-dark d-flex align-items-center">
-                                <span class="material-symbols-outlined me-1">save</span> Išsaugoti kūrinį
-                            </button>
-                        </div>
-                    </form>
+                            <!-- Form Actions -->
+                            <div class="d-flex justify-content-between mt-4">
+                                <a href="{% url 'kuriniai' %}"
+                                   class="btn btn-outline-secondary d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-1">arrow_back</span> Atšaukti
+                                </a>
+                                <button type="submit" class="btn btn-outline-dark d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-1">save</span> Išsaugoti kūrinį
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<!-- Toast Message -->
-<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1055;">
-    <div id="toastSuccess" class="toast align-items-center text-white bg-success border-0" role="alert"
-         aria-live="assertive" aria-atomic="true">
-        <div class="d-flex">
-            <div class="toast-body">Kūrinys sėkmingai atnaujintas!</div>
-            <button type="button" class="btn-close btn-close-white me-2 m-auto"
-                    data-bs-dismiss="toast" aria-label="Close"></button>
+    <!-- Toast Message -->
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1055;">
+        <div id="toastSuccess" class="toast align-items-center text-white bg-success border-0" role="alert"
+             aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">Kūrinys sėkmingai atnaujintas!</div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto"
+                        data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
         </div>
     </div>
-</div>
 
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const form = document.getElementById("editKurinysForm");
-        const tipasSelect = document.getElementById("tipas");
-        const lyricsContainer = document.getElementById("lyricsContainer");
-        const errorAlert = document.getElementById("errorAlert");
-        const youtubeInput = document.getElementById("youtube_url");
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const form = document.getElementById("editKurinysForm");
+            const tipasSelect = document.getElementById("tipas");
+            const lyricsContainer = document.getElementById("lyricsContainer");
+            const errorAlert = document.getElementById("errorAlert");
+            const youtubeInput = document.getElementById("youtube_url");
 
-        // Custom Lithuanian validation for YouTube URL
-        youtubeInput.addEventListener("invalid", function (event) {
-            event.preventDefault();
-            if (this.value.trim() !== "") {
-                this.setCustomValidity("Įveskite teisingą YouTube nuorodą.");
-            } else {
-                this.setCustomValidity("");
-            }
-            this.reportValidity();
-        });
-        youtubeInput.addEventListener("input", () => youtubeInput.setCustomValidity(""));
-
-        // Toggle ansambliai button styles
-        document.querySelectorAll(".btn-check").forEach(button => {
-            const label = document.querySelector(`label[for="${button.id}"]`);
-            button.addEventListener("change", function () {
-                const icon = label.querySelector("span.material-symbols-outlined");
-                if (this.checked) {
-                    label.classList.add("btn-success");
-                    label.classList.remove("btn-outline-dark");
-                    icon.innerText = "check";
+            // Custom Lithuanian validation for YouTube URL
+            youtubeInput.addEventListener("invalid", function (event) {
+                event.preventDefault();
+                if (this.value.trim() !== "") {
+                    this.setCustomValidity("Įveskite teisingą YouTube nuorodą.");
                 } else {
-                    label.classList.remove("btn-success");
-                    label.classList.add("btn-outline-dark");
-                    icon.innerText = "add";
+                    this.setCustomValidity("");
                 }
+                this.reportValidity();
             });
-        });
+            youtubeInput.addEventListener("input", () => youtubeInput.setCustomValidity(""));
 
-        // Toggle lyrics box visibility
-        tipasSelect.addEventListener("change", function () {
-            lyricsContainer.style.display = (this.value === "Daina") ? "block" : "none";
-        });
-
-        // AJAX submission
-        form.addEventListener("submit", async function (event) {
-            event.preventDefault();
-            const formData = new FormData(form);
-            const kurinysId = "{{ kurinys.id }}";
-
-            const response = await fetch(`/kuriniai/${kurinysId}/edit/`, {
-                method: "POST",
-                body: formData,
-                headers: {
-                    "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value
-                }
+            // Toggle ansambliai button styles
+            document.querySelectorAll(".btn-check").forEach(button => {
+                const label = document.querySelector(`label[for="${button.id}"]`);
+                button.addEventListener("change", function () {
+                    const icon = label.querySelector("span.material-symbols-outlined");
+                    if (this.checked) {
+                        label.classList.add("btn-success");
+                        label.classList.remove("btn-outline-dark");
+                        icon.innerText = "check";
+                    } else {
+                        label.classList.remove("btn-success");
+                        label.classList.add("btn-outline-dark");
+                        icon.innerText = "add";
+                    }
+                });
             });
 
-            const data = await response.json();
-            if (data.success) {
-                window.location.href = "/kuriniai/?success=true";
+            // Toggle lyrics box visibility
+            tipasSelect.addEventListener("change", function () {
+                lyricsContainer.style.display = (this.value === "Daina") ? "block" : "none";
+            });
+
+            // AJAX submission
+            form.addEventListener("submit", async function (event) {
+                event.preventDefault();
+                const formData = new FormData(form);
+                const kurinysId = "{{ kurinys.id }}";
+
+                const response = await fetch(`/kuriniai/${kurinysId}/edit/`, {
+                    method: "POST",
+                    body: formData,
+                    headers: {
+                        "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value
+                    }
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    window.location.href = "/kuriniai/?success=true";
+                } else {
+                    errorAlert.textContent = "Klaida: " + data.error;
+                    errorAlert.classList.remove("d-none");
+                }
+            });
+
+        });
+        document.getElementById("natos").addEventListener("change", function () {
+            const fileInput = this;
+            const file = fileInput.files[0];
+            const errorDiv = document.getElementById("natosError");
+            const fileNameDiv = document.getElementById("natosFileName");
+
+            if (file && file.type !== "application/pdf") {
+                errorDiv.classList.remove("d-none");
+                fileNameDiv.innerText = "";
+                fileInput.value = "";
             } else {
-                errorAlert.textContent = "Klaida: " + data.error;
-                errorAlert.classList.remove("d-none");
+                errorDiv.classList.add("d-none");
+                fileNameDiv.innerText = file ? `Pasirinktas failas: ${file.name}` : "";
             }
         });
-    });
-</script>
+
+
+    </script>
 {% endblock content %}

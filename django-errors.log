@@ -1699,3 +1699,158 @@ Traceback (most recent call last):
     raise TemplateSyntaxError("Invalid filter: '%s'" % filter_name)
 django.template.exceptions.TemplateSyntaxError: Invalid filter: 'int'
 "GET /repeticijos/12/ HTTP/1.1" 500 269237
+Internal Server Error: /kuriniai/prideti/
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+psycopg2.errors.UndefinedColumn: column "natos" of relation "Kuriniai_kurinys" does not exist
+LINE 1: ..., "trukme", "youtube_url", "lyrics", "aprašymas", "natos", "...
+                                                             ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Kuriniai\views.py", line 54, in kuriniai_add
+    kurinys.save()
+    ~~~~~~~~~~~~^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\base.py", line 822, in save
+    self.save_base(
+    ~~~~~~~~~~~~~~^
+        using=using,
+        ^^^^^^^^^^^^
+    ...<2 lines>...
+        update_fields=update_fields,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\base.py", line 909, in save_base
+    updated = self._save_table(
+        raw,
+    ...<4 lines>...
+        update_fields,
+    )
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\base.py", line 1071, in _save_table
+    results = self._do_insert(
+        cls._base_manager, using, fields, returning_fields, raw
+    )
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\base.py", line 1112, in _do_insert
+    return manager._insert(
+           ~~~~~~~~~~~~~~~^
+        [self],
+        ^^^^^^^
+    ...<3 lines>...
+        raw=raw,
+        ^^^^^^^^
+    )
+    ^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 1847, in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\compiler.py", line 1823, in execute_sql
+    cursor.execute(sql, params)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\backends\utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        sql, params, many=False, executor=self._execute
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+django.db.utils.ProgrammingError: column "natos" of relation "Kuriniai_kurinys" does not exist
+LINE 1: ..., "trukme", "youtube_url", "lyrics", "aprašymas", "natos", "...
+                                                             ^
+
+"POST /kuriniai/prideti/ HTTP/1.1" 500 152133
+Internal Server Error: /kuriniai/13/edit/
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Kuriniai\views.py", line 100, in kuriniai_edit
+    return render(request, "kuriniaiEdit.html", {
+        "kurinys": kurinys,
+        "form": form,
+        "ansambliai": user_ansambliai
+    })
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\backends\django.py", line 33, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\base.py", line 196, in compile_nodelist
+    return parser.parse()
+           ~~~~~~~~~~~~^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\base.py", line 510, in parse
+    raise self.error(token, e)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\base.py", line 508, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\loader_tags.py", line 295, in do_extends
+    nodelist = parser.parse()
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\base.py", line 510, in parse
+    raise self.error(token, e)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\base.py", line 508, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\loader_tags.py", line 234, in do_block
+    nodelist = parser.parse(("endblock",))
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\base.py", line 510, in parse
+    raise self.error(token, e)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\base.py", line 508, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\defaulttags.py", line 961, in do_if
+    nodelist = parser.parse(("elif", "else", "endif"))
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\base.py", line 481, in parse
+    raise self.error(token, e)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\base.py", line 479, in parse
+    filter_expression = self.compile_filter(token.contents)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\base.py", line 597, in compile_filter
+    return FilterExpression(token, self)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\base.py", line 693, in __init__
+    filter_func = parser.find_filter(filter_name)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\base.py", line 603, in find_filter
+    raise TemplateSyntaxError("Invalid filter: '%s'" % filter_name)
+django.template.exceptions.TemplateSyntaxError: Invalid filter: 'basename'
+"GET /kuriniai/13/edit/ HTTP/1.1" 500 263303

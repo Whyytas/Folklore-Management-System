@@ -5,7 +5,7 @@ from .models import Kurinys
 class KurinysForm(forms.ModelForm):
     class Meta:
         model = Kurinys
-        fields = ['pavadinimas', 'tipas', 'trukme', 'youtube_url', 'lyrics', 'regionas', 'vieta', 'aprašymas', 'ansambliai']
+        fields = ['pavadinimas', 'tipas', 'trukme', 'youtube_url', 'lyrics', 'regionas', 'vieta', 'aprašymas', 'natos', 'ansambliai']
         widgets = {
             'lyrics': forms.Textarea(attrs={
                 'rows': 5,
