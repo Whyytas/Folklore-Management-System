@@ -113,6 +113,16 @@
                                                             </button>
                                                         </li>
                                                     {% endif %}
+                                                    {% if kurinys.natos_image %}
+                                                        <li>
+                                                            <button class="dropdown-item d-flex align-items-center justify-content-center gap-2"
+                                                                    onclick="showImage('{{ kurinys.pavadinimas }}', '{{ kurinys.natos_image.url }}')">
+                                                                <span class="material-symbols-outlined">image</span>
+                                                                Paveikslėlis
+                                                            </button>
+                                                        </li>
+                                                    {% endif %}
+
 
                                                 </ul>
                                             </div>
@@ -163,6 +173,43 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Image Modal -->
+                <!-- Image Modal -->
+<!-- Image Modal -->
+<!-- Image Modal -->
+<div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: unset; margin: auto;">
+        <div class="modal-content shadow-lg border-0 bg-light p-2" style="display: inline-block;">
+            <!-- Modal Header -->
+            <div class="modal-header bg-dark text-white rounded-top-3 py-2 px-3">
+                <h5 class="modal-title d-flex align-items-center">
+                    <span class="material-symbols-outlined me-2">image</span>
+                    <span id="imageModalTitle">Kūrinio Natos</span>
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="modal-body bg-light p-2 d-flex justify-content-center align-items-center">
+                <img id="imageViewer" src="" class="rounded shadow"
+                     style="display: block; max-width: 70vw; max-height: 75vh; object-fit: contain;">
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="modal-footer bg-light border-0 d-flex justify-content-center py-2">
+                <button type="button" class="btn btn-outline-dark d-flex align-items-center px-3 py-1"
+                        data-bs-dismiss="modal">
+                    <span class="material-symbols-outlined me-1">close</span> Uždaryti
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
 
                 <!-- PDF Modal -->
                 <div class="modal fade" id="pdfModal" tabindex="-1" aria-labelledby="pdfModalLabel" aria-hidden="true">
@@ -357,5 +404,12 @@
                 new bootstrap.Toast(document.getElementById("toastSuccess")).show();
             }
         });
+
+        function showImage(title, imageUrl) {
+            document.getElementById("imageModalTitle").innerText = title;
+            document.getElementById("imageViewer").src = imageUrl;
+            new bootstrap.Modal(document.getElementById("imageModal")).show();
+        }
+
     </script>
 {% endblock content %}

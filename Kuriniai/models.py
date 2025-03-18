@@ -17,6 +17,7 @@ class Kurinys(models.Model):
     lyrics = models.TextField(blank=True, null=True)
     aprašymas = models.TextField(blank=True, null=True)  # ✅ Description field
     natos = models.FileField(upload_to='natos/', blank=True, null=True)
+    natos_image = models.ImageField(upload_to='natos_images/', blank=True, null=True)
     regionas = models.CharField(
         max_length=20,
         choices=[('Aukštaitija', 'Aukštaitija'), ('Žemaitija', 'Žemaitija'),

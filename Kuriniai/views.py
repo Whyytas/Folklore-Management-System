@@ -1,5 +1,8 @@
+import fitz
 import requests
 import logging
+
+from django.core.files.base import ContentFile
 from django.shortcuts import render, redirect, get_object_or_404
 
 from Ansambliai.models import Ansamblis
@@ -45,17 +48,19 @@ def kuriniai_add(request):
         if form.is_valid():
             kurinys = form.save(commit=False)
 
-            # Get video duration from YouTube
             if kurinys.youtube_url:
                 video_id = extract_video_id(kurinys.youtube_url)
                 if video_id:
                     kurinys.trukme = get_video_duration(video_id)
 
             kurinys.save()
-            selected_ids = request.POST.getlist("ansambliai")
-            kurinys.ansambliai.set(selected_ids)
+            kurinys.ansambliai.set(request.POST.getlist("ansambliai"))
+
+            handle_pdf_conversion(kurinys)
+            kurinys.save()
 
             return redirect('/kuriniai/?success=true')
+
     else:
         form = KurinysForm()
 
@@ -73,24 +78,24 @@ def kuriniai_edit(request, kurinys_id):
 
     if request.user.role == "narys":
         return HttpResponseForbidden("Jūs neturite teisės redaguoti kūrinių.")
-
     if request.method == "POST":
         form = KurinysForm(request.POST, request.FILES, instance=kurinys)
         if form.is_valid():
             kurinys = form.save(commit=False)
+
+            if kurinys.youtube_url:
+                video_id = extract_video_id(kurinys.youtube_url)
+                if video_id:
+                    new_trukme = get_video_duration(video_id)
+                    if new_trukme:
+                        kurinys.trukme = new_trukme
+
             kurinys.save()
+            kurinys.ansambliai.set(request.POST.getlist("ansambliai"))
 
-            # ✅ Set multiple ansambliai
-            ansamblis_ids = request.POST.getlist("ansambliai")
-            kurinys.ansambliai.set(ansamblis_ids)
-
-            # ✅ Update trukmė from YouTube
-            video_id = extract_video_id(kurinys.youtube_url)
-            if video_id:
-                new_trukme = get_video_duration(video_id)
-                if new_trukme:
-                    kurinys.trukme = new_trukme
-                    kurinys.save(update_fields=["trukme"])  # Save only trukme update
+            if 'natos' in request.FILES:
+                handle_pdf_conversion(kurinys)
+                kurinys.save()
 
             return JsonResponse({"success": True})
 
@@ -180,3 +185,21 @@ def fetch_trukme(request):
 
     trukme = get_video_duration(video_id)
     return JsonResponse({"success": True, "trukme": trukme})
+
+def handle_pdf_conversion(kurinys):
+    if kurinys.natos:
+        kurinys.natos.seek(0)  # Reset file pointer
+        pdf_data = kurinys.natos.read()
+
+        doc = fitz.open(stream=pdf_data, filetype="pdf")
+        if len(doc) == 1:
+            page = doc.load_page(0)
+            pix = page.get_pixmap(dpi=150)  # Adjust DPI if needed
+            image_data = pix.tobytes("jpeg")
+
+            filename = f"{kurinys.pavadinimas}_natos.jpg"
+            kurinys.natos_image.save(filename, ContentFile(image_data), save=False)
+        else:
+            if kurinys.natos_image:
+                kurinys.natos_image.delete(save=False)
+        doc.close()
