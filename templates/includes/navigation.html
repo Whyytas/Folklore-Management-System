@@ -3,18 +3,19 @@
 
         {% if user.get_role_display == "Administratorius" or user.ansambliai.count > 1 %}
             <!-- Ansamblis Dropdown -->
-            <form method="get" action="" class="me-auto">
+            <form method="get" action="{% url 'set_selected_ansamblis' %}" class="me-auto">
                 <select name="ansamblis_id" class="form-select form-select-lg" style="min-width: 240px;"
                         onchange="this.form.submit()">
                     <option value="">Visi ansambliai</option>
                     {% for ansamblis in all_ansambliai %}
                         <option value="{{ ansamblis.id }}"
-                                {% if ansamblis.id|stringformat:"s" == request.GET.ansamblis_id %}selected{% endif %}>
+                                {% if ansamblis.id|stringformat:"s" == request.session.selected_ansamblis_id %}selected{% endif %}>
                             {{ ansamblis.pavadinimas }}
                         </option>
                     {% endfor %}
                 </select>
             </form>
+
         {% else %}
             <div class="me-auto"></div>  <!-- Placeholder spacing -->
         {% endif %}

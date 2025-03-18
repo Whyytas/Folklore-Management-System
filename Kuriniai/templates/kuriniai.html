@@ -1,11 +1,12 @@
 {% extends "layouts/base.html" %}
 {% block title %} Kūriniai Sąrašas {% endblock %}
+
 {% block content %}
     <div class="container-fluid mt-4">
         <div class="row justify-content-center">
             <div class="col-lg-10">
                 <div class="card shadow">
-                    <!-- ✅ Green Header with Add Button -->
+                    <!-- Header with Add Button -->
                     <div class="card-header d-flex justify-content-between align-items-center py-3 table-header-custom">
                         <h4>Kūrinių Sąrašas</h4>
                         {% if request.user.role != "narys" %}
@@ -14,18 +15,20 @@
                                 <span class="material-symbols-outlined me-2">add</span> Pridėti
                             </a>
                         {% endif %}
-
                     </div>
-                    <!-- ✅ Styled Search Input (Left-Aligned, Icon Inside) -->
+
+                    <!-- Search Input -->
                     <div class="d-flex justify-content-start mt-3 ms-2">
                         <div class="input-group w-25">
-                            <span class="input-group-text">
-                                <span class="material-symbols-outlined">search</span>
-                            </span>
+                        <span class="input-group-text">
+                            <span class="material-symbols-outlined">search</span>
+                        </span>
                             <input type="text" id="searchInput" class="form-control"
                                    placeholder="Ieškoti pagal pavadinimą...">
                         </div>
                     </div>
+
+                    <!-- Table Content -->
                     <div class="card-body">
                         <div class="table-responsive">
                             <table class="table table-hover table-striped align-middle">
@@ -35,13 +38,13 @@
                                     <th class="text-start">Pavadinimas</th>
                                     <th class="text-center">Tipas</th>
                                     <th class="text-center">Trukmė</th>
-                                    <th class="text-center">Ansamblis</th>  <!-- ✅ New Column -->
-
+                                    <th class="text-center">Ansamblis</th>
+                                    <th class="text-center">Regionas</th>
+                                    <th class="text-center">Vieta</th>
                                     <th class="text-center">Peržiūra</th>
                                     {% if request.user.role != "narys" %}
                                         <th class="text-center">Valdyti</th>
                                     {% endif %}
-
                                 </tr>
                                 </thead>
                                 <tbody id="table-body">
@@ -51,11 +54,7 @@
                                         <td class="align-middle text-start fw-bold kurinys-name">{{ kurinys.pavadinimas }}</td>
                                         <td class="align-middle text-center">{{ kurinys.tipas }}</td>
                                         <td class="align-middle text-center">
-                                            {% if kurinys.trukme %}
-                                                {{ kurinys.trukme }}
-                                            {% else %}
-                                                ⏳ Loading...
-                                            {% endif %}
+                                            {{ kurinys.trukme|default:"⏳ Loading..." }}
                                         </td>
                                         <td class="align-middle text-center">
                                             {% for ansamblis in kurinys.ansambliai.all %}
@@ -64,47 +63,81 @@
                                                 <span class="text-muted">—</span>
                                             {% endfor %}
                                         </td>
+                                        <td class="align-middle text-center">{{ kurinys.regionas|default:"—" }}</td>
+                                        <td class="align-middle text-center">{{ kurinys.vieta|default:"—" }}</td>
 
-                                        <!-- ✅ Buttons for "Peržiūrėti" and "Žodžiai" -->
+                                        <!-- Peržiūra Dropdown -->
                                         <td class="align-middle text-center">
-                                            <div class="d-flex justify-content-center gap-2">
-                                                {% if kurinys.youtube_url %}
-                                                    <a href="{{ kurinys.youtube_url }}" target="_blank"
-                                                       class="btn btn-primary d-flex align-items-center">
-                                                        <span class="material-symbols-outlined me-2">visibility</span>
-                                                        Peržiūrėti
-                                                    </a>
-                                                {% else %}
-                                                    <span class="text-muted">—</span>
-                                                {% endif %}
-                                                {% if kurinys.tipas == "Daina" and kurinys.lyrics %}
-                                                    <button class="btn btn-info d-flex align-items-center"
-                                                            data-bs-toggle="modal" data-bs-target="#lyricsModal"
-                                                            onclick="showLyrics('{{ kurinys.pavadinimas }}', `{{ kurinys.lyrics|escapejs }}`)">
-                                                        <span class="material-symbols-outlined me-2">library_books</span>
-                                                        Žodžiai
-                                                    </button>
-                                                {% endif %}
+                                            <div class="dropdown d-inline-block">
+                                                <button class="btn btn-sm btn-primary dropdown-toggle d-flex align-items-center justify-content-center px-3"
+                                                        type="button" id="perziuraDropdown_{{ kurinys.id }}"
+                                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <span class="material-symbols-outlined me-1">visibility</span>
+                                                    Peržiūra
+                                                </button>
+                                                <ul class="dropdown-menu text-center"
+                                                    aria-labelledby="perziuraDropdown_{{ kurinys.id }}">
+                                                    {% if kurinys.youtube_url %}
+                                                        <li>
+                                                            <a class="dropdown-item d-flex align-items-center justify-content-center gap-2"
+                                                               href="{{ kurinys.youtube_url }}" target="_blank">
+                                                                <span class="material-symbols-outlined">ondemand_video</span>
+                                                                Video
+                                                            </a>
+                                                        </li>
+                                                    {% endif %}
+                                                    {% if kurinys.tipas == "Daina" and kurinys.lyrics %}
+                                                        <li>
+                                                            <button class="dropdown-item d-flex align-items-center justify-content-center gap-2"
+                                                                    onclick="showLyrics('{{ kurinys.pavadinimas }}', `{{ kurinys.lyrics|escapejs }}`)">
+                                                                <span class="material-symbols-outlined">library_books</span>
+                                                                Žodžiai
+                                                            </button>
+                                                        </li>
+                                                    {% endif %}
+                                                    {% if kurinys.aprašymas %}
+                                                        <li>
+                                                            <button class="dropdown-item d-flex align-items-center justify-content-center gap-2"
+                                                                    onclick="showDescription('{{ kurinys.pavadinimas }}', `{{ kurinys.aprašymas|escapejs }}`)">
+                                                                <span class="material-symbols-outlined">description</span>
+                                                                Aprašymas
+                                                            </button>
+                                                        </li>
+                                                    {% endif %}
+                                                </ul>
                                             </div>
                                         </td>
-                                        <!-- ✅ Edit & Delete Buttons -->
+
+                                        <!-- Edit/Delete Actions -->
+                                        <!-- Combined Dropdown -->
                                         {% if request.user.role != "narys" %}
                                             <td class="align-middle text-center">
-                                                <div class="d-flex justify-content-center gap-2">
-                                                    <a href="{% url 'kuriniai_edit' kurinys.id %}"
-                                                       class="btn btn-success d-flex align-items-center justify-content-center"
-                                                       style="width: 130px; height: 40px;">
-                                                        <span class="material-symbols-outlined me-2">edit</span>
-                                                        Redaguoti
-                                                    </a>
-                                                    <button type="button"
-                                                            class="btn btn-danger d-flex align-items-center justify-content-center"
-                                                            data-bs-toggle="modal" data-bs-target="#deleteModal"
-                                                            onclick="setDeleteUrl({{ kurinys.id }}, '{{ kurinys.pavadinimas }}')"
-                                                            style="width: 130px; height: 40px;">
-                                                        <span class="material-symbols-outlined me-2">delete</span>
-                                                        Ištrinti
+                                                <div class="dropdown d-inline-block">
+                                                    <button class="btn btn-sm btn-secondary dropdown-toggle d-flex align-items-center justify-content-center px-3"
+                                                            type="button" id="valdytiDropdown_{{ kurinys.id }}"
+                                                            data-bs-toggle="dropdown" aria-expanded="false">
+                                                        <span class="material-symbols-outlined me-1">manage_accounts</span>
+                                                        Valdyti
                                                     </button>
+                                                    <ul class="dropdown-menu text-center"
+                                                        aria-labelledby="valdytiDropdown_{{ kurinys.id }}">
+                                                        <li>
+                                                            <a class="dropdown-item d-flex align-items-center justify-content-center gap-2"
+                                                               href="{% url 'kuriniai_edit' kurinys.id %}">
+                                                                <span class="material-symbols-outlined">edit</span>
+                                                                Redaguoti
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <button class="dropdown-item d-flex align-items-center justify-content-center gap-2"
+                                                                    onclick="setDeleteUrl({{ kurinys.id }}, '{{ kurinys.pavadinimas }}');"
+                                                                    data-bs-toggle="modal"
+                                                                    data-bs-target="#deleteModal">
+                                                                <span class="material-symbols-outlined">delete_forever</span>
+                                                                Ištrinti
+                                                            </button>
+                                                        </li>
+                                                    </ul>
                                                 </div>
                                             </td>
                                         {% endif %}
@@ -112,8 +145,7 @@
                                     </tr>
                                 {% empty %}
                                     <tr>
-                                        <td colspan="7" class="text-center text-muted">Nėra sukurtų kūrinių.</td>
-
+                                        <td colspan="9" class="text-center text-muted">Nėra sukurtų kūrinių.</td>
                                     </tr>
                                 {% endfor %}
                                 </tbody>
@@ -121,38 +153,31 @@
                         </div>
                     </div>
                 </div>
-                <!-- ✅ Improved DELETE CONFIRMATION MODAL -->
+
+                <!-- Delete Confirmation Modal -->
                 <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel"
                      aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
-                        <!-- ✅ Center Modal -->
                         <div class="modal-content shadow-lg border-0 rounded-4">
-                            <!-- ✅ Softened corners -->
-                            <!-- 🔴 Modal Header with Warning Icon -->
                             <div class="modal-header bg-danger text-white">
                                 <h5 class="modal-title d-flex align-items-center">
-                                    <span class="material-symbols-outlined me-2">warning</span>
-                                    Patvirtinti ištrynimą
+                                    <span class="material-symbols-outlined me-2">warning</span> Patvirtinti ištrynimą
                                 </h5>
                                 <button type="button" class="btn-close btn-close-white"
                                         data-bs-dismiss="modal"></button>
                             </div>
-                            <!-- 📝 Modal Body with More Padding -->
                             <div class="modal-body text-center py-4">
                                 <p class="fs-5">Ar tikrai norite ištrinti <strong id="kurinysName"></strong>?</p>
                                 <p class="text-muted">Šio veiksmo nebegalėsite atšaukti.</p>
                             </div>
-                            <!-- ✅ Modal Footer with Centered Buttons -->
                             <div class="modal-footer d-flex justify-content-center border-0 pb-4">
-                                <button type="button"
-                                        class="btn btn-light px-4 py-2 d-flex btn-outline-dark align-items-center justify-content-center"
+                                <button type="button" class="btn btn-light px-4 py-2 btn-outline-dark"
                                         data-bs-dismiss="modal">
                                     <span class="material-symbols-outlined me-2">close</span> Atšaukti
                                 </button>
                                 <form id="deleteForm" method="post" onsubmit="delete_kurinys(event)">
                                     {% csrf_token %}
-                                    <button type="submit"
-                                            class="btn btn-danger px-4 py-2 d-flex align-items-center justify-content-center">
+                                    <button type="submit" class="btn btn-danger px-4 py-2 d-flex align-items-center">
                                         <span class="material-symbols-outlined me-2">delete_forever</span> Ištrinti
                                     </button>
                                 </form>
@@ -160,108 +185,126 @@
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-    <!-- ✅ Lyrics Modal -->
-    <div class="modal fade" id="lyricsModal" tabindex="-1" aria-labelledby="lyricsModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content shadow-lg border-0 rounded-4">
-                <!-- Modal Header -->
-                <div class="modal-header bg-info text-white">
-                    <h5 class="modal-title d-flex align-items-center">
-                        <span class="material-symbols-outlined me-2">library_books</span>
-                        Dainos Žodžiai
-                    </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+
+                <!-- Lyrics Modal -->
+                <div class="modal fade" id="lyricsModal" tabindex="-1" aria-labelledby="lyricsModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content shadow-lg border-0 rounded-4">
+                            <div class="modal-header bg-info text-white">
+                                <h5 class="modal-title d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">library_books</span> Dainos Žodžiai
+                                </h5>
+                                <button type="button" class="btn-close btn-close-white"
+                                        data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body text-center py-4">
+                                <h5 class="fw-bold" id="lyricsTitle"></h5>
+                                <hr>
+                                <pre id="lyricsText" class="text-wrap text-break text-center"
+                                     style="white-space: pre-line; font-size: 1.1rem;"></pre>
+                            </div>
+                            <div class="modal-footer d-flex justify-content-center border-0 pb-4">
+                                <button type="button" class="btn btn-outline-dark px-4 py-2 d-flex align-items-center"
+                                        data-bs-dismiss="modal">
+                                    <span class="material-symbols-outlined me-2">close</span> Uždaryti
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <!-- Modal Body with Centered Content -->
-                <div class="modal-body text-center py-4">
-                    <h5 class="fw-bold" id="lyricsTitle"></h5>
-                    <hr>
-                    <pre class="text-wrap text-break text-center" id="lyricsText"
-                         style="white-space: pre-line; font-size: 1.1rem;"></pre>
-                </div>
-                <!-- Modal Footer -->
-                <div class="modal-footer d-flex justify-content-center border-0 pb-4">
-                    <button type="button" class="btn btn-outline-dark px-4 py-2 d-flex align-items-center"
-                            data-bs-dismiss="modal">
-                        <span class="material-symbols-outlined me-2">close</span> Uždaryti
-                    </button>
+
+                <!-- Description Modal -->
+                <div class="modal fade" id="descriptionModal" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content shadow-lg border-0 rounded-4">
+                            <div class="modal-header bg-secondary text-white">
+                                <h5 class="modal-title d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">description</span> Kūrinio Aprašymas
+                                </h5>
+                                <button type="button" class="btn-close btn-close-white"
+                                        data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body text-center py-4">
+                                <h5 class="fw-bold" id="descriptionTitle"></h5>
+                                <hr>
+                                <pre id="descriptionText" class="text-wrap text-break text-center"
+                                     style="white-space: pre-line; font-size: 1.1rem;"></pre>
+                            </div>
+                            <div class="modal-footer d-flex justify-content-center border-0 pb-4">
+                                <button type="button" class="btn btn-outline-dark px-4 py-2 d-flex align-items-center"
+                                        data-bs-dismiss="modal">
+                                    <span class="material-symbols-outlined me-2">close</span> Uždaryti
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-<!-- Toast Container -->
-<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1055;">
-    <div id="toastSuccess" class="toast align-items-center text-white bg-success border-0" role="alert"
-         aria-live="assertive" aria-atomic="true">
-        <div class="d-flex">
-            <div class="toast-body">Kūrinys sėkmingai atnaujintas!</div>
-            <button type="button" class="btn-close btn-close-white me-2 m-auto"
-                    data-bs-dismiss="toast" aria-label="Close"></button>
+    <!-- Success Toast -->
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1055;">
+        <div id="toastSuccess" class="toast align-items-center text-white bg-success border-0" role="alert"
+             aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">Kūrinys sėkmingai atnaujintas!</div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto"
+                        data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
         </div>
     </div>
-</div>
-
 
     <script>
+        // Search filtering
         document.getElementById("searchInput").addEventListener("keyup", function () {
-            let searchValue = this.value.toLowerCase();
-            let rows = document.querySelectorAll("#table-body tr");
-
-            rows.forEach(row => {
+            let value = this.value.toLowerCase();
+            document.querySelectorAll("#table-body tr").forEach(row => {
                 let name = row.querySelector(".kurinys-name").textContent.toLowerCase();
-                if (name.includes(searchValue)) {
-                    row.style.display = "";
-                } else {
-                    row.style.display = "none";
-                }
+                row.style.display = name.includes(value) ? "" : "none";
             });
         });
 
-        // ✅ Make these functions global
-        function setDeleteUrl(kurinysId, kurinysName) {
-            document.getElementById("kurinysName").innerText = kurinysName;
-            document.getElementById("deleteForm").setAttribute("action", `/kuriniai/${kurinysId}/delete/`);
+        // Modal handling
+        function setDeleteUrl(id, name) {
+            document.getElementById("kurinysName").innerText = name;
+            document.getElementById("deleteForm").action = `/kuriniai/${id}/delete/`;
         }
 
-        function showLyrics(title, lyrics) {
+        function showLyrics(title, text) {
             document.getElementById("lyricsTitle").innerText = title;
-            document.getElementById("lyricsText").innerText = lyrics || "Žodžių nėra.";
+            document.getElementById("lyricsText").innerText = text || "Žodžių nėra.";
+            new bootstrap.Modal(document.getElementById("lyricsModal")).show();
         }
 
+        function showDescription(title, text) {
+            document.getElementById("descriptionTitle").innerText = title;
+            document.getElementById("descriptionText").innerText = text || "Aprašymo nėra.";
+            new bootstrap.Modal(document.getElementById("descriptionModal")).show();
+        }
+
+        // Delete submission
         async function delete_kurinys(event) {
             event.preventDefault();
-            try {
-                const response = await fetch(document.getElementById("deleteForm").action, {
-                    method: "POST",
-                    headers: {
-                        "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value,
-                    }
-                });
-
-                if (response.ok) {
-                    bootstrap.Modal.getInstance(document.getElementById("deleteModal")).hide();
-                    setTimeout(() => window.location.reload(), 500);
-                } else {
-                    alert("Klaida: Nepavyko ištrinti kūrinio!");
-                }
-            } catch (error) {
-                console.error("Klaida ištrinant kūrinį:", error);
+            const form = document.getElementById("deleteForm");
+            const res = await fetch(form.action, {
+                method: "POST",
+                headers: {"X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value}
+            });
+            if (res.ok) {
+                bootstrap.Modal.getInstance(document.getElementById("deleteModal")).hide();
+                setTimeout(() => location.reload(), 500);
+            } else {
+                alert("Klaida: Nepavyko ištrinti kūrinio!");
             }
         }
 
-        // ✅ Ensure all event listeners run after the DOM is ready
+        // Show toast if redirected with success param
         document.addEventListener("DOMContentLoaded", function () {
-           const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.get("success") === "true") {
-            const toast = new bootstrap.Toast(document.getElementById("toastSuccess"));
-            toast.show();
-        }
+            if (new URLSearchParams(window.location.search).get("success") === "true") {
+                new bootstrap.Toast(document.getElementById("toastSuccess")).show();
+            }
         });
     </script>
 {% endblock content %}
-<!-- ✅ JavaScript for Delete Confirmation -->

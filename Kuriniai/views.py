@@ -18,15 +18,23 @@ YOUTUBE_API_KEY = settings.YOUTUBE_API_KEY  # ⚠️ Replace with your actual AP
 
 
 def kuriniai_list(request):
-    kuriniai = Kurinys.objects.all().order_by('-created_at', '-id')
-    return render(request, 'kuriniai.html', {'kuriniai': kuriniai})
+    selected_ansamblis_id = request.session.get("selected_ansamblis_id")
+    kuriniai = Kurinys.objects.all().order_by("-created_at", "-id")
+    if selected_ansamblis_id:
+        kuriniai = kuriniai.filter(ansambliai__id=selected_ansamblis_id).distinct()
+    all_ansambliai = Ansamblis.objects.all()
 
+    return render(request, "kuriniai.html", {
+        "kuriniai": kuriniai,
+        "all_ansambliai": all_ansambliai
+    })
 
 def kuriniai_add(request):
+    # Restrict access for 'narys' role
     if request.user.role == "narys":
         return HttpResponseForbidden("Jūs neturite teisės pridėti kūrinių.")
 
-    # Admins see all ansambliai; others see only their own
+    # Determine which ansambliai the user can choose
     if request.user.role == "administratorius":
         ansambliai_queryset = Ansamblis.objects.all()
     else:
@@ -37,7 +45,7 @@ def kuriniai_add(request):
         if form.is_valid():
             kurinys = form.save(commit=False)
 
-            # Fetch and set trukmė from YouTube URL
+            # Set trukmė from YouTube
             if kurinys.youtube_url:
                 video_id = extract_video_id(kurinys.youtube_url)
                 if video_id:
@@ -45,12 +53,11 @@ def kuriniai_add(request):
 
             kurinys.save()
 
-            # Set selected ansambliai (many-to-many)
+            # Save ansambliai many-to-many relations
             selected_ids = request.POST.getlist("ansambliai")
             kurinys.ansambliai.set(selected_ids)
 
-            return redirect('kuriniai')
-
+            return redirect('/kuriniai/?success=true')  # Redirect with toast trigger
     else:
         form = KurinysForm()
 
@@ -58,6 +65,8 @@ def kuriniai_add(request):
         "form": form,
         "ansambliai": ansambliai_queryset
     })
+
+
 def kuriniai_edit(request, kurinys_id):
     kurinys = get_object_or_404(Kurinys, id=kurinys_id)
 

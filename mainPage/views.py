@@ -1,6 +1,6 @@
 from itertools import chain
 
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.utils.timezone import now
 
 from Ansambliai.models import Ansamblis
@@ -42,3 +42,11 @@ def main_page(request):
         'all_ansambliai': all_ansambliai,
     }
     return render(request, 'main.html', context)
+
+def set_selected_ansamblis(request):
+    if request.method == "GET":
+        ansamblis_id = request.GET.get("ansamblis_id")
+        request.session["selected_ansamblis_id"] = ansamblis_id or None  # Save or clear
+        next_url = request.META.get("HTTP_REFERER", "/")  # Redirect back
+        return redirect(next_url)
+    return redirect("/")
