@@ -59,15 +59,20 @@ def ansamblis_delete(request, pk):
 def get_kuriniai_by_ansamblis(request, pk):
     ansamblis = get_object_or_404(Ansamblis, pk=pk)
 
-    # Fetch Kuriniai linked via ManyToMany relationship
     kuriniai = Kurinys.objects.filter(ansambliai=ansamblis)
 
-    # Prepare the data to return as JSON
     kuriniai_data = [
         {
             "id": kurinys.id,
             "pavadinimas": kurinys.pavadinimas,
             "trukme": kurinys.trukme or "00:00",
+            "tipas": kurinys.tipas or "N/A",
+            "regionas": kurinys.regionas or "N/A",
+            "lyrics": kurinys.lyrics,
+            "aprašymas": kurinys.aprašymas,
+            "youtube_url": kurinys.youtube_url,
+            "natos": kurinys.natos.url if kurinys.natos else "",
+            "natos_image": kurinys.natos_image.url if kurinys.natos_image else "",
         }
         for kurinys in kuriniai
     ]
