@@ -39,6 +39,8 @@
                                     <th class="text-center">Įrašo trukmė</th>
                                     <th class="text-center">Trukmė</th>
                                     <th class="text-center">Tipas</th>
+                                    <th class="text-center">Ansamblis</th>
+
                                     <th class="text-center">Peržiūra</th>
                                     {% if request.user.role != "narys" %}
                                         <th class="text-center">Valdyti</th>
@@ -56,6 +58,9 @@
                                         <!-- ✅ Calculated from kūriniai -->
                                         <td class="text-center">{{ programa.trukme }}</td>  <!-- ✅ Stored in DB -->
                                         <td class="align-middle text-center">{{ programa.tipas }}</td>
+                                        <td class="align-middle text-center">
+                                            {{ programa.ansamblis.pavadinimas|default:"—" }}
+                                        </td>
 
                                         <td class="align-middle text-center">
                                             <div class="d-flex justify-content-center">

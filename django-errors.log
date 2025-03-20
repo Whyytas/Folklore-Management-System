@@ -3058,3 +3058,37 @@ Internal Server Error: /repeticijos/4/edit/
 "POST /repeticijos/4/edit/ HTTP/1.1" 500 60
 Internal Server Error: /repeticijos/4/edit/
 "POST /repeticijos/4/edit/ HTTP/1.1" 500 60
+Internal Server Error: /nariai/4/edit/
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Nariai\views.py", line 186, in nariai_edit
+    validate_password(new_password1, user)
+    ^^^^^^^^^^^^^^^^^
+NameError: name 'validate_password' is not defined
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\contrib\auth\decorators.py", line 23, in _wrapper_view
+    return view_func(request, *args, **kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Nariai\views.py", line 190, in nariai_edit
+    except ValidationError as e:
+           ^^^^^^^^^^^^^^^
+NameError: name 'ValidationError' is not defined
+"POST /nariai/4/edit/ HTTP/1.1" 500 84102
+Internal Server Error: /nariai/4/edit/
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\contrib\auth\decorators.py", line 23, in _wrapper_view
+    return view_func(request, *args, **kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Nariai\views.py", line 201, in nariai_edit
+    return render(request, 'nariai_edit.html', {'user': user, 'all_ansambliai': all_ansambliai})@login_required
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~
+TypeError: unsupported operand type(s) for @: 'HttpResponse' and 'function'
+"GET /nariai/4/edit/ HTTP/1.1" 500 77776

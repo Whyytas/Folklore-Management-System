@@ -51,7 +51,7 @@
 
                         <form method="POST">
                             {% csrf_token %}
-
+                            <input type="hidden" name="which_form" value="info">  <!-- ✅ REQUIRED -->
                             <!-- First Name Field (Vardas) -->
                             <div class="mb-4">
                                 <label for="id_vardas" class="form-label d-flex align-items-center">
@@ -157,10 +157,68 @@
                             </div>
                         </form>
                     </div>
+
+                </div>
+
+            </div>
+            <div class="col-md-6 mt-4">
+                <div class="card shadow">
+                    <div class="card-header py-3 bg-secondary text-white">
+                        <h4 class="mb-0 d-flex align-items-center">
+                            <span class="material-symbols-outlined me-2">lock</span> Keisti Slaptažodį
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <form method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="which_form" value="password">
+                            <input type="hidden" name="user_id" value="{{ user.id }}">
+
+                            {% if password_error %}
+                                <div class="alert alert-danger d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">error</span> {{ password_error }}
+                                </div>
+                            {% endif %}
+
+                            {% if password_updated %}
+                                <div class="alert alert-success d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">check_circle</span> Slaptažodis
+                                    atnaujintas!
+                                </div>
+                            {% endif %}
+
+                            <!-- Naujas slaptažodis -->
+                            <div class="mb-3">
+                                <label for="new_password1" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">lock</span> Naujas slaptažodis
+                                </label>
+                                <input type="password" name="new_password1" id="new_password1" class="form-control"
+                                       required>
+                            </div>
+
+                            <!-- Pakartoti slaptažodį -->
+                            <div class="mb-3">
+                                <label for="new_password2" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">lock</span> Pakartoti slaptažodį
+                                </label>
+                                <input type="password" name="new_password2" id="new_password2" class="form-control"
+                                       required>
+                            </div>
+
+                            <div class="d-flex justify-content-end mt-4">
+                                <button type="submit" class="btn btn-outline-dark d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-1">lock_reset</span> Atnaujinti Slaptažodį
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
+
         </div>
+
     </div>
+
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {

@@ -1,3 +1,5 @@
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError
 from django.http import JsonResponse, HttpResponseForbidden
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
@@ -153,31 +155,50 @@ def nariai_edit(request, user_id):
     all_ansambliai = Ansamblis.objects.all()
 
     if request.method == 'POST':
-        user.username = request.POST.get('username', user.username)
-        user.email = request.POST.get('email', user.email)
-        user.phone_number = request.POST.get('phone_number', user.phone_number)
-        user.role = request.POST.get('role', user.role)
-        user.vardas = request.POST.get('vardas', user.vardas)
-        user.pavarde = request.POST.get('pavarde', user.pavarde)
+        form_type = request.POST.get('which_form')
 
-        selected_ansambliai_ids = request.POST.getlist('ansambliai')
+        # ✅ 1. User Info Update Only
+        if form_type == 'info':
+            user.username = request.POST.get('username', user.username)
+            user.email = request.POST.get('email', user.email)
+            user.phone_number = request.POST.get('phone_number', user.phone_number)
+            user.role = request.POST.get('role', user.role)
+            user.vardas = request.POST.get('vardas', user.vardas)
+            user.pavarde = request.POST.get('pavarde', user.pavarde)
 
-        if request.user.role == "vadovas":
-            selected_ansambliai = Ansamblis.objects.filter(id__in=selected_ansambliai_ids).intersection(
-                Ansamblis.objects.filter(id__in=request.user.ansambliai.values_list('id', flat=True))
-            )
+            selected_ansambliai_ids = request.POST.getlist('ansambliai')
 
-        else:
-            selected_ansambliai = Ansamblis.objects.filter(id__in=selected_ansambliai_ids)
+            if request.user.role == "vadovas":
+                selected_ansambliai = Ansamblis.objects.filter(id__in=selected_ansambliai_ids).intersection(
+                    Ansamblis.objects.filter(id__in=request.user.ansambliai.values_list('id', flat=True))
+                )
+            else:
+                selected_ansambliai = Ansamblis.objects.filter(id__in=selected_ansambliai_ids)
 
-        user.ansambliai.set(selected_ansambliai)
-        user.save()
-        messages.success(request, "Vartotojas atnaujintas sėkmingai.")
-        return redirect('nariai')
+            user.ansambliai.set(selected_ansambliai)
+            user.save()
+            messages.success(request, "Vartotojo duomenys atnaujinti sėkmingai.")
+            return redirect('nariai_edit', user_id=user.id)
+
+        # ✅ 2. Password Update Only
+        elif form_type == 'password':
+            new_password1 = request.POST.get('new_password1')
+            new_password2 = request.POST.get('new_password2')
+
+            if new_password1 and new_password1 == new_password2:
+                try:
+                    validate_password(new_password1, user)
+                    user.set_password(new_password1)
+                    user.save()
+                    messages.success(request, "Slaptažodis atnaujintas sėkmingai.")
+                except ValidationError as e:
+                    messages.error(request, " ".join(e.messages))
+            else:
+                messages.error(request, "Slaptažodžiai nesutampa arba tušti.")
+
+            return redirect('nariai_edit', user_id=user.id)
 
     return render(request, 'nariai_edit.html', {'user': user, 'all_ansambliai': all_ansambliai})
-
-@login_required
 def nariai_delete(request, user_id):
     user = get_object_or_404(User, id=user_id)
 
