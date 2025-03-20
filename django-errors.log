@@ -3044,3 +3044,17 @@ LINE 1: ...blis_id", "Repeticijos_repeticija"."created" FROM "Repeticij...
                                                              ^
 
 "GET /main/ HTTP/1.1" 500 130330
+Internal Server Error: /repeticijos/add/
+"POST /repeticijos/add/ HTTP/1.1" 500 186
+Internal Server Error: /repeticijos/add/
+"POST /repeticijos/add/ HTTP/1.1" 500 185
+Internal Server Error: /repeticijos/add/
+"POST /repeticijos/add/ HTTP/1.1" 500 185
+Internal Server Error: /repeticijos/add/
+"POST /repeticijos/add/ HTTP/1.1" 500 185
+Internal Server Error: /repeticijos/4/edit/
+"POST /repeticijos/4/edit/ HTTP/1.1" 500 60
+Internal Server Error: /repeticijos/4/edit/
+"POST /repeticijos/4/edit/ HTTP/1.1" 500 60
+Internal Server Error: /repeticijos/4/edit/
+"POST /repeticijos/4/edit/ HTTP/1.1" 500 60

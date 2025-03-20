@@ -8,7 +8,7 @@ import json
 from django.urls import reverse
 
 from Kuriniai.models import Kurinys
-from Repeticijos.models import Repeticija
+from Repeticijos.models import Repeticija, RepeticijaKurinys
 from Ansambliai.models import Ansamblis  # ✅ Import Ansamblis
 
 
@@ -25,7 +25,6 @@ def repeticijos_list(request):
         'repeticijos': repeticijos,
         'all_ansambliai': all_ansambliai
     })
-
 
 @login_required
 def repeticija_create(request):
@@ -58,8 +57,12 @@ def repeticija_create(request):
                 ansamblis=selected_ansamblis
             )
 
-            selected_kuriniai = Kurinys.objects.filter(id__in=kuriniai_ids)
-            repeticija.kuriniai.set(selected_kuriniai)
+            # Save kūriniai with order
+            relations = [
+                RepeticijaKurinys(repeticija=repeticija, kurinys_id=kur_id, order=index)
+                for index, kur_id in enumerate(kuriniai_ids)
+            ]
+            RepeticijaKurinys.objects.bulk_create(relations)
 
             return JsonResponse({"redirect": reverse("repeticijos")}, status=201)
 
@@ -68,11 +71,9 @@ def repeticija_create(request):
             traceback.print_exc()
             return JsonResponse({"error": f"Serverio klaida: {str(e)}"}, status=500)
 
-    # ✅ GET request → render form page
-    kuriniai = Kurinys.objects.all()
+    # GET → show form
     ansambliai = Ansamblis.objects.all()
     return render(request, "repeticija_add.html", {
-        "kuriniai": kuriniai,
         "ansambliai": ansambliai
     })
 
