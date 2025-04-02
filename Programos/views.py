@@ -309,12 +309,8 @@ def generate_kuriniai(request):
                     pradzia_kurinys = k
                     break
 
-            if not pradzia_kurinys:
-                return JsonResponse({
-                    "error": "Nerastas joks 'Pradžia' kūrinys šiam ansambliui."
-                }, status=400)
-
-            response.append(pradzia_kurinys)
+            if pradzia_kurinys:
+                response.append(pradzia_kurinys)
 
             if santykis and ":" in santykis:
                 try:
@@ -325,10 +321,13 @@ def generate_kuriniai(request):
                         "error": "Neteisingas santykio formatas. Pvz: 3:2:1"
                     }, status=400)
 
-                available = all_kuriniai.exclude(id=pradzia_kurinys.id).filter(
+                available = all_kuriniai.filter(
                     pozymiai__pavadinimas__iexact=tipas,
                     trukme__contains=":"
                 ).exclude(paruosimas__in=["Archyvas", "Naujas"]).distinct()
+
+                if pradzia_kurinys:
+                    available = available.exclude(id=pradzia_kurinys.id)
 
                 groups = {"Daina": [], "Šokis": [], "Kapela": []}
 
@@ -367,7 +366,10 @@ def generate_kuriniai(request):
                 # Sort the group result (Pradzia already added)
                 sort_order = {"Daina": 1, "Kapela": 2, "Šokis": 3}
                 sorted_result = sorted(total_result, key=lambda x: sort_order.get(x.tipas, 99))
-                final_result = [pradzia_kurinys] + sorted_result
+                if pradzia_kurinys:
+                    final_result = [pradzia_kurinys] + sorted_result
+                else:
+                    final_result = sorted_result
 
                 return JsonResponse(_kuriniai_to_json(final_result), safe=False)
 

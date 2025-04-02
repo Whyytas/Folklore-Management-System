@@ -4368,3 +4368,15 @@ Traceback (most recent call last):
   File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\utils\functional.py", line 253, in inner
     return func(_wrapped, *args)
 AttributeError: 'AnonymousUser' object has no attribute 'role'
+Internal Server Error: /programos/generuoti/
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Programos\views.py", line 33, in program_generate
+    if request.user.role == "narys":
+       ^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\utils\functional.py", line 253, in inner
+    return func(_wrapped, *args)
+AttributeError: 'AnonymousUser' object has no attribute 'role'
