@@ -17,6 +17,7 @@
                         {% endif %}
                     </div>
 
+
                     <!-- Search Input -->
                     <div class="d-flex justify-content-start mt-3 ms-2">
                         <div class="input-group w-25">
@@ -27,7 +28,57 @@
                                    placeholder="Ieškoti pagal pavadinimą...">
                         </div>
                     </div>
-
+                    <form method="get" class="row g-2 px-2 mb-1 pt-2">
+                        <div class="col-md">
+                            <select name="tipas" class="form-select">
+                                <option value="">– Tipas –</option>
+                                {% for key, label in tipas_choices %}
+                                    <option value="{{ key }}"
+                                            {% if filters.tipas == key %}selected{% endif %}>{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md">
+                            <select name="regionas" class="form-select">
+                                <option value="">– Regionas –</option>
+                                {% for key, label in regionas_choices %}
+                                    <option value="{{ key }}"
+                                            {% if filters.regionas == key %}selected{% endif %}>{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md">
+                            <select name="greitumas" class="form-select">
+                                <option value="">– Greitumas –</option>
+                                {% for key, label in greitumas_choices %}
+                                    <option value="{{ key }}"
+                                            {% if filters.greitumas == key %}selected{% endif %}>{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md">
+                            <select name="paruosimas" class="form-select">
+                                <option value="">– Paruošimas –</option>
+                                {% for key, label in paruosimas_choices %}
+                                    <option value="{{ key }}"
+                                            {% if filters.paruosimas == key %}selected{% endif %}>{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md">
+                            <select name="pozymiai" class="form-select">
+                                <option value="">– Požymis –</option>
+                                {% for p in all_pozymiai %}
+                                    <option value="{{ p.id }}"
+                                            {% if p.id|stringformat:"s" == filters.pozymiai %}
+                                            selected{% endif %}>{{ p.pavadinimas }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-auto">
+                            <button type="submit" class="btn btn-outline-primary w-100">Filtruoti</button>
+                        </div>
+                    </form>
                     <!-- Table Content -->
                     <div class="card-body">
                         <div class="table-responsive">
@@ -35,14 +86,39 @@
                                 <thead class="thead-dark">
                                 <tr>
                                     <th class="text-end">#</th>
-                                    <th class="text-start">Pavadinimas</th>
+                                    <th class="text-start">
+                                        <a href="?
+                                                {% for k,v in request.GET.items %}{% if k != 'sort' and k != 'page' %}{{ k }}={{ v|urlencode }}&{% endif %}{% endfor %}sort={% if sort_param == 'pavadinimas' %}-pavadinimas{% else %}pavadinimas{% endif %}"
+                                           class="text-decoration-none text-dark d-flex align-items-center gap-1">
+                                            Pavadinimas
+                                            {% if sort_param == 'pavadinimas' %}
+                                                <span class="material-symbols-outlined">arrow_drop_up</span>
+                                            {% elif sort_param == '-pavadinimas' %}
+                                                <span class="material-symbols-outlined">arrow_drop_down</span>
+                                            {% endif %}
+                                        </a>
+                                    </th>
+
                                     <th class="text-center">Tipas</th>
-                                    <th class="text-center">Trukmė</th>
+                                    <th class="text-center">
+                                        <a href="?
+
+                                                {% for k,v in request.GET.items %}{% if k != 'sort' and k != 'page' %}{{ k }}={{ v|urlencode }}&{% endif %}{% endfor %}sort={% if sort_param == 'trukme' %}-trukme{% else %}trukme{% endif %}"
+                                           class="text-decoration-none text-dark d-flex justify-content-center align-items-center gap-1">
+                                            Trukmė
+                                            {% if sort_param == 'trukme' %}
+                                                <span class="material-symbols-outlined">arrow_drop_up</span>
+                                            {% elif sort_param == '-trukme' %}
+                                                <span class="material-symbols-outlined">arrow_drop_down</span>
+                                            {% endif %}
+                                        </a>
+                                    </th>
+
                                     <th class="text-center">Ansamblis</th>
                                     <th class="text-center">Regionas</th>
                                     <th class="text-center">Vieta</th>
                                     <th class="text-center">Greitumas</th>
-                                <th class="text-center">Paruošimas</th>
+                                    <th class="text-center">Paruošimas</th>
                                     <th class="text-center">Požymiai</th>
                                     <th class="text-center">Peržiūra</th>
                                     {% if request.user.role != "narys" %}
@@ -69,7 +145,7 @@
                                         <td class="align-middle text-center">{{ kurinys.regionas|default:"—" }}</td>
                                         <td class="align-middle text-center">{{ kurinys.vieta|default:"—" }}</td>
                                         <td class="align-middle text-center">{{ kurinys.greitumas|default:"—" }}</td>
-                                    <td class="align-middle text-center">{{ kurinys.paruosimas|default:"—" }}</td>
+                                        <td class="align-middle text-center">{{ kurinys.paruosimas|default:"—" }}</td>
                                         <td class="align-middle text-center">
                                             {% if kurinys.pozymiai.all %}
                                                 {% for poz in kurinys.pozymiai.all %}
@@ -180,11 +256,55 @@
                                     </tr>
                                 {% empty %}
                                     <tr>
-                                        <td colspan="10" class="text-center text-muted">Nėra sukurtų kūrinių.</td>
+                                        <td colspan="12" class="text-center text-muted">Nėra sukurtų kūrinių.</td>
                                     </tr>
                                 {% endfor %}
                                 </tbody>
                             </table>
+                            {% if page_obj.has_other_pages %}
+                                <div class="d-flex justify-content-center mt-3">
+                                    <nav>
+                                        <ul class="pagination">
+                                            {% if page_obj.has_previous %}
+                                                <li class="page-item">
+                                                    <a class="page-link" href="?
+
+
+                                                            {% for key, val in request.GET.items %}{% if key != 'page' %}{{ key }}={{ val|urlencode }}&{% endif %}{% endfor %}page={{ page_obj.previous_page_number }}">«</a>
+                                                </li>
+                                            {% else %}
+                                                <li class="page-item disabled"><span class="page-link">«</span></li>
+                                            {% endif %}
+
+                                            {% for num in page_obj.paginator.page_range %}
+                                                {% if page_obj.number == num %}
+                                                    <li class="page-item active"><span
+                                                            class="page-link">{{ num }}</span></li>
+                                                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                                                    <li class="page-item">
+                                                        <a class="page-link" href="?
+
+
+                                                                {% for key, val in request.GET.items %}{% if key != 'page' %}{{ key }}={{ val|urlencode }}&{% endif %}{% endfor %}page={{ num }}">{{ num }}</a>
+                                                    </li>
+                                                {% endif %}
+                                            {% endfor %}
+
+                                            {% if page_obj.has_next %}
+                                                <li class="page-item">
+                                                    <a class="page-link" href="?
+
+
+                                                            {% for key, val in request.GET.items %}{% if key != 'page' %}{{ key }}={{ val|urlencode }}&{% endif %}{% endfor %}page={{ page_obj.next_page_number }}">»</a>
+                                                </li>
+                                            {% else %}
+                                                <li class="page-item disabled"><span class="page-link">»</span></li>
+                                            {% endif %}
+                                        </ul>
+                                    </nav>
+                                </div>
+                            {% endif %}
+
                         </div>
                     </div>
                 </div>

@@ -3,6 +3,7 @@ import requests
 import logging
 
 from django.core.files.base import ContentFile
+from django.core.paginator import Paginator
 from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.http import require_GET
@@ -22,16 +23,57 @@ logger = logging.getLogger(__name__)
 YOUTUBE_API_KEY = settings.YOUTUBE_API_KEY  # ⚠️ Replace with your actual API key
 
 
+
 def kuriniai_list(request):
     selected_ansamblis_id = request.session.get("selected_ansamblis_id")
     kuriniai = Kurinys.objects.all().order_by("-created_at", "-id")
+    sort_param = request.GET.get("sort", "pavadinimas")
+
+    valid_sorts = ["pavadinimas", "-pavadinimas", "trukme", "-trukme"]
+    if sort_param not in valid_sorts:
+        sort_param = "pavadinimas"
+
+
     if selected_ansamblis_id:
-        kuriniai = kuriniai.filter(ansambliai__id=selected_ansamblis_id).distinct()
-    all_ansambliai = Ansamblis.objects.all()
+        kuriniai = kuriniai.filter(ansambliai__id=selected_ansamblis_id)
+
+    kuriniai = kuriniai.order_by(sort_param)
+
+    filters = {
+        'tipas': request.GET.get('tipas'),
+        'regionas': request.GET.get('regionas'),
+        'greitumas': request.GET.get('greitumas'),
+        'paruosimas': request.GET.get('paruosimas'),
+        'pozymiai': request.GET.get('pozymiai'),
+    }
+
+    if filters['tipas']:
+        kuriniai = kuriniai.filter(tipas=filters['tipas'])
+    if filters['regionas']:
+        kuriniai = kuriniai.filter(regionas=filters['regionas'])
+    if filters['greitumas']:
+        kuriniai = kuriniai.filter(greitumas=filters['greitumas'])
+    if filters['paruosimas']:
+        kuriniai = kuriniai.filter(paruosimas=filters['paruosimas'])
+    if filters['pozymiai']:
+        kuriniai = kuriniai.filter(pozymiai__id=filters['pozymiai'])
+
+    # PAGINATION
+    paginator = Paginator(kuriniai, 15)
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
 
     return render(request, "kuriniai.html", {
-        "kuriniai": kuriniai,
-        "all_ansambliai": all_ansambliai
+        "page_obj": page_obj,
+        "kuriniai": page_obj.object_list,
+        "all_ansambliai": Ansamblis.objects.all(),
+        "all_pozymiai": Pozymis.objects.all(),
+        "filters": filters,
+        "tipas_choices": Kurinys.TIPAS_CHOICES,
+        "greitumas_choices": Kurinys.GREITUMAS_CHOICES,
+        "paruosimas_choices": Kurinys.PARUOSIMAS_CHOICES,
+        "regionas_choices": Kurinys._meta.get_field("regionas").choices,
+        "sort_param": sort_param,
     })
 
 def kuriniai_add(request):
