@@ -6,25 +6,48 @@ from datetime import datetime
 import json
 
 from django.urls import reverse
+from django.utils.timezone import now
 
 from Kuriniai.models import Kurinys
 from Repeticijos.models import Repeticija, RepeticijaKurinys
 from Ansambliai.models import Ansamblis  # ✅ Import Ansamblis
 
 
+from django.core.paginator import Paginator
+
 def repeticijos_list(request):
     selected_ansamblis_id = request.session.get("selected_ansamblis_id")
-    repeticijos = Repeticija.objects.all().order_by("-data", "-id")
+    sort_param = request.GET.get("sort", "data")
+    show_all = request.GET.get("show", "") == "all"
+
+    valid_sorts = ["data", "-data", "pavadinimas", "-pavadinimas"]
+    if sort_param not in valid_sorts:
+        sort_param = "data"
+
+    repeticijos = Repeticija.objects.all()
+
+    if not show_all:
+        from django.utils.timezone import now
+        repeticijos = repeticijos.filter(data__gte=now())
 
     if selected_ansamblis_id:
         repeticijos = repeticijos.filter(ansamblis__id=selected_ansamblis_id)
 
-    all_ansambliai = Ansamblis.objects.all()
+    repeticijos = repeticijos.order_by(sort_param)
+
+    # ✅ Pagination (15 per page)
+    paginator = Paginator(repeticijos, 15)
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
 
     return render(request, 'repeticijos.html', {
-        'repeticijos': repeticijos,
-        'all_ansambliai': all_ansambliai
+        'page_obj': page_obj,
+        'repeticijos': page_obj.object_list,
+        'all_ansambliai': Ansamblis.objects.all(),
+        'sort_param': sort_param,
+        'show_all': show_all,
     })
+
 
 @login_required
 def repeticija_create(request):
