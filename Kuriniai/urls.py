@@ -8,4 +8,6 @@ urlpatterns = [
     path("<int:kurinys_id>/edit/", kuriniai_edit, name="kuriniai_edit"),
     path("<int:kurinys_id>/delete/", delete_kurinys, name="kuriniai_delete"),
     path("api/fetch_trukme/", fetch_trukme, name="fetch_trukme"),
+    path("by-ansamblis-pozymis/", views.kuriniai_by_ansamblis_pozymis, name="kuriniai_by_ansamblis_pozymis")
+
 ]

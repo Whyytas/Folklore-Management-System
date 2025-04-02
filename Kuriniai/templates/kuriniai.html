@@ -41,6 +41,9 @@
                                     <th class="text-center">Ansamblis</th>
                                     <th class="text-center">Regionas</th>
                                     <th class="text-center">Vieta</th>
+                                    <th class="text-center">Greitumas</th>
+                                <th class="text-center">Paruošimas</th>
+                                    <th class="text-center">Požymiai</th>
                                     <th class="text-center">Peržiūra</th>
                                     {% if request.user.role != "narys" %}
                                         <th class="text-center">Valdyti</th>
@@ -65,6 +68,18 @@
                                         </td>
                                         <td class="align-middle text-center">{{ kurinys.regionas|default:"—" }}</td>
                                         <td class="align-middle text-center">{{ kurinys.vieta|default:"—" }}</td>
+                                        <td class="align-middle text-center">{{ kurinys.greitumas|default:"—" }}</td>
+                                    <td class="align-middle text-center">{{ kurinys.paruosimas|default:"—" }}</td>
+                                        <td class="align-middle text-center">
+                                            {% if kurinys.pozymiai.all %}
+                                                {% for poz in kurinys.pozymiai.all %}
+                                                    {{ poz.pavadinimas }}{% if not forloop.last %}, {% endif %}
+                                                {% endfor %}
+                                            {% else %}
+                                                <span class="text-muted">—</span>
+                                            {% endif %}
+                                        </td>
+
 
                                         <!-- Peržiūra Dropdown -->
                                         <td class="align-middle text-center">
@@ -165,7 +180,7 @@
                                     </tr>
                                 {% empty %}
                                     <tr>
-                                        <td colspan="9" class="text-center text-muted">Nėra sukurtų kūrinių.</td>
+                                        <td colspan="10" class="text-center text-muted">Nėra sukurtų kūrinių.</td>
                                     </tr>
                                 {% endfor %}
                                 </tbody>
@@ -175,40 +190,36 @@
                 </div>
 
                 <!-- Image Modal -->
-                <!-- Image Modal -->
-<!-- Image Modal -->
-<!-- Image Modal -->
-<div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" style="max-width: unset; margin: auto;">
-        <div class="modal-content shadow-lg border-0 bg-light p-2" style="display: inline-block;">
-            <!-- Modal Header -->
-            <div class="modal-header bg-dark text-white rounded-top-3 py-2 px-3">
-                <h5 class="modal-title d-flex align-items-center">
-                    <span class="material-symbols-outlined me-2">image</span>
-                    <span id="imageModalTitle">Kūrinio Natos</span>
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
+                <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" style="max-width: unset; margin: auto;">
+                        <div class="modal-content shadow-lg border-0 bg-light p-2" style="display: inline-block;">
+                            <!-- Modal Header -->
+                            <div class="modal-header bg-dark text-white rounded-top-3 py-2 px-3">
+                                <h5 class="modal-title d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">image</span>
+                                    <span id="imageModalTitle">Kūrinio Natos</span>
+                                </h5>
+                                <button type="button" class="btn-close btn-close-white"
+                                        data-bs-dismiss="modal"></button>
+                            </div>
 
-            <!-- Modal Body -->
-            <div class="modal-body bg-light p-2 d-flex justify-content-center align-items-center">
-                <img id="imageViewer" src="" class="rounded shadow"
-                     style="display: block; max-width: 70vw; max-height: 75vh; object-fit: contain;">
-            </div>
+                            <!-- Modal Body -->
+                            <div class="modal-body bg-light p-2 d-flex justify-content-center align-items-center">
+                                <img id="imageViewer" src="" class="rounded shadow"
+                                     style="display: block; max-width: 70vw; max-height: 75vh; object-fit: contain;">
+                            </div>
 
-            <!-- Modal Footer -->
-            <div class="modal-footer bg-light border-0 d-flex justify-content-center py-2">
-                <button type="button" class="btn btn-outline-dark d-flex align-items-center px-3 py-1"
-                        data-bs-dismiss="modal">
-                    <span class="material-symbols-outlined me-1">close</span> Uždaryti
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-
+                            <!-- Modal Footer -->
+                            <div class="modal-footer bg-light border-0 d-flex justify-content-center py-2">
+                                <button type="button" class="btn btn-outline-dark d-flex align-items-center px-3 py-1"
+                                        data-bs-dismiss="modal">
+                                    <span class="material-symbols-outlined me-1">close</span> Uždaryti
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
 
                 <!-- PDF Modal -->

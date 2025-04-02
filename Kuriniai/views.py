@@ -3,14 +3,16 @@ import requests
 import logging
 
 from django.core.files.base import ContentFile
+from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404
+from django.views.decorators.http import require_GET
 
 from Ansambliai.models import Ansamblis
 from .forms import KurinysForm
 from django.conf import settings
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from .models import Kurinys
+from .models import Kurinys, Pozymis
 import re
 from django.http import HttpResponseForbidden
 
@@ -33,57 +35,63 @@ def kuriniai_list(request):
     })
 
 def kuriniai_add(request):
-    # Restrict access for 'narys' role
     if request.user.role == "narys":
         return HttpResponseForbidden("Jūs neturite teisės pridėti kūrinių.")
 
-    # Determine which ansambliai the user can choose
-    if request.user.role == "administratorius":
-        ansambliai_queryset = Ansamblis.objects.all()
-    else:
-        ansambliai_queryset = request.user.ansambliai.all()
+    user_is_admin = request.user.role == "administratorius"
+    ansambliai_queryset = Ansamblis.objects.all() if user_is_admin else request.user.ansambliai.all()
 
     if request.method == "POST":
         form = KurinysForm(request.POST, request.FILES)
         if form.is_valid():
             kurinys = form.save(commit=False)
 
-            if kurinys.youtube_url:
+            manual_trukme = request.POST.get("trukme", "").strip()
+            if manual_trukme:
+                kurinys.trukme = manual_trukme
+            elif kurinys.youtube_url:
                 video_id = extract_video_id(kurinys.youtube_url)
                 if video_id:
                     kurinys.trukme = get_video_duration(video_id)
 
             kurinys.save()
             kurinys.ansambliai.set(request.POST.getlist("ansambliai"))
+            kurinys.pozymiai.set(request.POST.getlist("pozymiai"))
 
-            handle_pdf_conversion(kurinys)
-            kurinys.save()
+            if 'natos' in request.FILES:
+                handle_pdf_conversion(kurinys)
+                kurinys.save()
 
             return redirect('/kuriniai/?success=true')
-
     else:
         form = KurinysForm()
 
     return render(request, 'kuriniaiAdd.html', {
         "form": form,
-        "ansambliai": ansambliai_queryset
+        "ansambliai": ansambliai_queryset,
+        "pozymiai": Pozymis.objects.all(),  # ✅ provide Požymiai to template
     })
 
+
+from .models import Kurinys, Pozymis
 
 def kuriniai_edit(request, kurinys_id):
     kurinys = get_object_or_404(Kurinys, id=kurinys_id)
 
-    # ✅ Show correct ansambliai
-    user_ansambliai = Ansamblis.objects.all() if request.user.role == "administratorius" else request.user.ansambliai.all()
-
     if request.user.role == "narys":
         return HttpResponseForbidden("Jūs neturite teisės redaguoti kūrinių.")
+
+    user_ansambliai = Ansamblis.objects.all() if request.user.role == "administratorius" else request.user.ansambliai.all()
+
     if request.method == "POST":
         form = KurinysForm(request.POST, request.FILES, instance=kurinys)
         if form.is_valid():
             kurinys = form.save(commit=False)
 
-            if kurinys.youtube_url:
+            manual_trukme = request.POST.get("trukme", "").strip()
+            if manual_trukme:
+                kurinys.trukme = manual_trukme
+            elif kurinys.youtube_url:
                 video_id = extract_video_id(kurinys.youtube_url)
                 if video_id:
                     new_trukme = get_video_duration(video_id)
@@ -92,6 +100,7 @@ def kuriniai_edit(request, kurinys_id):
 
             kurinys.save()
             kurinys.ansambliai.set(request.POST.getlist("ansambliai"))
+            kurinys.pozymiai.set(request.POST.getlist("pozymiai"))
 
             if 'natos' in request.FILES:
                 handle_pdf_conversion(kurinys)
@@ -102,10 +111,13 @@ def kuriniai_edit(request, kurinys_id):
         return JsonResponse({"success": False, "error": "Invalid form data"}, status=400)
 
     form = KurinysForm(instance=kurinys)
+    pozymiai = Pozymis.objects.all()  # ✅ Add this line
+
     return render(request, "kuriniaiEdit.html", {
         "kurinys": kurinys,
         "form": form,
-        "ansambliai": user_ansambliai
+        "ansambliai": user_ansambliai,
+        "pozymiai": pozymiai,  # ✅ Pass to template
     })
 
 def delete_kurinys(request, kurinys_id):
@@ -203,3 +215,28 @@ def handle_pdf_conversion(kurinys):
             if kurinys.natos_image:
                 kurinys.natos_image.delete(save=False)
         doc.close()
+
+def kuriniai_by_ansamblis_pozymis(request):
+    ansamblis_id = request.GET.get("ansamblis")
+    pozymis_name = request.GET.get("pozymis")
+
+    if not ansamblis_id or not pozymis_name:
+        return JsonResponse([], safe=False)
+
+    kuriniai = Kurinys.objects.filter(
+        ansambliai__id=ansamblis_id,
+        trukme__contains=":"
+    ).filter(
+        Q(pozymiai__pavadinimas__iexact=pozymis_name) |
+        Q(pozymiai__pavadinimas__iexact="Pradžia")
+    ).distinct()
+
+    return JsonResponse([
+        {
+            "id": k.id,
+            "pavadinimas": k.pavadinimas,
+            "trukme": k.trukme,
+            "tipas": k.tipas,
+            "regionas": k.regionas or ""
+        } for k in kuriniai
+    ], safe=False)

@@ -46,6 +46,56 @@
                                     <input type="hidden" id="tipasInput" name="tipas" value="">
                                 </div>
                             </div>
+                            <!-- Greitumas -->
+                            <div class="mb-4">
+                                <label for="greitumas" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">bar_chart</span> Greitumas
+                                </label>
+                                <select name="greitumas" id="greitumas" class="form-control">
+                                    <option value="">—</option>
+                                    {% for value, label in form.fields.greitumas.choices %}
+                                        {% if value %}
+                                            <option value="{{ value }}">{{ label }}</option>
+                                        {% endif %}
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                         <!-- Paruosimas -->
+                            <div class="mb-4">
+                                <label for="paruosimas" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">bar_chart</span> Paruosimas
+                                </label>
+                                <select name="paruosimas" id="paruosimas" class="form-control">
+                                    <option value="">—</option>
+                                    {% for value, label in form.fields.paruosimas.choices %}
+                                        {% if value %}
+                                            <option value="{{ value }}">{{ label }}</option>
+                                        {% endif %}
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <!-- Požymiai -->
+                            <div class="mb-4">
+                                <label class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">label</span> Pasirinkti požymius
+                                </label>
+                                <div class="row">
+                                    {% for pozymis in form.fields.pozymiai.queryset %}
+                                        <div class="col-md-6 mb-2">
+                                            <input type="checkbox" class="btn-check" name="pozymiai"
+                                                   id="pozymis_{{ pozymis.id }}" value="{{ pozymis.id }}">
+                                            <label class="btn w-100 py-2 d-flex justify-content-between align-items-center fs-5 btn-outline-secondary"
+                                                   for="pozymis_{{ pozymis.id }}">
+                                                <span>{{ pozymis.pavadinimas }}</span>
+                                                <span class="material-symbols-outlined">add</span>
+                                            </label>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+
 
                             <!-- YouTube URL Input -->
                             <div class="mb-4">
@@ -56,6 +106,17 @@
                                        placeholder="Nukopijuokite YouTube nuorodą" autocomplete="off"
                                        spellcheck="false">
                             </div>
+
+                            <!-- Trukmė -->
+                            <div class="mb-4">
+                                <label for="trukme" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">schedule</span> Trukmė
+                                </label>
+                                <input type="text" class="form-control" id="trukme" name="trukme"
+                                       placeholder="Pvz.: 02:45 ar 1:05:00" autocomplete="off">
+                            </div>
+
+
                             <!-- Upload PDF Natos -->
                             <div class="mb-4">
                                 <label for="natos" class="form-label d-flex align-items-center">
@@ -131,7 +192,9 @@
                                                 <span class="material-symbols-outlined me-2">description</span>
                                                 Aprašymas
                                             </label>
-                                            {{ form.aprašymas }}
+                                            <textarea class="form-control" id="id_aprašymas" name="aprašymas" rows="5"
+                                                      placeholder="Įveskite aprašymą (nebūtina)">{{ form.aprašymas.value|default_if_none:'' }}</textarea>
+
                                         </div>
 
 

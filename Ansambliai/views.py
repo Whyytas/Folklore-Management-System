@@ -1,4 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.views.decorators.http import require_GET
 
 from Kuriniai.models import Kurinys
 from .models import Ansamblis
@@ -59,10 +60,13 @@ def ansamblis_delete(request, pk):
 def get_kuriniai_by_ansamblis(request, pk):
     ansamblis = get_object_or_404(Ansamblis, pk=pk)
 
-    kuriniai = Kurinys.objects.filter(ansambliai=ansamblis)
+    kuriniai = Kurinys.objects.filter(ansambliai=ansamblis).prefetch_related("pozymiai")
 
-    kuriniai_data = [
-        {
+    kuriniai_data = []
+    for kurinys in kuriniai:
+        pozymiai_list = list(kurinys.pozymiai.values_list("pavadinimas", flat=True))  # ✅ fix here
+
+        kuriniai_data.append({
             "id": kurinys.id,
             "pavadinimas": kurinys.pavadinimas,
             "trukme": kurinys.trukme or "00:00",
@@ -73,8 +77,23 @@ def get_kuriniai_by_ansamblis(request, pk):
             "youtube_url": kurinys.youtube_url,
             "natos": kurinys.natos.url if kurinys.natos else "",
             "natos_image": kurinys.natos_image.url if kurinys.natos_image else "",
-        }
-        for kurinys in kuriniai
-    ]
+            "pozymiai": pozymiai_list,  # ✅ critical
+        })
 
     return JsonResponse(kuriniai_data, safe=False)
+
+@require_GET
+def filtered_kuriniai(request, ansamblis_id):
+    pozymis = request.GET.get("pozymis")
+    if not pozymis:
+        return JsonResponse({"error": "Požymis parametras yra privalomas."}, status=400)
+
+    kuriniai = Kurinys.objects.filter(
+        ansambliai__id=ansamblis_id,
+        pozymiai__pavadinimas=pozymis
+    ).distinct().values(
+        "id", "pavadinimas", "trukme", "tipas", "regionas",
+        "lyrics", "aprasymas", "youtube_url", "natos", "natos_image"
+    )
+
+    return JsonResponse(list(kuriniai), safe=False)

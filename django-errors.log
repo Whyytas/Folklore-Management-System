@@ -3092,3 +3092,1279 @@ Traceback (most recent call last):
            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~
 TypeError: unsupported operand type(s) for @: 'HttpResponse' and 'function'
 "GET /nariai/4/edit/ HTTP/1.1" 500 77776
+"GET /kuriniai/14/edit/ HTTP/1.1" 500 236072
+Internal Server Error: /ansambliai/4/kuriniai/
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\contrib\auth\decorators.py", line 23, in _wrapper_view
+    return view_func(request, *args, **kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Ansambliai\views.py", line 78, in get_kuriniai_by_ansamblis
+    for kurinys in kuriniai
+                   ^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 400, in __iter__
+    self._fetch_all()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 1930, in _fetch_all
+    self._prefetch_related_objects()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 1320, in _prefetch_related_objects
+    prefetch_related_objects(self._result_cache, *self._prefetch_related_lookups)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 2356, in prefetch_related_objects
+    raise AttributeError(
+    ...<7 lines>...
+    )
+AttributeError: Cannot find 'pozymis' on Kurinys object, 'pozymis' is an invalid parameter to prefetch_related()
+"GET /ansambliai/4/kuriniai/ HTTP/1.1" 500 96521
+Internal Server Error: /ansambliai/4/kuriniai/
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\contrib\auth\decorators.py", line 23, in _wrapper_view
+    return view_func(request, *args, **kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Ansambliai\views.py", line 78, in get_kuriniai_by_ansamblis
+    for kurinys in kuriniai
+                   ^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 400, in __iter__
+    self._fetch_all()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 1930, in _fetch_all
+    self._prefetch_related_objects()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 1320, in _prefetch_related_objects
+    prefetch_related_objects(self._result_cache, *self._prefetch_related_lookups)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 2356, in prefetch_related_objects
+    raise AttributeError(
+    ...<7 lines>...
+    )
+AttributeError: Cannot find 'pozymis' on Kurinys object, 'pozymis' is an invalid parameter to prefetch_related()
+Internal Server Error: /ansambliai/4/kuriniai/
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\contrib\auth\decorators.py", line 23, in _wrapper_view
+    return view_func(request, *args, **kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Ansambliai\views.py", line 78, in get_kuriniai_by_ansamblis
+    for kurinys in kuriniai
+                   ^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 400, in __iter__
+    self._fetch_all()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 1930, in _fetch_all
+    self._prefetch_related_objects()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 1320, in _prefetch_related_objects
+    prefetch_related_objects(self._result_cache, *self._prefetch_related_lookups)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 2356, in prefetch_related_objects
+    raise AttributeError(
+    ...<7 lines>...
+    )
+AttributeError: Cannot find 'pozymis' on Kurinys object, 'pozymis' is an invalid parameter to prefetch_related()
+"GET /ansambliai/4/kuriniai/ HTTP/1.1" 500 96521
+"GET /ansambliai/4/kuriniai/ HTTP/1.1" 500 96521
+Internal Server Error: /ansambliai/4/kuriniai/
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\contrib\auth\decorators.py", line 23, in _wrapper_view
+    return view_func(request, *args, **kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Ansambliai\views.py", line 78, in get_kuriniai_by_ansamblis
+    for kurinys in kuriniai
+                   ^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 400, in __iter__
+    self._fetch_all()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 1930, in _fetch_all
+    self._prefetch_related_objects()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 1320, in _prefetch_related_objects
+    prefetch_related_objects(self._result_cache, *self._prefetch_related_lookups)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 2356, in prefetch_related_objects
+    raise AttributeError(
+    ...<7 lines>...
+    )
+AttributeError: Cannot find 'pozymis' on Kurinys object, 'pozymis' is an invalid parameter to prefetch_related()
+"GET /ansambliai/4/kuriniai/ HTTP/1.1" 500 96521
+Internal Server Error: /ansambliai/4/kuriniai/
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\contrib\auth\decorators.py", line 23, in _wrapper_view
+    return view_func(request, *args, **kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Ansambliai\views.py", line 78, in get_kuriniai_by_ansamblis
+    for kurinys in kuriniai
+                   ^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 400, in __iter__
+    self._fetch_all()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 1930, in _fetch_all
+    self._prefetch_related_objects()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 1320, in _prefetch_related_objects
+    prefetch_related_objects(self._result_cache, *self._prefetch_related_lookups)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 2356, in prefetch_related_objects
+    raise AttributeError(
+    ...<7 lines>...
+    )
+AttributeError: Cannot find 'pozymis' on Kurinys object, 'pozymis' is an invalid parameter to prefetch_related()
+"GET /ansambliai/4/kuriniai/ HTTP/1.1" 500 96521
+Internal Server Error: /ansambliai/4/kuriniai/
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\contrib\auth\decorators.py", line 23, in _wrapper_view
+    return view_func(request, *args, **kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Ansambliai\views.py", line 78, in get_kuriniai_by_ansamblis
+    for kurinys in kuriniai
+                   ^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 400, in __iter__
+    self._fetch_all()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 1930, in _fetch_all
+    self._prefetch_related_objects()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 1320, in _prefetch_related_objects
+    prefetch_related_objects(self._result_cache, *self._prefetch_related_lookups)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 2356, in prefetch_related_objects
+    raise AttributeError(
+    ...<7 lines>...
+    )
+AttributeError: Cannot find 'pozymis' on Kurinys object, 'pozymis' is an invalid parameter to prefetch_related()
+"GET /ansambliai/4/kuriniai/ HTTP/1.1" 500 96521
+Internal Server Error: /ansambliai/4/kuriniai/
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\contrib\auth\decorators.py", line 23, in _wrapper_view
+    return view_func(request, *args, **kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Ansambliai\views.py", line 78, in get_kuriniai_by_ansamblis
+    for kurinys in kuriniai
+                   ^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 400, in __iter__
+    self._fetch_all()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 1930, in _fetch_all
+    self._prefetch_related_objects()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 1320, in _prefetch_related_objects
+    prefetch_related_objects(self._result_cache, *self._prefetch_related_lookups)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 2356, in prefetch_related_objects
+    raise AttributeError(
+    ...<7 lines>...
+    )
+AttributeError: Cannot find 'pozymis' on Kurinys object, 'pozymis' is an invalid parameter to prefetch_related()
+"GET /ansambliai/4/kuriniai/ HTTP/1.1" 500 96521
+Internal Server Error: /ansambliai/4/kuriniai/
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\contrib\auth\decorators.py", line 23, in _wrapper_view
+    return view_func(request, *args, **kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Ansambliai\views.py", line 78, in get_kuriniai_by_ansamblis
+    for kurinys in kuriniai
+                   ^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 400, in __iter__
+    self._fetch_all()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 1930, in _fetch_all
+    self._prefetch_related_objects()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 1320, in _prefetch_related_objects
+    prefetch_related_objects(self._result_cache, *self._prefetch_related_lookups)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 2356, in prefetch_related_objects
+    raise AttributeError(
+    ...<7 lines>...
+    )
+AttributeError: Cannot find 'pozymis' on Kurinys object, 'pozymis' is an invalid parameter to prefetch_related()
+"GET /ansambliai/4/kuriniai/ HTTP/1.1" 500 96521
+Internal Server Error: /ansambliai/4/kuriniai/
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\contrib\auth\decorators.py", line 23, in _wrapper_view
+    return view_func(request, *args, **kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Ansambliai\views.py", line 78, in get_kuriniai_by_ansamblis
+    for kurinys in kuriniai
+                   ^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 400, in __iter__
+    self._fetch_all()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 1930, in _fetch_all
+    self._prefetch_related_objects()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 1320, in _prefetch_related_objects
+    prefetch_related_objects(self._result_cache, *self._prefetch_related_lookups)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 2356, in prefetch_related_objects
+    raise AttributeError(
+    ...<7 lines>...
+    )
+AttributeError: Cannot find 'pozymis' on Kurinys object, 'pozymis' is an invalid parameter to prefetch_related()
+Internal Server Error: /ansambliai/4/kuriniai/
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\contrib\auth\decorators.py", line 23, in _wrapper_view
+    return view_func(request, *args, **kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Ansambliai\views.py", line 78, in get_kuriniai_by_ansamblis
+    for kurinys in kuriniai
+                   ^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 400, in __iter__
+    self._fetch_all()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 1930, in _fetch_all
+    self._prefetch_related_objects()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 1320, in _prefetch_related_objects
+    prefetch_related_objects(self._result_cache, *self._prefetch_related_lookups)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 2356, in prefetch_related_objects
+    raise AttributeError(
+    ...<7 lines>...
+    )
+AttributeError: Cannot find 'pozymis' on Kurinys object, 'pozymis' is an invalid parameter to prefetch_related()
+"GET /ansambliai/4/kuriniai/ HTTP/1.1" 500 96522
+"GET /ansambliai/4/kuriniai/ HTTP/1.1" 500 96522
+Internal Server Error: /ansambliai/4/kuriniai/
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\contrib\auth\decorators.py", line 23, in _wrapper_view
+    return view_func(request, *args, **kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Ansambliai\views.py", line 78, in get_kuriniai_by_ansamblis
+    for kurinys in kuriniai
+                   ^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 400, in __iter__
+    self._fetch_all()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 1930, in _fetch_all
+    self._prefetch_related_objects()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 1320, in _prefetch_related_objects
+    prefetch_related_objects(self._result_cache, *self._prefetch_related_lookups)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 2356, in prefetch_related_objects
+    raise AttributeError(
+    ...<7 lines>...
+    )
+AttributeError: Cannot find 'pozymis' on Kurinys object, 'pozymis' is an invalid parameter to prefetch_related()
+"GET /ansambliai/4/kuriniai/ HTTP/1.1" 500 96522
+Internal Server Error: /ansambliai/4/kuriniai/
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\contrib\auth\decorators.py", line 23, in _wrapper_view
+    return view_func(request, *args, **kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Ansambliai\views.py", line 65, in get_kuriniai_by_ansamblis
+    for kurinys in kuriniai:
+                   ^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 400, in __iter__
+    self._fetch_all()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 1930, in _fetch_all
+    self._prefetch_related_objects()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 1320, in _prefetch_related_objects
+    prefetch_related_objects(self._result_cache, *self._prefetch_related_lookups)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 2356, in prefetch_related_objects
+    raise AttributeError(
+    ...<7 lines>...
+    )
+AttributeError: Cannot find 'pozymis' on Kurinys object, 'pozymis' is an invalid parameter to prefetch_related()
+Internal Server Error: /ansambliai/4/kuriniai/
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\contrib\auth\decorators.py", line 23, in _wrapper_view
+    return view_func(request, *args, **kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Ansambliai\views.py", line 65, in get_kuriniai_by_ansamblis
+    for kurinys in kuriniai:
+                   ^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 400, in __iter__
+    self._fetch_all()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 1930, in _fetch_all
+    self._prefetch_related_objects()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 1320, in _prefetch_related_objects
+    prefetch_related_objects(self._result_cache, *self._prefetch_related_lookups)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 2356, in prefetch_related_objects
+    raise AttributeError(
+    ...<7 lines>...
+    )
+AttributeError: Cannot find 'pozymis' on Kurinys object, 'pozymis' is an invalid parameter to prefetch_related()
+"GET /ansambliai/4/kuriniai/ HTTP/1.1" 500 96946
+"GET /ansambliai/4/kuriniai/ HTTP/1.1" 500 96946
+Internal Server Error: /ansambliai/4/kuriniai/
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\contrib\auth\decorators.py", line 23, in _wrapper_view
+    return view_func(request, *args, **kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Ansambliai\views.py", line 65, in get_kuriniai_by_ansamblis
+    for kurinys in kuriniai:
+                   ^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 400, in __iter__
+    self._fetch_all()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 1930, in _fetch_all
+    self._prefetch_related_objects()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 1320, in _prefetch_related_objects
+    prefetch_related_objects(self._result_cache, *self._prefetch_related_lookups)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 2356, in prefetch_related_objects
+    raise AttributeError(
+    ...<7 lines>...
+    )
+AttributeError: Cannot find 'pozymis' on Kurinys object, 'pozymis' is an invalid parameter to prefetch_related()
+"GET /ansambliai/4/kuriniai/ HTTP/1.1" 500 96946
+Internal Server Error: /ansambliai/4/kuriniai/
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\contrib\auth\decorators.py", line 23, in _wrapper_view
+    return view_func(request, *args, **kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Ansambliai\views.py", line 65, in get_kuriniai_by_ansamblis
+    for kurinys in kuriniai:
+                   ^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 400, in __iter__
+    self._fetch_all()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 1930, in _fetch_all
+    self._prefetch_related_objects()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 1320, in _prefetch_related_objects
+    prefetch_related_objects(self._result_cache, *self._prefetch_related_lookups)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 2356, in prefetch_related_objects
+    raise AttributeError(
+    ...<7 lines>...
+    )
+AttributeError: Cannot find 'pozymis' on Kurinys object, 'pozymis' is an invalid parameter to prefetch_related()
+"GET /ansambliai/4/kuriniai/ HTTP/1.1" 500 96946
+Internal Server Error: /ansambliai/4/kuriniai/
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\contrib\auth\decorators.py", line 23, in _wrapper_view
+    return view_func(request, *args, **kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Ansambliai\views.py", line 65, in get_kuriniai_by_ansamblis
+    for kurinys in kuriniai:
+                   ^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 400, in __iter__
+    self._fetch_all()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 1930, in _fetch_all
+    self._prefetch_related_objects()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 1320, in _prefetch_related_objects
+    prefetch_related_objects(self._result_cache, *self._prefetch_related_lookups)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 2356, in prefetch_related_objects
+    raise AttributeError(
+    ...<7 lines>...
+    )
+AttributeError: Cannot find 'pozymis' on Kurinys object, 'pozymis' is an invalid parameter to prefetch_related()
+Internal Server Error: /ansambliai/4/kuriniai/
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\contrib\auth\decorators.py", line 23, in _wrapper_view
+    return view_func(request, *args, **kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Ansambliai\views.py", line 65, in get_kuriniai_by_ansamblis
+    for kurinys in kuriniai:
+                   ^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 400, in __iter__
+    self._fetch_all()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 1930, in _fetch_all
+    self._prefetch_related_objects()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 1320, in _prefetch_related_objects
+    prefetch_related_objects(self._result_cache, *self._prefetch_related_lookups)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 2356, in prefetch_related_objects
+    raise AttributeError(
+    ...<7 lines>...
+    )
+AttributeError: Cannot find 'pozymis' on Kurinys object, 'pozymis' is an invalid parameter to prefetch_related()
+"GET /ansambliai/4/kuriniai/ HTTP/1.1" 500 96947
+"GET /ansambliai/4/kuriniai/ HTTP/1.1" 500 96947
+Internal Server Error: /ansambliai/4/kuriniai/
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\contrib\auth\decorators.py", line 23, in _wrapper_view
+    return view_func(request, *args, **kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Ansambliai\views.py", line 65, in get_kuriniai_by_ansamblis
+    for kurinys in kuriniai:
+                   ^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 400, in __iter__
+    self._fetch_all()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 1930, in _fetch_all
+    self._prefetch_related_objects()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 1320, in _prefetch_related_objects
+    prefetch_related_objects(self._result_cache, *self._prefetch_related_lookups)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 2356, in prefetch_related_objects
+    raise AttributeError(
+    ...<7 lines>...
+    )
+AttributeError: Cannot find 'pozymis' on Kurinys object, 'pozymis' is an invalid parameter to prefetch_related()
+"GET /ansambliai/4/kuriniai/ HTTP/1.1" 500 96947
+Internal Server Error: /ansambliai/4/kuriniai/
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\contrib\auth\decorators.py", line 23, in _wrapper_view
+    return view_func(request, *args, **kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Ansambliai\views.py", line 65, in get_kuriniai_by_ansamblis
+    for kurinys in kuriniai:
+                   ^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 400, in __iter__
+    self._fetch_all()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 1930, in _fetch_all
+    self._prefetch_related_objects()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 1320, in _prefetch_related_objects
+    prefetch_related_objects(self._result_cache, *self._prefetch_related_lookups)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 2356, in prefetch_related_objects
+    raise AttributeError(
+    ...<7 lines>...
+    )
+AttributeError: Cannot find 'pozymis' on Kurinys object, 'pozymis' is an invalid parameter to prefetch_related()
+"GET /ansambliai/4/kuriniai/ HTTP/1.1" 500 96947
+Internal Server Error: /programos/generuoti/
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Programos\views.py", line 24, in program_generate
+    if request.user.role == "narys":
+       ^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\utils\functional.py", line 253, in inner
+    return func(_wrapped, *args)
+AttributeError: 'AnonymousUser' object has no attribute 'role'
+"GET /programos/generuoti/ HTTP/1.1" 500 74604
+Internal Server Error: /ansambliai/2/kuriniai/filter/
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\query.py", line 2199, in add_fields
+    join_info = self.setup_joins(
+        name.split(LOOKUP_SEP), opts, alias, allow_many=allow_m2m
+    )
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\query.py", line 1867, in setup_joins
+    path, final_field, targets, rest = self.names_to_path(
+                                       ~~~~~~~~~~~~~~~~~~^
+        names[:pivot],
+        ^^^^^^^^^^^^^^
+    ...<2 lines>...
+        fail_on_missing=True,
+        ^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\query.py", line 1772, in names_to_path
+    raise FieldError(
+    ...<2 lines>...
+    )
+django.core.exceptions.FieldError: Cannot resolve keyword 'aprasymas' into field. Choices are: ansambliai, aprašymas, created_at, id, lyrics, natos, natos_image, pavadinimas, pozymiai, programoskurinys, regionas, repeticija, repeticijakurinys, sudetingumas, tipas, trukme, vieta, youtube_url
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\views\decorators\http.py", line 64, in inner
+    return func(request, *args, **kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Ansambliai\views.py", line 94, in filtered_kuriniai
+    ).distinct().values(
+                 ~~~~~~^
+        "id", "pavadinimas", "trukme", "tipas", "regionas",
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        "lyrics", "aprasymas", "youtube_url", "natos", "natos_image"
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 1360, in values
+    clone = self._values(*fields, **expressions)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 1355, in _values
+    clone.query.set_values(fields)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\query.py", line 2504, in set_values
+    self.add_fields(field_names, True)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\query.py", line 2227, in add_fields
+    raise FieldError(
+    ...<2 lines>...
+    )
+django.core.exceptions.FieldError: Cannot resolve keyword 'aprasymas' into field. Choices are: ansambliai, aprašymas, created_at, id, lyrics, natos, natos_image, pavadinimas, pozymiai, programoskurinys, regionas, repeticija, repeticijakurinys, sudetingumas, tipas, trukme, vieta, youtube_url
+"GET /ansambliai/2/kuriniai/filter/?pozymis=Susidainavimams HTTP/1.1" 500 118265
+Internal Server Error: /ansambliai/2/kuriniai/filter/
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\query.py", line 2199, in add_fields
+    join_info = self.setup_joins(
+        name.split(LOOKUP_SEP), opts, alias, allow_many=allow_m2m
+    )
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\query.py", line 1867, in setup_joins
+    path, final_field, targets, rest = self.names_to_path(
+                                       ~~~~~~~~~~~~~~~~~~^
+        names[:pivot],
+        ^^^^^^^^^^^^^^
+    ...<2 lines>...
+        fail_on_missing=True,
+        ^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\query.py", line 1772, in names_to_path
+    raise FieldError(
+    ...<2 lines>...
+    )
+django.core.exceptions.FieldError: Cannot resolve keyword 'aprasymas' into field. Choices are: ansambliai, aprašymas, created_at, id, lyrics, natos, natos_image, pavadinimas, pozymiai, programoskurinys, regionas, repeticija, repeticijakurinys, sudetingumas, tipas, trukme, vieta, youtube_url
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\views\decorators\http.py", line 64, in inner
+    return func(request, *args, **kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Ansambliai\views.py", line 94, in filtered_kuriniai
+    ).distinct().values(
+                 ~~~~~~^
+        "id", "pavadinimas", "trukme", "tipas", "regionas",
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        "lyrics", "aprasymas", "youtube_url", "natos", "natos_image"
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 1360, in values
+    clone = self._values(*fields, **expressions)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 1355, in _values
+    clone.query.set_values(fields)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\query.py", line 2504, in set_values
+    self.add_fields(field_names, True)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\query.py", line 2227, in add_fields
+    raise FieldError(
+    ...<2 lines>...
+    )
+django.core.exceptions.FieldError: Cannot resolve keyword 'aprasymas' into field. Choices are: ansambliai, aprašymas, created_at, id, lyrics, natos, natos_image, pavadinimas, pozymiai, programoskurinys, regionas, repeticija, repeticijakurinys, sudetingumas, tipas, trukme, vieta, youtube_url
+"GET /ansambliai/2/kuriniai/filter/?pozymis=Susidainavimams HTTP/1.1" 500 118265
+Internal Server Error: /ansambliai/2/kuriniai/filter/
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\query.py", line 2199, in add_fields
+    join_info = self.setup_joins(
+        name.split(LOOKUP_SEP), opts, alias, allow_many=allow_m2m
+    )
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\query.py", line 1867, in setup_joins
+    path, final_field, targets, rest = self.names_to_path(
+                                       ~~~~~~~~~~~~~~~~~~^
+        names[:pivot],
+        ^^^^^^^^^^^^^^
+    ...<2 lines>...
+        fail_on_missing=True,
+        ^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\query.py", line 1772, in names_to_path
+    raise FieldError(
+    ...<2 lines>...
+    )
+django.core.exceptions.FieldError: Cannot resolve keyword 'aprasymas' into field. Choices are: ansambliai, aprašymas, created_at, id, lyrics, natos, natos_image, pavadinimas, pozymiai, programoskurinys, regionas, repeticija, repeticijakurinys, sudetingumas, tipas, trukme, vieta, youtube_url
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\views\decorators\http.py", line 64, in inner
+    return func(request, *args, **kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Ansambliai\views.py", line 94, in filtered_kuriniai
+    ).distinct().values(
+                 ~~~~~~^
+        "id", "pavadinimas", "trukme", "tipas", "regionas",
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        "lyrics", "aprasymas", "youtube_url", "natos", "natos_image"
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 1360, in values
+    clone = self._values(*fields, **expressions)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 1355, in _values
+    clone.query.set_values(fields)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\query.py", line 2504, in set_values
+    self.add_fields(field_names, True)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\query.py", line 2227, in add_fields
+    raise FieldError(
+    ...<2 lines>...
+    )
+django.core.exceptions.FieldError: Cannot resolve keyword 'aprasymas' into field. Choices are: ansambliai, aprašymas, created_at, id, lyrics, natos, natos_image, pavadinimas, pozymiai, programoskurinys, regionas, repeticija, repeticijakurinys, sudetingumas, tipas, trukme, vieta, youtube_url
+"GET /ansambliai/2/kuriniai/filter/?pozymis=Susidainavimams HTTP/1.1" 500 118265
+Internal Server Error: /ansambliai/1/kuriniai/filter/
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\query.py", line 2199, in add_fields
+    join_info = self.setup_joins(
+        name.split(LOOKUP_SEP), opts, alias, allow_many=allow_m2m
+    )
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\query.py", line 1867, in setup_joins
+    path, final_field, targets, rest = self.names_to_path(
+                                       ~~~~~~~~~~~~~~~~~~^
+        names[:pivot],
+        ^^^^^^^^^^^^^^
+    ...<2 lines>...
+        fail_on_missing=True,
+        ^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\query.py", line 1772, in names_to_path
+    raise FieldError(
+    ...<2 lines>...
+    )
+django.core.exceptions.FieldError: Cannot resolve keyword 'aprasymas' into field. Choices are: ansambliai, aprašymas, created_at, id, lyrics, natos, natos_image, pavadinimas, pozymiai, programoskurinys, regionas, repeticija, repeticijakurinys, sudetingumas, tipas, trukme, vieta, youtube_url
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\views\decorators\http.py", line 64, in inner
+    return func(request, *args, **kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Ansambliai\views.py", line 94, in filtered_kuriniai
+    ).distinct().values(
+                 ~~~~~~^
+        "id", "pavadinimas", "trukme", "tipas", "regionas",
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        "lyrics", "aprasymas", "youtube_url", "natos", "natos_image"
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 1360, in values
+    clone = self._values(*fields, **expressions)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 1355, in _values
+    clone.query.set_values(fields)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\query.py", line 2504, in set_values
+    self.add_fields(field_names, True)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\query.py", line 2227, in add_fields
+    raise FieldError(
+    ...<2 lines>...
+    )
+django.core.exceptions.FieldError: Cannot resolve keyword 'aprasymas' into field. Choices are: ansambliai, aprašymas, created_at, id, lyrics, natos, natos_image, pavadinimas, pozymiai, programoskurinys, regionas, repeticija, repeticijakurinys, sudetingumas, tipas, trukme, vieta, youtube_url
+"GET /ansambliai/1/kuriniai/filter/?pozymis=Susidainavimams HTTP/1.1" 500 118451
+Internal Server Error: /ansambliai/1/kuriniai/filter/
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\query.py", line 2199, in add_fields
+    join_info = self.setup_joins(
+        name.split(LOOKUP_SEP), opts, alias, allow_many=allow_m2m
+    )
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\query.py", line 1867, in setup_joins
+    path, final_field, targets, rest = self.names_to_path(
+                                       ~~~~~~~~~~~~~~~~~~^
+        names[:pivot],
+        ^^^^^^^^^^^^^^
+    ...<2 lines>...
+        fail_on_missing=True,
+        ^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\query.py", line 1772, in names_to_path
+    raise FieldError(
+    ...<2 lines>...
+    )
+django.core.exceptions.FieldError: Cannot resolve keyword 'aprasymas' into field. Choices are: ansambliai, aprašymas, created_at, id, lyrics, natos, natos_image, pavadinimas, pozymiai, programoskurinys, regionas, repeticija, repeticijakurinys, sudetingumas, tipas, trukme, vieta, youtube_url
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\views\decorators\http.py", line 64, in inner
+    return func(request, *args, **kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Ansambliai\views.py", line 94, in filtered_kuriniai
+    ).distinct().values(
+                 ~~~~~~^
+        "id", "pavadinimas", "trukme", "tipas", "regionas",
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        "lyrics", "aprasymas", "youtube_url", "natos", "natos_image"
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 1360, in values
+    clone = self._values(*fields, **expressions)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 1355, in _values
+    clone.query.set_values(fields)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\query.py", line 2504, in set_values
+    self.add_fields(field_names, True)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\query.py", line 2227, in add_fields
+    raise FieldError(
+    ...<2 lines>...
+    )
+django.core.exceptions.FieldError: Cannot resolve keyword 'aprasymas' into field. Choices are: ansambliai, aprašymas, created_at, id, lyrics, natos, natos_image, pavadinimas, pozymiai, programoskurinys, regionas, repeticija, repeticijakurinys, sudetingumas, tipas, trukme, vieta, youtube_url
+"GET /ansambliai/1/kuriniai/filter/?pozymis=Susidainavimams HTTP/1.1" 500 118451
+Internal Server Error: /ansambliai/1/kuriniai/filter/
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\query.py", line 2199, in add_fields
+    join_info = self.setup_joins(
+        name.split(LOOKUP_SEP), opts, alias, allow_many=allow_m2m
+    )
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\query.py", line 1867, in setup_joins
+    path, final_field, targets, rest = self.names_to_path(
+                                       ~~~~~~~~~~~~~~~~~~^
+        names[:pivot],
+        ^^^^^^^^^^^^^^
+    ...<2 lines>...
+        fail_on_missing=True,
+        ^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\query.py", line 1772, in names_to_path
+    raise FieldError(
+    ...<2 lines>...
+    )
+django.core.exceptions.FieldError: Cannot resolve keyword 'aprasymas' into field. Choices are: ansambliai, aprašymas, created_at, id, lyrics, natos, natos_image, pavadinimas, pozymiai, programoskurinys, regionas, repeticija, repeticijakurinys, sudetingumas, tipas, trukme, vieta, youtube_url
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\views\decorators\http.py", line 64, in inner
+    return func(request, *args, **kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Ansambliai\views.py", line 94, in filtered_kuriniai
+    ).distinct().values(
+                 ~~~~~~^
+        "id", "pavadinimas", "trukme", "tipas", "regionas",
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        "lyrics", "aprasymas", "youtube_url", "natos", "natos_image"
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 1360, in values
+    clone = self._values(*fields, **expressions)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 1355, in _values
+    clone.query.set_values(fields)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\query.py", line 2504, in set_values
+    self.add_fields(field_names, True)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\query.py", line 2227, in add_fields
+    raise FieldError(
+    ...<2 lines>...
+    )
+django.core.exceptions.FieldError: Cannot resolve keyword 'aprasymas' into field. Choices are: ansambliai, aprašymas, created_at, id, lyrics, natos, natos_image, pavadinimas, pozymiai, programoskurinys, regionas, repeticija, repeticijakurinys, sudetingumas, tipas, trukme, vieta, youtube_url
+"GET /ansambliai/1/kuriniai/filter/?pozymis=Susidainavimams HTTP/1.1" 500 118451
+Internal Server Error: /ansambliai/1/kuriniai/filter/
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\query.py", line 2199, in add_fields
+    join_info = self.setup_joins(
+        name.split(LOOKUP_SEP), opts, alias, allow_many=allow_m2m
+    )
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\query.py", line 1867, in setup_joins
+    path, final_field, targets, rest = self.names_to_path(
+                                       ~~~~~~~~~~~~~~~~~~^
+        names[:pivot],
+        ^^^^^^^^^^^^^^
+    ...<2 lines>...
+        fail_on_missing=True,
+        ^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\query.py", line 1772, in names_to_path
+    raise FieldError(
+    ...<2 lines>...
+    )
+django.core.exceptions.FieldError: Cannot resolve keyword 'aprasymas' into field. Choices are: ansambliai, aprašymas, created_at, id, lyrics, natos, natos_image, pavadinimas, pozymiai, programoskurinys, regionas, repeticija, repeticijakurinys, sudetingumas, tipas, trukme, vieta, youtube_url
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\views\decorators\http.py", line 64, in inner
+    return func(request, *args, **kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Ansambliai\views.py", line 94, in filtered_kuriniai
+    ).distinct().values(
+                 ~~~~~~^
+        "id", "pavadinimas", "trukme", "tipas", "regionas",
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        "lyrics", "aprasymas", "youtube_url", "natos", "natos_image"
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 1360, in values
+    clone = self._values(*fields, **expressions)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 1355, in _values
+    clone.query.set_values(fields)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\query.py", line 2504, in set_values
+    self.add_fields(field_names, True)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\query.py", line 2227, in add_fields
+    raise FieldError(
+    ...<2 lines>...
+    )
+django.core.exceptions.FieldError: Cannot resolve keyword 'aprasymas' into field. Choices are: ansambliai, aprašymas, created_at, id, lyrics, natos, natos_image, pavadinimas, pozymiai, programoskurinys, regionas, repeticija, repeticijakurinys, sudetingumas, tipas, trukme, vieta, youtube_url
+"GET /ansambliai/1/kuriniai/filter/?pozymis=Susidainavimams HTTP/1.1" 500 118451
+Internal Server Error: /ansambliai/1/kuriniai/filter/
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\query.py", line 2199, in add_fields
+    join_info = self.setup_joins(
+        name.split(LOOKUP_SEP), opts, alias, allow_many=allow_m2m
+    )
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\query.py", line 1867, in setup_joins
+    path, final_field, targets, rest = self.names_to_path(
+                                       ~~~~~~~~~~~~~~~~~~^
+        names[:pivot],
+        ^^^^^^^^^^^^^^
+    ...<2 lines>...
+        fail_on_missing=True,
+        ^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\query.py", line 1772, in names_to_path
+    raise FieldError(
+    ...<2 lines>...
+    )
+django.core.exceptions.FieldError: Cannot resolve keyword 'aprasymas' into field. Choices are: ansambliai, aprašymas, created_at, id, lyrics, natos, natos_image, pavadinimas, pozymiai, programoskurinys, regionas, repeticija, repeticijakurinys, sudetingumas, tipas, trukme, vieta, youtube_url
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\views\decorators\http.py", line 64, in inner
+    return func(request, *args, **kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Ansambliai\views.py", line 94, in filtered_kuriniai
+    ).distinct().values(
+                 ~~~~~~^
+        "id", "pavadinimas", "trukme", "tipas", "regionas",
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        "lyrics", "aprasymas", "youtube_url", "natos", "natos_image"
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 1360, in values
+    clone = self._values(*fields, **expressions)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 1355, in _values
+    clone.query.set_values(fields)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\query.py", line 2504, in set_values
+    self.add_fields(field_names, True)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\query.py", line 2227, in add_fields
+    raise FieldError(
+    ...<2 lines>...
+    )
+django.core.exceptions.FieldError: Cannot resolve keyword 'aprasymas' into field. Choices are: ansambliai, aprašymas, created_at, id, lyrics, natos, natos_image, pavadinimas, pozymiai, programoskurinys, regionas, repeticija, repeticijakurinys, sudetingumas, tipas, trukme, vieta, youtube_url
+"GET /ansambliai/1/kuriniai/filter/?pozymis=Susidainavimams HTTP/1.1" 500 118451
+Internal Server Error: /ansambliai/1/kuriniai/filter/
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\query.py", line 2199, in add_fields
+    join_info = self.setup_joins(
+        name.split(LOOKUP_SEP), opts, alias, allow_many=allow_m2m
+    )
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\query.py", line 1867, in setup_joins
+    path, final_field, targets, rest = self.names_to_path(
+                                       ~~~~~~~~~~~~~~~~~~^
+        names[:pivot],
+        ^^^^^^^^^^^^^^
+    ...<2 lines>...
+        fail_on_missing=True,
+        ^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\query.py", line 1772, in names_to_path
+    raise FieldError(
+    ...<2 lines>...
+    )
+django.core.exceptions.FieldError: Cannot resolve keyword 'aprasymas' into field. Choices are: ansambliai, aprašymas, created_at, id, lyrics, natos, natos_image, pavadinimas, pozymiai, programoskurinys, regionas, repeticija, repeticijakurinys, sudetingumas, tipas, trukme, vieta, youtube_url
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\views\decorators\http.py", line 64, in inner
+    return func(request, *args, **kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Ansambliai\views.py", line 94, in filtered_kuriniai
+    ).distinct().values(
+                 ~~~~~~^
+        "id", "pavadinimas", "trukme", "tipas", "regionas",
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        "lyrics", "aprasymas", "youtube_url", "natos", "natos_image"
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 1360, in values
+    clone = self._values(*fields, **expressions)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 1355, in _values
+    clone.query.set_values(fields)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\query.py", line 2504, in set_values
+    self.add_fields(field_names, True)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\query.py", line 2227, in add_fields
+    raise FieldError(
+    ...<2 lines>...
+    )
+django.core.exceptions.FieldError: Cannot resolve keyword 'aprasymas' into field. Choices are: ansambliai, aprašymas, created_at, id, lyrics, natos, natos_image, pavadinimas, pozymiai, programoskurinys, regionas, repeticija, repeticijakurinys, sudetingumas, tipas, trukme, vieta, youtube_url
+"GET /ansambliai/1/kuriniai/filter/?pozymis=Susidainavimams HTTP/1.1" 500 118451
+Internal Server Error: /ansambliai/1/kuriniai/filter/
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\query.py", line 2199, in add_fields
+    join_info = self.setup_joins(
+        name.split(LOOKUP_SEP), opts, alias, allow_many=allow_m2m
+    )
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\query.py", line 1867, in setup_joins
+    path, final_field, targets, rest = self.names_to_path(
+                                       ~~~~~~~~~~~~~~~~~~^
+        names[:pivot],
+        ^^^^^^^^^^^^^^
+    ...<2 lines>...
+        fail_on_missing=True,
+        ^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\query.py", line 1772, in names_to_path
+    raise FieldError(
+    ...<2 lines>...
+    )
+django.core.exceptions.FieldError: Cannot resolve keyword 'aprasymas' into field. Choices are: ansambliai, aprašymas, created_at, id, lyrics, natos, natos_image, pavadinimas, pozymiai, programoskurinys, regionas, repeticija, repeticijakurinys, sudetingumas, tipas, trukme, vieta, youtube_url
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\views\decorators\http.py", line 64, in inner
+    return func(request, *args, **kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Ansambliai\views.py", line 94, in filtered_kuriniai
+    ).distinct().values(
+                 ~~~~~~^
+        "id", "pavadinimas", "trukme", "tipas", "regionas",
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        "lyrics", "aprasymas", "youtube_url", "natos", "natos_image"
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 1360, in values
+    clone = self._values(*fields, **expressions)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 1355, in _values
+    clone.query.set_values(fields)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\query.py", line 2504, in set_values
+    self.add_fields(field_names, True)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\query.py", line 2227, in add_fields
+    raise FieldError(
+    ...<2 lines>...
+    )
+django.core.exceptions.FieldError: Cannot resolve keyword 'aprasymas' into field. Choices are: ansambliai, aprašymas, created_at, id, lyrics, natos, natos_image, pavadinimas, pozymiai, programoskurinys, regionas, repeticija, repeticijakurinys, sudetingumas, tipas, trukme, vieta, youtube_url
+"GET /ansambliai/1/kuriniai/filter/?pozymis=Susidainavimams HTTP/1.1" 500 118451
+Internal Server Error: /ansambliai/1/kuriniai/filter/
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\query.py", line 2199, in add_fields
+    join_info = self.setup_joins(
+        name.split(LOOKUP_SEP), opts, alias, allow_many=allow_m2m
+    )
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\query.py", line 1867, in setup_joins
+    path, final_field, targets, rest = self.names_to_path(
+                                       ~~~~~~~~~~~~~~~~~~^
+        names[:pivot],
+        ^^^^^^^^^^^^^^
+    ...<2 lines>...
+        fail_on_missing=True,
+        ^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\query.py", line 1772, in names_to_path
+    raise FieldError(
+    ...<2 lines>...
+    )
+django.core.exceptions.FieldError: Cannot resolve keyword 'aprasymas' into field. Choices are: ansambliai, aprašymas, created_at, id, lyrics, natos, natos_image, pavadinimas, pozymiai, programoskurinys, regionas, repeticija, repeticijakurinys, sudetingumas, tipas, trukme, vieta, youtube_url
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\views\decorators\http.py", line 64, in inner
+    return func(request, *args, **kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Ansambliai\views.py", line 94, in filtered_kuriniai
+    ).distinct().values(
+                 ~~~~~~^
+        "id", "pavadinimas", "trukme", "tipas", "regionas",
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        "lyrics", "aprasymas", "youtube_url", "natos", "natos_image"
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 1360, in values
+    clone = self._values(*fields, **expressions)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 1355, in _values
+    clone.query.set_values(fields)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\query.py", line 2504, in set_values
+    self.add_fields(field_names, True)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\query.py", line 2227, in add_fields
+    raise FieldError(
+    ...<2 lines>...
+    )
+django.core.exceptions.FieldError: Cannot resolve keyword 'aprasymas' into field. Choices are: ansambliai, aprašymas, created_at, id, lyrics, natos, natos_image, pavadinimas, pozymiai, programoskurinys, regionas, repeticija, repeticijakurinys, sudetingumas, tipas, trukme, vieta, youtube_url
+"GET /ansambliai/1/kuriniai/filter/?pozymis=Susidainavimams HTTP/1.1" 500 118451
+Internal Server Error: /ansambliai/1/kuriniai/filter/
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\query.py", line 2199, in add_fields
+    join_info = self.setup_joins(
+        name.split(LOOKUP_SEP), opts, alias, allow_many=allow_m2m
+    )
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\query.py", line 1867, in setup_joins
+    path, final_field, targets, rest = self.names_to_path(
+                                       ~~~~~~~~~~~~~~~~~~^
+        names[:pivot],
+        ^^^^^^^^^^^^^^
+    ...<2 lines>...
+        fail_on_missing=True,
+        ^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\query.py", line 1772, in names_to_path
+    raise FieldError(
+    ...<2 lines>...
+    )
+django.core.exceptions.FieldError: Cannot resolve keyword 'aprasymas' into field. Choices are: ansambliai, aprašymas, created_at, id, lyrics, natos, natos_image, pavadinimas, pozymiai, programoskurinys, regionas, repeticija, repeticijakurinys, sudetingumas, tipas, trukme, vieta, youtube_url
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\views\decorators\http.py", line 64, in inner
+    return func(request, *args, **kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Ansambliai\views.py", line 94, in filtered_kuriniai
+    ).distinct().values(
+                 ~~~~~~^
+        "id", "pavadinimas", "trukme", "tipas", "regionas",
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        "lyrics", "aprasymas", "youtube_url", "natos", "natos_image"
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 1360, in values
+    clone = self._values(*fields, **expressions)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 1355, in _values
+    clone.query.set_values(fields)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\query.py", line 2504, in set_values
+    self.add_fields(field_names, True)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\query.py", line 2227, in add_fields
+    raise FieldError(
+    ...<2 lines>...
+    )
+django.core.exceptions.FieldError: Cannot resolve keyword 'aprasymas' into field. Choices are: ansambliai, aprašymas, created_at, id, lyrics, natos, natos_image, pavadinimas, pozymiai, programoskurinys, regionas, repeticija, repeticijakurinys, sudetingumas, tipas, trukme, vieta, youtube_url
+"GET /ansambliai/1/kuriniai/filter/?pozymis=Susidainavimams HTTP/1.1" 500 118451
+Internal Server Error: /ansambliai/1/kuriniai/filter/
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\query.py", line 2199, in add_fields
+    join_info = self.setup_joins(
+        name.split(LOOKUP_SEP), opts, alias, allow_many=allow_m2m
+    )
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\query.py", line 1867, in setup_joins
+    path, final_field, targets, rest = self.names_to_path(
+                                       ~~~~~~~~~~~~~~~~~~^
+        names[:pivot],
+        ^^^^^^^^^^^^^^
+    ...<2 lines>...
+        fail_on_missing=True,
+        ^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\query.py", line 1772, in names_to_path
+    raise FieldError(
+    ...<2 lines>...
+    )
+django.core.exceptions.FieldError: Cannot resolve keyword 'aprasymas' into field. Choices are: ansambliai, aprašymas, created_at, id, lyrics, natos, natos_image, pavadinimas, pozymiai, programoskurinys, regionas, repeticija, repeticijakurinys, sudetingumas, tipas, trukme, vieta, youtube_url
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\views\decorators\http.py", line 64, in inner
+    return func(request, *args, **kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Ansambliai\views.py", line 94, in filtered_kuriniai
+    ).distinct().values(
+                 ~~~~~~^
+        "id", "pavadinimas", "trukme", "tipas", "regionas",
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        "lyrics", "aprasymas", "youtube_url", "natos", "natos_image"
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 1360, in values
+    clone = self._values(*fields, **expressions)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 1355, in _values
+    clone.query.set_values(fields)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\query.py", line 2504, in set_values
+    self.add_fields(field_names, True)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\query.py", line 2227, in add_fields
+    raise FieldError(
+    ...<2 lines>...
+    )
+django.core.exceptions.FieldError: Cannot resolve keyword 'aprasymas' into field. Choices are: ansambliai, aprašymas, created_at, id, lyrics, natos, natos_image, pavadinimas, pozymiai, programoskurinys, regionas, repeticija, repeticijakurinys, sudetingumas, tipas, trukme, vieta, youtube_url
+"GET /ansambliai/1/kuriniai/filter/?pozymis=Susidainavimams HTTP/1.1" 500 118451
+Internal Server Error: /ansambliai/2/kuriniai/filter/
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\query.py", line 2199, in add_fields
+    join_info = self.setup_joins(
+        name.split(LOOKUP_SEP), opts, alias, allow_many=allow_m2m
+    )
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\query.py", line 1867, in setup_joins
+    path, final_field, targets, rest = self.names_to_path(
+                                       ~~~~~~~~~~~~~~~~~~^
+        names[:pivot],
+        ^^^^^^^^^^^^^^
+    ...<2 lines>...
+        fail_on_missing=True,
+        ^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\query.py", line 1772, in names_to_path
+    raise FieldError(
+    ...<2 lines>...
+    )
+django.core.exceptions.FieldError: Cannot resolve keyword 'aprasymas' into field. Choices are: ansambliai, aprašymas, created_at, id, lyrics, natos, natos_image, pavadinimas, pozymiai, programoskurinys, regionas, repeticija, repeticijakurinys, sudetingumas, tipas, trukme, vieta, youtube_url
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\views\decorators\http.py", line 64, in inner
+    return func(request, *args, **kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Ansambliai\views.py", line 94, in filtered_kuriniai
+    ).distinct().values(
+                 ~~~~~~^
+        "id", "pavadinimas", "trukme", "tipas", "regionas",
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        "lyrics", "aprasymas", "youtube_url", "natos", "natos_image"
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 1360, in values
+    clone = self._values(*fields, **expressions)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 1355, in _values
+    clone.query.set_values(fields)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\query.py", line 2504, in set_values
+    self.add_fields(field_names, True)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\query.py", line 2227, in add_fields
+    raise FieldError(
+    ...<2 lines>...
+    )
+django.core.exceptions.FieldError: Cannot resolve keyword 'aprasymas' into field. Choices are: ansambliai, aprašymas, created_at, id, lyrics, natos, natos_image, pavadinimas, pozymiai, programoskurinys, regionas, repeticija, repeticijakurinys, sudetingumas, tipas, trukme, vieta, youtube_url
+"GET /ansambliai/2/kuriniai/filter/?pozymis=Susidainavimams HTTP/1.1" 500 118265
+Internal Server Error: /programos/generuoti/
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Programos\views.py", line 28, in program_generate
+    if request.user.role == "narys":
+       ^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\utils\functional.py", line 253, in inner
+    return func(_wrapped, *args)
+AttributeError: 'AnonymousUser' object has no attribute 'role'

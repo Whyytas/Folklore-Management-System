@@ -12,7 +12,6 @@ from pathlib import Path
 import os
 from dotenv import load_dotenv
 
-
 # Load environment variables from .env in local development
 if os.getenv("ENV") != "PRODUCTION":
     load_dotenv()
@@ -22,7 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Time zone and language settings
 TIME_ZONE = "Europe/Vilnius"
-USE_TZ = True
+USE_TZ = False
 LANGUAGE_CODE = "lt"  # Lithuanian
 DATE_FORMAT = "Y-m-d"  # YYYY-MM-DD
 DATETIME_FORMAT = "Y-m-d H:i"
@@ -150,7 +149,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
 
-# Catch unhandled errors
+    # Catch unhandled errors
     "FolkloreManagementSystem.middlewares.CatchAllExceptionsMiddleware",
 ]
 
