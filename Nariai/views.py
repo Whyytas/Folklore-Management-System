@@ -18,31 +18,52 @@ ROLE_ORDER = {
     'narys': 3
 }
 
+from django.core.paginator import Paginator
+from django.db.models import Q
+
 @login_required
 def nariai_list(request):
     if request.user.role == "narys":
         return HttpResponseForbidden("Jūs neturite teisės peržiūrėti narių.")
 
     selected_ansamblis_id = request.session.get("selected_ansamblis_id")
+    role_filter = request.GET.get("role", "")
+    search = request.GET.get("search", "").strip()
+    sort = request.GET.get("sort", "username")
+
+    valid_sort_fields = ['username', '-username', 'vardas', '-vardas', 'pavarde', '-pavarde', 'role', '-role']
+    if sort not in valid_sort_fields:
+        sort = "username"
+
     users_qs = User.objects.all()
 
     if selected_ansamblis_id:
         users_qs = users_qs.filter(ansambliai__id=selected_ansamblis_id).distinct()
 
-    users = list(users_qs)
+    if role_filter:
+        users_qs = users_qs.filter(role=role_filter)
 
-    # ✅ Custom sort: always by role order first IF visi ansambliai, else surname
-    if not selected_ansamblis_id:
-        users.sort(key=lambda u: (ROLE_ORDER.get(u.role, 4), u.last_name.lower(), u.first_name.lower()))
-    else:
-        users.sort(key=lambda u: (u.last_name.lower(), u.first_name.lower()))
+    if search:
+        users_qs = users_qs.filter(
+            Q(username__icontains=search) |
+            Q(vardas__icontains=search) |
+            Q(pavarde__icontains=search)
+        )
 
-    all_ansambliai = Ansamblis.objects.all()
+    users_qs = users_qs.order_by(sort)
+
+    paginator = Paginator(users_qs, 15)
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
 
     return render(request, 'nariai.html', {
-        'users': users,
-        'all_ansambliai': all_ansambliai,
-        'selected_ansamblis_id': selected_ansamblis_id
+        'page_obj': page_obj,
+        'users': page_obj.object_list,
+        'all_ansambliai': Ansamblis.objects.all(),
+        'selected_ansamblis_id': selected_ansamblis_id,
+        'role_filter': role_filter,
+        'search_query': search,
+        'sort_param': sort,
     })
 # ✅ Custom Form for Creating a User
 class CustomUserCreationForm(UserCreationForm):
