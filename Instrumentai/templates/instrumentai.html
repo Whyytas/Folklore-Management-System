@@ -19,11 +19,34 @@
 
                     <div class="card-body">
                         <div class="table-responsive">
+                            <!-- Search bar -->
+                            <form method="get" class="d-flex mb-3">
+                                <div class="input-group w-25">
+        <span class="input-group-text">
+            <span class="material-symbols-outlined">search</span>
+        </span>
+                                    <input type="text" name="search" value="{{ search }}" class="form-control"
+                                           placeholder="Ieškoti pagal pavadinimą...">
+                                </div>
+                                <input type="hidden" name="sort" value="{{ sort_param }}">
+                                <button type="submit" class="btn btn-outline-primary ms-2">Ieškoti</button>
+                            </form>
                             <table class="table table-hover table-striped align-middle">
                                 <thead class="thead-dark">
                                 <tr>
                                     <th class="text-end">#</th>
-                                    <th class="text-start">Pavadinimas</th>
+                                    <!-- Table Head Update for Sorting -->
+                                    <th class="text-start">
+                                        <a href="?{% if search %}search={{ search|urlencode }}&{% endif %}sort={% if sort_param == 'pavadinimas' %}-pavadinimas{% else %}pavadinimas{% endif %}"
+                                           class="text-decoration-none text-dark d-flex align-items-center gap-1">
+                                            Pavadinimas
+                                            {% if sort_param == 'pavadinimas' %}
+                                                <span class="material-symbols-outlined">arrow_drop_up</span>
+                                            {% elif sort_param == '-pavadinimas' %}
+                                                <span class="material-symbols-outlined">arrow_drop_down</span>
+                                            {% endif %}
+                                        </a>
+                                    </th>
                                     <th class="text-center">Nuotrauka</th>
                                     <th class="text-center">Ansamblis</th>
                                     {% if request.user.role != "narys" %}

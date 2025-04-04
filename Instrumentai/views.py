@@ -8,17 +8,27 @@ from django.http import HttpResponseForbidden
 
 def instrumentai_list(request):
     selected_ansamblis_id = request.session.get("selected_ansamblis_id")
-    instrumentai = Instrumentas.objects.all().order_by("-id")
+    search = request.GET.get("search", "").strip()
+    sort_param = request.GET.get("sort", "pavadinimas")
+
+    instrumentai = Instrumentas.objects.all()
 
     if selected_ansamblis_id:
         instrumentai = instrumentai.filter(ansamblis__id=selected_ansamblis_id)
+
+    if search:
+        instrumentai = instrumentai.filter(pavadinimas__icontains=search)
+
+    instrumentai = instrumentai.order_by(sort_param)
 
     all_ansambliai = Ansamblis.objects.all()
 
     return render(request, "instrumentai.html", {
         "instrumentai": instrumentai,
         "all_ansambliai": all_ansambliai,
-        "selected_ansamblis_id": selected_ansamblis_id
+        "selected_ansamblis_id": selected_ansamblis_id,
+        "search": search,
+        "sort_param": sort_param,
     })
 
 def instrumentai_add(request):
