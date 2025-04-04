@@ -16,11 +16,59 @@
 
                     <div class="card-body">
                         <div class="table-responsive">
+                            <form method="get" class="px-3 pb-3 pt-2">
+    <!-- 🔍 Search Row -->
+    <div class="row g-2 align-items-end mb-2">
+        <div class="col-md-4">
+
+            <div class="input-group">
+                <span class="input-group-text">
+                    <span class="material-symbols-outlined">search</span>
+                </span>
+                <input type="text" name="search" id="search" value="{{ search_query|default_if_none:'' }}"
+                       class="form-control" placeholder="Įveskite...">
+            </div>
+        </div>
+        <div class="col-md-auto mt-3 mt-md-0">
+            <button type="submit" class="btn btn-outline-primary d-flex align-items-center">
+                <span class="material-symbols-outlined me-1">search</span> Ieškoti
+            </button>
+        </div>
+    </div>
+
+    <!-- 🏙️ Filter Row -->
+    <div class="row g-2 align-items-end">
+        <div class="col-md-4">
+
+            <select name="miestas" id="miestas" class="form-select">
+                <option value="">– Visi miestai –</option>
+                {% for miestas in all_miestai %}
+                    <option value="{{ miestas }}" {% if miestas == miestas_filter %}selected{% endif %}>{{ miestas }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+</form>
+
+
+
+
                             <table class="table table-hover table-striped align-middle">
                                 <thead class="thead-dark">
                                 <tr>
                                     <th class="text-end">#</th>
-                                    <th class="text-start">Pavadinimas</th>
+                                    <th class="text-start">
+                                        <a href="?{% for k,v in request.GET.items %}{% if k != 'sort' and k != 'page' %}{{ k }}={{ v|urlencode }}&{% endif %}{% endfor %}
+    sort={% if sort_param == 'pavadinimas' %}-pavadinimas{% else %}pavadinimas{% endif %}"
+   class="text-decoration-none text-dark d-flex align-items-center gap-1">
+    Pavadinimas
+    {% if sort_param == 'pavadinimas' %}
+        <span class="material-symbols-outlined">arrow_drop_up</span>
+    {% elif sort_param == '-pavadinimas' %}
+        <span class="material-symbols-outlined">arrow_drop_down</span>
+    {% endif %}
+</a>
+</th>
                                     <th class="text-center">Miestas</th>
                                     <th class="text-center">Valdyti</th>
                                 </tr>
@@ -54,19 +102,47 @@
                                 {% endfor %}
                                 </tbody>
                             </table>
+                        {% if page_obj.has_other_pages %}
+    <div class="d-flex justify-content-center mt-3">
+        <nav>
+            <ul class="pagination">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?{% for k,v in request.GET.items %}{% if k != 'page' %}{{ k }}={{ v|urlencode }}&{% endif %}{% endfor %}page={{ page_obj.previous_page_number }}">«</a>
+                    </li>
+                {% endif %}
+                {% for i in page_obj.paginator.page_range %}
+                    {% if page_obj.number == i %}
+                        <li class="page-item active"><span class="page-link">{{ i }}</span></li>
+                    {% elif i >= page_obj.number|add:'-2' and i <= page_obj.number|add:'2' %}
+                        <li class="page-item"><a class="page-link" href="?{% for k,v in request.GET.items %}{% if k != 'page' %}{{ k }}={{ v|urlencode }}&{% endif %}{% endfor %}page={{ i }}">{{ i }}</a></li>
+                    {% endif %}
+                {% endfor %}
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?{% for k,v in request.GET.items %}{% if k != 'page' %}{{ k }}={{ v|urlencode }}&{% endif %}{% endfor %}page={{ page_obj.next_page_number }}">»</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+{% endif %}
+
                         </div>
                     </div>
                 </div>
 
                 <!-- ✅ DELETE CONFIRMATION MODAL -->
-                <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel"
+                     aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content shadow-lg border-0 rounded-4">
                             <div class="modal-header bg-danger text-white">
                                 <h5 class="modal-title d-flex align-items-center">
                                     <span class="material-symbols-outlined me-2">warning</span> Patvirtinti ištrynimą
                                 </h5>
-                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                <button type="button" class="btn-close btn-close-white"
+                                        data-bs-dismiss="modal"></button>
                             </div>
                             <div class="modal-body text-center py-4">
                                 <p class="fs-5">Ar tikrai norite ištrinti <strong id="ansamblisName"></strong>?</p>

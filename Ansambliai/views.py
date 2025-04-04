@@ -8,13 +8,43 @@ from .forms import AnsamblisForm
 from django.http import HttpResponseForbidden, JsonResponse
 from django.contrib.auth.decorators import login_required
 
+from django.core.paginator import Paginator
+from django.db.models import Q
+
 @login_required
 def ansambliai_list(request):
     if request.user.role != "administratorius":
         return HttpResponseForbidden("Jūs neturite teisės peržiūrėti ansamblių.")
 
+    query = request.GET.get("search", "").strip()
+    miestas_filter = request.GET.get("miestas", "").strip()
+    sort_param = request.GET.get("sort", "pavadinimas")
+
     ansambliai = Ansamblis.objects.all()
-    return render(request, 'ansambliai.html', {'ansambliai': ansambliai})
+
+    if query:
+        ansambliai = ansambliai.filter(pavadinimas__icontains=query)
+
+    if miestas_filter:
+        ansambliai = ansambliai.filter(miestas__icontains=miestas_filter)
+
+    if sort_param not in ["pavadinimas", "-pavadinimas"]:
+        sort_param = "pavadinimas"
+
+    ansambliai = ansambliai.order_by(sort_param)
+
+    paginator = Paginator(ansambliai, 15)
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'ansambliai.html', {
+        'page_obj': page_obj,
+        'ansambliai': page_obj.object_list,
+        'sort_param': sort_param,
+        'search_query': query,
+        'miestas_filter': miestas_filter,
+        'all_miestai': Ansamblis.objects.values_list('miestas', flat=True).distinct()
+    })
 
 def ansamblis_add(request):
     if request.method == "POST":
