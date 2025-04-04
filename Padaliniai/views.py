@@ -13,6 +13,7 @@ class PadaliniaiListView(LoginRequiredMixin, ListView):
     model = Padalinys
     template_name = "padaliniai.html"
     context_object_name = "padaliniai"
+    paginate_by = 15  # ✅ Add this line
 
     def dispatch(self, request, *args, **kwargs):
         if request.user.role in ["narys", "vadovas"]:
@@ -21,15 +22,26 @@ class PadaliniaiListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         selected_ansamblis_id = self.request.session.get("selected_ansamblis_id")
-        qs = Padalinys.objects.all().order_by("pavadinimas")
+        search = self.request.GET.get("search", "").strip()
+        sort_param = self.request.GET.get("sort", "pavadinimas")
+
+        qs = Padalinys.objects.all()
+
         if selected_ansamblis_id:
-            qs = qs.filter(ansambliai__id=selected_ansamblis_id).distinct()
+            qs = qs.filter(ansambliai__id=selected_ansamblis_id)
+
+        if search:
+            qs = qs.filter(pavadinimas__icontains=search)
+
+        qs = qs.order_by(sort_param)
         return qs
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["all_ansambliai"] = Ansamblis.objects.all()
         context["selected_ansamblis_id"] = self.request.session.get("selected_ansamblis_id")
+        context["search"] = self.request.GET.get("search", "").strip()
+        context["sort_param"] = self.request.GET.get("sort", "pavadinimas")
         return context
 class PadalinysCreateView(LoginRequiredMixin, CreateView):
     model = Padalinys
