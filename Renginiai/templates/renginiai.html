@@ -19,15 +19,69 @@
                     </div>
 
                     <div class="card-body">
+
                         <div class="table-responsive">
+                            <form method="get" class="d-flex align-items-center mb-3 ms-2">
+                                <input type="hidden" name="sort" value="{{ sort_field }}">
+                                <input type="hidden" name="dir" value="{{ sort_dir }}">
+                                {% if programa_id %}
+                                    <input type="hidden" name="programa_id" value="{{ programa_id }}">
+                                {% endif %}
+                                <label for="search" class="me-2 fw-bold">Ieškoti:</label>
+                                <div class="input-group w-25">
+                                    <input type="text" id="search" name="search" class="form-control"
+                                           value="{{ search }}" placeholder="Ieškoti pagal pavadinimą...">
+                                    <button class="btn btn-outline-secondary" type="submit">
+                                        <span class="material-symbols-outlined">search</span>
+                                    </button>
+                                </div>
+                            </form>
+
+                            <!-- Filter by Programa -->
+                            <form method="get" class="d-flex align-items-center mb-3">
+                                <input type="hidden" name="sort" value="{{ sort_field }}">
+                                <input type="hidden" name="dir" value="{{ sort_dir }}">
+                                <label for="programa_id" class="me-2 fw-bold">Programa:</label>
+                                <select name="programa_id" id="programa_id" class="form-select w-auto"
+                                        onchange="this.form.submit()">
+                                    <option value="">Visos programos</option>
+                                    {% for p in programos %}
+                                        <option value="{{ p.id }}"
+                                                {% if p.id|stringformat:"s" == programa_id %}selected{% endif %}>
+                                            {{ p.pavadinimas }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </form>
+
                             <table class="table table-hover table-striped align-middle">
                                 <thead class="thead-dark">
                                 <tr>
                                     <th class="text-end">#</th>
-                                    <th class="text-start">Pavadinimas</th>
+                                    <th class="text-start">
+                                        <a href="?sort=pavadinimas&dir={% if sort_field == 'pavadinimas' and sort_dir == 'asc' %}desc{% else %}asc{% endif %}"
+                                           class="text-decoration-none text-dark">
+                                            Pavadinimas
+                                            {% if sort_field == 'pavadinimas' %}
+                                                <span class="material-symbols-outlined align-middle">
+                {% if sort_dir == 'asc' %}arrow_drop_up{% else %}arrow_drop_down{% endif %}
+            </span>
+                                            {% endif %}
+                                        </a>
+                                    </th>
                                     <th class="text-start">Adresas</th>
                                     <th class="text-center">Programa</th>
-                                    <th class="text-center">Data ir laikas</th>
+                                    <th class="text-center">
+                                        <a href="?sort=data_laikas&dir={% if sort_field == 'data_laikas' and sort_dir == 'asc' %}desc{% else %}asc{% endif %}"
+                                           class="text-decoration-none text-dark">
+                                            Data
+                                            {% if sort_field == 'data_laikas' %}
+                                                <span class="material-symbols-outlined align-middle">
+                {% if sort_dir == 'asc' %}arrow_drop_up{% else %}arrow_drop_down{% endif %}
+            </span>
+                                            {% endif %}
+                                        </a>
+                                    </th>
                                     {% if request.user.role != "narys" %}
                                         <th class="text-center">Valdyti</th>
                                     {% endif %}
@@ -82,6 +136,45 @@
                                 {% endfor %}
                                 </tbody>
                             </table>
+                            <div class="d-flex justify-content-center mt-4">
+                                <ul class="pagination">
+                                    {% if page_obj.has_previous %}
+                                        <li class="page-item">
+                                            <a class="page-link"
+                                               href="?page={{ num }}&sort={{ sort_field }}&dir=
+                                                       {{ sort_dir }}{% if programa_id %}&programa_id={{ programa_id }}{% endif %}{% if search %}&search={{ search }}{% endif %}"
+                                            >«</a>
+                                        </li>
+                                    {% else %}
+                                        <li class="page-item disabled"><span class="page-link">«</span></li>
+                                    {% endif %}
+
+                                    {% for num in page_obj.paginator.page_range %}
+                                        {% if page_obj.number == num %}
+                                            <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                                        {% else %}
+                                            <li class="page-item">
+                                                <a class="page-link"
+                                                   href="?page={{ num }}&sort={{ sort_field }}&dir=
+                                                           {{ sort_dir }}{% if programa_id %}&programa_id={{ programa_id }}{% endif %}{% if search %}&search={{ search }}{% endif %}"
+                                                >{{ num }}</a>
+                                            </li>
+                                        {% endif %}
+                                    {% endfor %}
+
+                                    {% if page_obj.has_next %}
+                                        <li class="page-item">
+                                            <a class="page-link"
+                                               href="?page={{ num }}&sort={{ sort_field }}&dir=
+                                                       {{ sort_dir }}{% if programa_id %}&programa_id={{ programa_id }}{% endif %}{% if search %}&search={{ search }}{% endif %}"
+                                            >»</a>
+                                        </li>
+                                    {% else %}
+                                        <li class="page-item disabled"><span class="page-link">»</span></li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+
                         </div>
                     </div>
                 </div>

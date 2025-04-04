@@ -1,3 +1,4 @@
+from django.core.paginator import Paginator
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 from django.utils.timezone import make_aware
@@ -12,18 +13,34 @@ import datetime  # ✅ Correct way to import datetime module
 
 def renginiai_list(request):
     selected_ansamblis_id = request.session.get("selected_ansamblis_id")
-    renginiai = Renginys.objects.all().order_by("-created_at", "-id")  # ✅ Now order by created_at
+    sort_field = request.GET.get("sort", "pavadinimas")
+    sort_dir = request.GET.get("dir", "asc")
+    programa_id = request.GET.get("programa_id")
+    search = request.GET.get("search", "").strip()
+
+    sort_order = sort_field if sort_dir == "asc" else f"-{sort_field}"
+    renginiai = Renginys.objects.all().order_by(sort_order, "-id")
 
     if selected_ansamblis_id:
         renginiai = renginiai.filter(ansamblis__id=selected_ansamblis_id)
+    if programa_id:
+        renginiai = renginiai.filter(programa__id=programa_id)
+    if search:
+        renginiai = renginiai.filter(pavadinimas__icontains=search)
 
-    all_ansambliai = Ansamblis.objects.all()
+    paginator = Paginator(renginiai, 15)
+    page = request.GET.get("page")
+    page_obj = paginator.get_page(page)
 
     return render(request, 'renginiai.html', {
-        'renginiai': renginiai,
-        'all_ansambliai': all_ansambliai
+        'renginiai': page_obj.object_list,
+        'page_obj': page_obj,
+        'sort_field': sort_field,
+        'sort_dir': sort_dir,
+        'programa_id': programa_id,
+        'search': search,
+        'programos': Programa.objects.all(),
     })
-
 def renginiai_add(request):
     if request.user.role == "narys":
         return HttpResponseForbidden("Jūs neturite teisės pridėti renginių.")

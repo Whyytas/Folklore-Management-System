@@ -35,15 +35,53 @@
                                 <input type="text" id="searchInput" class="form-control"
                                        placeholder="Ieškoti pagal pavadinimą...">
                             </div>
+
                         </div>
+                        <!-- ✅ Filter by Tipas -->
+                        <form method="get" class="d-flex align-items-center ms-2 mb-3">
+                            <input type="hidden" name="sort" value="{{ sort_field }}">
+                            <input type="hidden" name="dir" value="{{ sort_dir }}">
+
+                            <label class="me-2 fw-bold" for="tipas">Tipas:</label>
+                            <select name="tipas" id="tipas" class="form-select w-auto" onchange="this.form.submit()">
+                                <option value="">Visi tipai</option>
+                                {% for value, label in tipai %}
+                                    <option value="{{ value }}"
+                                            {% if value == tipas_filter %}selected{% endif %}>{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                        </form>
+
                         <div class="table-responsive">
                             <table class="table table-hover table-striped align-middle">
                                 <thead class="thead-dark">
                                 <tr>
                                     <th class="text-end">#</th>  <!-- Align ID to the right -->
-                                    <th class="text-start">Pavadinimas</th>  <!-- Align Pavadinimas to the left -->
+                                    <!-- Sortable Pavadinimas -->
+                                    <th class="text-start">
+                                        <a href="?sort=pavadinimas&dir={% if sort_field == 'pavadinimas' and sort_dir == 'asc' %}desc{% else %}asc{% endif %}"
+                                           class="text-decoration-none text-dark">
+                                            Pavadinimas
+                                            {% if sort_field == 'pavadinimas' %}
+                                                <span class="material-symbols-outlined align-middle">
+                {% if sort_dir == 'asc' %}arrow_drop_up{% else %}arrow_drop_down{% endif %}
+            </span>
+                                            {% endif %}
+                                        </a>
+                                    </th>  <!-- Align Pavadinimas to the left -->
                                     <th class="text-center">Įrašo trukmė</th>
-                                    <th class="text-center">Trukmė</th>
+                                    <!-- Sortable Trukmė -->
+                                    <th class="text-center">
+                                        <a href="?sort=trukme&dir={% if sort_field == 'trukme' and sort_dir == 'asc' %}desc{% else %}asc{% endif %}"
+                                           class="text-decoration-none text-dark">
+                                            Trukmė
+                                            {% if sort_field == 'trukme' %}
+                                                <span class="material-symbols-outlined align-middle">
+                {% if sort_dir == 'asc' %}arrow_drop_up{% else %}arrow_drop_down{% endif %}
+            </span>
+                                            {% endif %}
+                                        </a>
+                                    </th>
                                     <th class="text-center">Tipas</th>
                                     <th class="text-center">Ansamblis</th>
 
@@ -109,6 +147,42 @@
                                 {% endfor %}
                                 </tbody>
                             </table>
+                            <!-- ✅ Pagination Controls -->
+                            <div class="d-flex justify-content-center mt-4">
+                                <ul class="pagination">
+                                    {% if page_obj.has_previous %}
+                                        <li class="page-item">
+                                            <a class="page-link"
+                                               href="?page={{ page_obj.previous_page_number }}&sort={{ sort_field }}&dir=
+                                                       {{ sort_dir }}{% if tipas_filter %}&tipas={{ tipas_filter }}{% endif %}">«</a>
+                                        </li>
+                                    {% else %}
+                                        <li class="page-item disabled"><span class="page-link">«</span></li>
+                                    {% endif %}
+
+                                    {% for num in page_obj.paginator.page_range %}
+                                        {% if page_obj.number == num %}
+                                            <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                                        {% else %}
+                                            <li class="page-item">
+                                                <a class="page-link" href="?page={{ num }}&sort={{ sort_field }}&dir=
+                                                        {{ sort_dir }}{% if tipas_filter %}&tipas={{ tipas_filter }}{% endif %}">{{ num }}</a>
+                                            </li>
+                                        {% endif %}
+                                    {% endfor %}
+
+                                    {% if page_obj.has_next %}
+                                        <li class="page-item">
+                                            <a class="page-link"
+                                               href="?page={{ page_obj.next_page_number }}&sort={{ sort_field }}&dir=
+                                                       {{ sort_dir }}{% if tipas_filter %}&tipas={{ tipas_filter }}{% endif %}">»</a>
+                                        </li>
+                                    {% else %}
+                                        <li class="page-item disabled"><span class="page-link">»</span></li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+
                         </div>
                     </div>
                 </div>

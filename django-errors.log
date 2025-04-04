@@ -4558,3 +4558,668 @@ Traceback (most recent call last):
     )
 django.template.exceptions.TemplateSyntaxError: Variables and attributes may not begin with underscores: 'kuriniai.model._meta.get_field'
 "GET /kuriniai/ HTTP/1.1" 500 297276
+Internal Server Error: /programos/
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+psycopg2.errors.SyntaxError: syntax error at or near ","
+LINE 1: ...nteger * 60) + (cast("Programos_programa"."trukme", split_pa...
+                                                             ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Programos\views.py", line 62, in programos_page
+    return render(request, 'programos.html', {
+        'programos': programos,
+    ...<3 lines>...
+        'sort_param': sort_param,
+    })
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\backends\django.py", line 61, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\base.py", line 1000, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\base.py", line 961, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\base.py", line 1000, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\base.py", line 961, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\base.py", line 1000, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\base.py", line 961, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\defaulttags.py", line 198, in render
+    len_values = len(values)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 382, in __len__
+    self._fetch_all()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 1928, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+        chunked_fetch=self.chunked_fetch, chunk_size=self.chunk_size
+    )
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\compiler.py", line 1562, in execute_sql
+    cursor.execute(sql, params)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\backends\utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        sql, params, many=False, executor=self._execute
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+django.db.utils.ProgrammingError: syntax error at or near ","
+LINE 1: ...nteger * 60) + (cast("Programos_programa"."trukme", split_pa...
+                                                             ^
+
+"GET /programos/?%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20sort=trukme HTTP/1.1" 500 211489
+Internal Server Error: /programos/
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+psycopg2.errors.SyntaxError: syntax error at or near ","
+LINE 1: ...nteger * 60) + (cast("Programos_programa"."trukme", split_pa...
+                                                             ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Programos\views.py", line 62, in programos_page
+    return render(request, 'programos.html', {
+        'programos': programos,
+    ...<3 lines>...
+        'sort_param': sort_param,
+    })
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\backends\django.py", line 61, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\base.py", line 1000, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\base.py", line 961, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\base.py", line 1000, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\base.py", line 961, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\base.py", line 1000, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\base.py", line 961, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\defaulttags.py", line 198, in render
+    len_values = len(values)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 382, in __len__
+    self._fetch_all()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 1928, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+        chunked_fetch=self.chunked_fetch, chunk_size=self.chunk_size
+    )
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\compiler.py", line 1562, in execute_sql
+    cursor.execute(sql, params)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\backends\utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        sql, params, many=False, executor=self._execute
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+django.db.utils.ProgrammingError: syntax error at or near ","
+LINE 1: ...nteger * 60) + (cast("Programos_programa"."trukme", split_pa...
+                                                             ^
+
+"GET /programos/?%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20sort=trukme HTTP/1.1" 500 211489
+Internal Server Error: /programos/
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+psycopg2.errors.UndefinedFunction: function split_part(character varying, unknown, unknown, integer) does not exist
+LINE 1: ...grama"."trukme"::text ~ '^\d{1,2}:\d{2}$' THEN (((split_part...
+                                                             ^
+HINT:  No function matches the given name and argument types. You might need to add explicit type casts.
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Programos\views.py", line 60, in programos_page
+    return render(request, 'programos.html', {
+        'programos': programos,
+    ...<3 lines>...
+        'sort_param': sort_param,
+    })
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\backends\django.py", line 61, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\base.py", line 1000, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\base.py", line 961, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\base.py", line 1000, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\base.py", line 961, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\base.py", line 1000, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\base.py", line 961, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\defaulttags.py", line 198, in render
+    len_values = len(values)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 382, in __len__
+    self._fetch_all()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 1928, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+        chunked_fetch=self.chunked_fetch, chunk_size=self.chunk_size
+    )
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\compiler.py", line 1562, in execute_sql
+    cursor.execute(sql, params)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\backends\utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        sql, params, many=False, executor=self._execute
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+django.db.utils.ProgrammingError: function split_part(character varying, unknown, unknown, integer) does not exist
+LINE 1: ...grama"."trukme"::text ~ '^\d{1,2}:\d{2}$' THEN (((split_part...
+                                                             ^
+HINT:  No function matches the given name and argument types. You might need to add explicit type casts.
+
+"GET /programos/ HTTP/1.1" 500 213726
+Internal Server Error: /programos/
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+psycopg2.errors.UndefinedFunction: function split_part(character varying, unknown, unknown, integer) does not exist
+LINE 1: ...grama"."trukme"::text ~ '^\d{1,2}:\d{2}$' THEN (((split_part...
+                                                             ^
+HINT:  No function matches the given name and argument types. You might need to add explicit type casts.
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Programos\views.py", line 60, in programos_page
+    return render(request, 'programos.html', {
+        'programos': programos,
+    ...<3 lines>...
+        'sort_param': sort_param,
+    })
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\backends\django.py", line 61, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\base.py", line 1000, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\base.py", line 961, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\base.py", line 1000, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\base.py", line 961, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\base.py", line 1000, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\base.py", line 961, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\defaulttags.py", line 198, in render
+    len_values = len(values)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 382, in __len__
+    self._fetch_all()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 1928, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+        chunked_fetch=self.chunked_fetch, chunk_size=self.chunk_size
+    )
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\compiler.py", line 1562, in execute_sql
+    cursor.execute(sql, params)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\backends\utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        sql, params, many=False, executor=self._execute
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+django.db.utils.ProgrammingError: function split_part(character varying, unknown, unknown, integer) does not exist
+LINE 1: ...grama"."trukme"::text ~ '^\d{1,2}:\d{2}$' THEN (((split_part...
+                                                             ^
+HINT:  No function matches the given name and argument types. You might need to add explicit type casts.
+
+"GET /programos/ HTTP/1.1" 500 213726
+Internal Server Error: /programos/
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+psycopg2.errors.UndefinedFunction: function split_part(character varying, unknown, unknown, integer) does not exist
+LINE 1: ..."sukurtas", "Programos_programa"."ansamblis_id", (split_part...
+                                                             ^
+HINT:  No function matches the given name and argument types. You might need to add explicit type casts.
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Programos\views.py", line 61, in programos_page
+    return render(request, 'programos.html', {
+        'programos': programos,
+    ...<3 lines>...
+        'sort_param': sort_param,
+    })
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\backends\django.py", line 61, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\base.py", line 1000, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\base.py", line 961, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\base.py", line 1000, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\base.py", line 961, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\base.py", line 1000, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\base.py", line 961, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\defaulttags.py", line 198, in render
+    len_values = len(values)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 382, in __len__
+    self._fetch_all()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 1928, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+        chunked_fetch=self.chunked_fetch, chunk_size=self.chunk_size
+    )
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\compiler.py", line 1562, in execute_sql
+    cursor.execute(sql, params)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\backends\utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        sql, params, many=False, executor=self._execute
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+django.db.utils.ProgrammingError: function split_part(character varying, unknown, unknown, integer) does not exist
+LINE 1: ..."sukurtas", "Programos_programa"."ansamblis_id", (split_part...
+                                                             ^
+HINT:  No function matches the given name and argument types. You might need to add explicit type casts.
+
+"GET /programos/ HTTP/1.1" 500 215323
+Internal Server Error: /programos/
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+psycopg2.errors.UndefinedFunction: function split_part(character varying, unknown, unknown, integer) does not exist
+LINE 1: ..."sukurtas", "Programos_programa"."ansamblis_id", (split_part...
+                                                             ^
+HINT:  No function matches the given name and argument types. You might need to add explicit type casts.
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Programos\views.py", line 61, in programos_page
+    return render(request, 'programos.html', {
+        'programos': programos,
+    ...<3 lines>...
+        'sort_param': sort_param,
+    })
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\backends\django.py", line 61, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\base.py", line 1000, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\base.py", line 961, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\base.py", line 1000, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\base.py", line 961, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\base.py", line 1000, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\base.py", line 961, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\defaulttags.py", line 198, in render
+    len_values = len(values)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 382, in __len__
+    self._fetch_all()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 1928, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+        chunked_fetch=self.chunked_fetch, chunk_size=self.chunk_size
+    )
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\compiler.py", line 1562, in execute_sql
+    cursor.execute(sql, params)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\backends\utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        sql, params, many=False, executor=self._execute
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+django.db.utils.ProgrammingError: function split_part(character varying, unknown, unknown, integer) does not exist
+LINE 1: ..."sukurtas", "Programos_programa"."ansamblis_id", (split_part...
+                                                             ^
+HINT:  No function matches the given name and argument types. You might need to add explicit type casts.
+
+"GET /programos/ HTTP/1.1" 500 215323
+Internal Server Error: /ansambliai/1/kuriniai/
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\contrib\auth\decorators.py", line 23, in _wrapper_view
+    return view_func(request, *args, **kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Ansambliai\views.py", line 76, in get_kuriniai_by_ansamblis
+    "aprašymas": kurinys.aprašymas,
+                 ^^^^^^^^^^^^^^^^^
+AttributeError: 'Kurinys' object has no attribute 'aprašymas'. Did you mean: 'aprasymas'?
+"GET /ansambliai/1/kuriniai/ HTTP/1.1" 500 78780
+Internal Server Error: /ansambliai/1/kuriniai/
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\contrib\auth\decorators.py", line 23, in _wrapper_view
+    return view_func(request, *args, **kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Ansambliai\views.py", line 76, in get_kuriniai_by_ansamblis
+    "aprašymas": kurinys.aprašymas,
+                 ^^^^^^^^^^^^^^^^^
+AttributeError: 'Kurinys' object has no attribute 'aprašymas'. Did you mean: 'aprasymas'?
+"GET /ansambliai/1/kuriniai/ HTTP/1.1" 500 78780
+Internal Server Error: /ansambliai/1/kuriniai/
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\contrib\auth\decorators.py", line 23, in _wrapper_view
+    return view_func(request, *args, **kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Ansambliai\views.py", line 76, in get_kuriniai_by_ansamblis
+    "aprašymas": kurinys.aprašymas,
+                 ^^^^^^^^^^^^^^^^^
+AttributeError: 'Kurinys' object has no attribute 'aprašymas'. Did you mean: 'aprasymas'?
+"GET /ansambliai/1/kuriniai/ HTTP/1.1" 500 78780

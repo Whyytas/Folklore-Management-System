@@ -14,20 +14,35 @@ from django.http import JsonResponse, HttpResponseForbidden
 import random
 
 
+from django.core.paginator import Paginator
+
 def programos_page(request):
     selected_ansamblis_id = request.session.get("selected_ansamblis_id")
-    programos = Programa.objects.all().order_by("-sukurtas", "-id")
+    sort_field = request.GET.get("sort", "pavadinimas")
+    sort_dir = request.GET.get("dir", "asc")
+    tipas_filter = request.GET.get("tipas")
+
+    sort_order = sort_field if sort_dir == "asc" else f"-{sort_field}"
+    programos = Programa.objects.all().order_by(sort_order, "-id")
 
     if selected_ansamblis_id:
         programos = programos.filter(ansamblis__id=selected_ansamblis_id)
 
-    all_ansambliai = Ansamblis.objects.all()
+    if tipas_filter:
+        programos = programos.filter(tipas=tipas_filter)
+
+    paginator = Paginator(programos, 15)
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
 
     return render(request, 'programos.html', {
-        'programos': programos,
-        'all_ansambliai': all_ansambliai
+        'programos': page_obj.object_list,
+        'page_obj': page_obj,
+        'sort_field': sort_field,
+        'sort_dir': sort_dir,
+        'tipas_filter': tipas_filter,
+        'tipai': Programa.PROGRAM_TIPAS,
     })
-
 
 def program_generate(request):
     if request.user.role == "narys":
