@@ -60,22 +60,19 @@ class PadalinysCreateView(LoginRequiredMixin, CreateView):
     def get_success_url(self):
         return reverse_lazy("padaliniai_list")
 
-class PadalinysUpdateView(LoginRequiredMixin, UpdateView):
-    model = Padalinys
-    form_class = PadalinysForm
-    template_name = "padaliniai_edit.html"
+def padalinys_edit(request, pk):
+    padalinys = get_object_or_404(Padalinys, pk=pk)
 
-    def dispatch(self, request, *args, **kwargs):
-        if request.user.role in ["narys", "vadovas"]:
-            return HttpResponseForbidden("Jūs neturite teisės redaguoti padalinių.")
-        return super().dispatch(request, *args, **kwargs)
+    if request.method == "POST":
+        padalinys.pavadinimas = request.POST.get("pavadinimas")
+        padalinys.adresas = request.POST.get("adresas")
+        padalinys.tel_nr = request.POST.get("tel_nr")
+        padalinys.save()
+        return redirect("padaliniai_list")
 
-    def form_valid(self, form):
-        messages.success(self.request, "Padalinys atnaujintas!")
-        return super().form_valid(form)
-
-    def get_success_url(self):
-        return reverse_lazy("padaliniai_list")
+    return render(request, "padaliniai_edit.html", {
+        "padalinys": padalinys
+    })
 
 class PadalinysDeleteView(LoginRequiredMixin, DeleteView):
     model = Padalinys

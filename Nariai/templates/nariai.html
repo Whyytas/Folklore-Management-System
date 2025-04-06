@@ -8,37 +8,37 @@
             <div class="col-lg-10">
                 <div class="card shadow">
                     <div class="card-header d-flex justify-content-between align-items-center py-3 table-header-custom">
-                        <h4>Visų Narių Sąrašas</h4>
-                        <a href="{% url 'nariai_add' %}" class="btn btn-light d-flex align-items-center action-btn">
+                        <h4 class="mb-0 d-flex align-items-center">
+                            <span class="material-symbols-outlined me-2">group</span>
+                            Visų Narių Sąrašas
+                        </h4>
+                        <a href="{% url 'nariai_add' %}"
+                           class="btn badge-ansamblis d-flex align-items-center action-btn">
                             <span class="material-symbols-outlined me-2">add</span> Pridėti
                         </a>
                     </div>
 
+
                     <div class="card-body">
                         <div class="table-responsive">
-                            <!-- 🔍 Search Row -->
-                            <form method="get" class="row px-2 mb-1 pt-2 align-items-center">
-                                <div class="col-md-4 col-lg-3">
-                                    <div class="input-group">
+                            <div class="d-flex gap-3 px-2 mb-4 w-100">
+                                <!-- 🔍 Search Input -->
+                                <div class="flex-fill">
+                                    <div class="input-group w-100">
             <span class="input-group-text">
                 <span class="material-symbols-outlined">search</span>
             </span>
-                                        <input type="text" name="search" value="{{ search_query }}" class="form-control"
-                                               placeholder="Ieškoti pagal vardą ar vartotojo vardą">
+                                        <input type="text" id="searchInput" class="form-control"
+                                               placeholder="Ieškoti pagal vardą ar vartotojo vardą..."
+                                               value="{{ search_query }}">
                                     </div>
                                 </div>
-                                <div class="col-md-auto">
-                                    <button type="submit" class="btn btn-outline-dark d-flex align-items-center gap-2">
-                                        <span class="material-symbols-outlined">search</span> Ieškoti
-                                    </button>
-                                </div>
-                            </form>
 
-                            <!-- 🔽 Filter Row -->
-                            <form method="get" class="row g-2 px-2 pb-2 align-items-center">
-                                <input type="hidden" name="search" value="{{ search_query }}">
-                                <div class="col-md-3">
-                                    <select name="role" class="form-select">
+                                <!-- 🔽 Role Filter -->
+                                <form method="get" class="flex-fill">
+                                    <input type="hidden" name="search" id="searchInputHidden"
+                                           value="{{ search_query }}">
+                                    <select name="role" class="form-select h-100" onchange="this.form.submit()">
                                         <option value="">– Rolė –</option>
                                         <option value="narys" {% if role_filter == 'narys' %}selected{% endif %}>Narys
                                         </option>
@@ -50,12 +50,8 @@
                                             Administratorius
                                         </option>
                                     </select>
-                                </div>
-
-                                <div class="col-md-auto">
-                                    <button type="submit" class="btn btn-outline-primary">Filtruoti</button>
-                                </div>
-                            </form>
+                                </form>
+                            </div>
 
 
                             <table class="table table-hover table-striped align-middle">
@@ -137,11 +133,11 @@
                                         <!-- ✅ Display User's Ansambliai -->
                                         <td class="align-middle text-center">
                                             {% if user.role == "administratorius" %}
-                                                <span class="badge bg-warning text-dark">Visi</span>
+                                                <span class="badge primary-background">Visi</span>
                                             {% else %}
                                                 {% if user.ansambliai.all %}
                                                     {% for ansamblis in user.ansambliai.all %}
-                                                        <span class="badge bg-info text-dark">{{ ansamblis.pavadinimas }}</span>
+                                                        <span class="badge badge-ansamblis">{{ ansamblis.pavadinimas }}</span>
                                                     {% endfor %}
                                                 {% else %}
                                                     <span class="text-muted">—</span>
@@ -150,23 +146,42 @@
                                         </td>
 
                                         <td class="align-middle text-center">
-                                            <div class="d-flex justify-content-center gap-2">
-                                                <a href="{% url 'nariai_view' user.id %}"
-                                                   class="btn btn-primary d-flex align-items-center">
-                                                    <span class="material-symbols-outlined me-2">visibility</span>
-                                                    Peržiūrėti
-                                                </a>
-                                                <a href="{% url 'nariai_edit' user.id %}"
-                                                   class="btn btn-success d-flex align-items-center">
-                                                    <span class="material-symbols-outlined me-2">edit</span> Redaguoti
-                                                </a>
-                                                <button type="button" class="btn btn-danger d-flex align-items-center"
-                                                        data-bs-toggle="modal" data-bs-target="#deleteModal"
-                                                        onclick="setDeleteUrl({{ user.id }}, '{{ user.username }}')">
-                                                    <span class="material-symbols-outlined me-2">delete</span> Ištrinti
-                                                </button>
-                                            </div>
-                                        </td>
+    <div class="d-flex justify-content-center gap-2 flex-nowrap">
+        <a href="{% url 'nariai_view' user.id %}"
+           class="btn btn-sm badge-ansamblis d-flex align-items-center justify-content-center px-2 py-1">
+            <span class="material-symbols-outlined me-2">visibility</span>
+            Peržiūrėti
+        </a>
+        <div class="dropdown d-inline-block">
+            <button class="btn btn-sm badge-ansamblis dropdown-toggle d-flex align-items-center justify-content-center px-2 py-1"
+                    type="button" id="valdytiDropdown_{{ user.id }}"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                <span class="material-symbols-outlined me-1">manage_accounts</span>
+                Valdyti
+            </button>
+            <ul class="dropdown-menu text-center" aria-labelledby="valdytiDropdown_{{ user.id }}">
+                <li>
+                    <a class="dropdown-item d-flex align-items-center justify-content-center gap-2 py-2"
+                       href="{% url 'nariai_edit' user.id %}">
+                        <span class="material-symbols-outlined">edit</span> Redaguoti
+                    </a>
+                </li>
+                <li>
+                    <button class="dropdown-item d-flex align-items-center justify-content-center gap-2 py-2 text-danger"
+                            onclick="setDeleteUrl({{ user.id }}, '{{ user.username }}')"
+                            data-bs-toggle="modal"
+                            data-bs-target="#deleteModal">
+                        <span class="material-symbols-outlined">delete_forever</span> Ištrinti
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </div>
+</td>
+
+
+
+
                                     </tr>
                                 {% empty %}
                                     <tr>
@@ -278,6 +293,22 @@
                 console.error("Klaida ištrinant vartotoją:", error);
             }
         }
+    </script>
+    <script>
+        document.getElementById("searchInput").addEventListener("keyup", function () {
+            const searchValue = this.value.toLowerCase();
+            const rows = document.querySelectorAll("#table-body tr");
+
+            rows.forEach(row => {
+                const username = row.querySelector("td:nth-child(2)")?.textContent.toLowerCase();
+                const fullName = row.querySelector("td:nth-child(3)")?.textContent.toLowerCase();
+
+                const match = (username && username.includes(searchValue)) ||
+                    (fullName && fullName.includes(searchValue));
+
+                row.style.display = match ? "" : "none";
+            });
+        });
     </script>
 
 

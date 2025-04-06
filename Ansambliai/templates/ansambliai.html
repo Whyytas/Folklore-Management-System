@@ -8,49 +8,42 @@
             <div class="col-lg-10">
                 <div class="card shadow">
                     <div class="card-header d-flex justify-content-between align-items-center py-3 table-header-custom">
-                        <h4>Ansamblių Sąrašas</h4>
-                        <a href="{% url 'ansamblis_add' %}" class="btn btn-light d-flex align-items-center action-btn">
+                        <h4 class="mb-0 d-flex align-items-center">
+                            <span class="material-symbols-outlined me-2">groups</span> Ansamblių Sąrašas
+                        </h4>
+                        <a href="{% url 'ansamblis_add' %}"
+                           class="btn badge-ansamblis d-flex align-items-center action-btn">
                             <span class="material-symbols-outlined me-2">add</span> Pridėti
                         </a>
                     </div>
 
+
                     <div class="card-body">
                         <div class="table-responsive">
-                            <form method="get" class="px-3 pb-3 pt-2">
-    <!-- 🔍 Search Row -->
-    <div class="row g-2 align-items-end mb-2">
-        <div class="col-md-4">
+                            <div class="d-flex flex-column flex-md-row gap-3 px-3 pb-4 pt-2">
+                                <!-- 🔍 Live Search -->
+                                <div class="input-group w-100">
+        <span class="input-group-text">
+            <span class="material-symbols-outlined">search</span>
+        </span>
+                                    <input type="text" id="searchInput" class="form-control"
+                                           placeholder="Ieškoti pagal pavadinimą..."
+                                           value="{{ search_query|default_if_none:'' }}">
+                                </div>
 
-            <div class="input-group">
-                <span class="input-group-text">
-                    <span class="material-symbols-outlined">search</span>
-                </span>
-                <input type="text" name="search" id="search" value="{{ search_query|default_if_none:'' }}"
-                       class="form-control" placeholder="Įveskite...">
-            </div>
-        </div>
-        <div class="col-md-auto mt-3 mt-md-0">
-            <button type="submit" class="btn btn-outline-primary d-flex align-items-center">
-                <span class="material-symbols-outlined me-1">search</span> Ieškoti
-            </button>
-        </div>
-    </div>
-
-    <!-- 🏙️ Filter Row -->
-    <div class="row g-2 align-items-end">
-        <div class="col-md-4">
-
-            <select name="miestas" id="miestas" class="form-select">
-                <option value="">– Visi miestai –</option>
-                {% for miestas in all_miestai %}
-                    <option value="{{ miestas }}" {% if miestas == miestas_filter %}selected{% endif %}>{{ miestas }}</option>
-                {% endfor %}
-            </select>
-        </div>
-    </div>
-</form>
-
-
+                                <!-- 🏙️ Miestas Dropdown Filter -->
+                                <form method="get" id="filterForm" class="w-100">
+                                    <input type="hidden" name="search" id="hiddenSearchInput"/>
+                                    <select name="miestas" id="miestas" class="form-select h-100"
+                                            onchange="this.form.submit()">
+                                        <option value="">– Visi miestai –</option>
+                                        {% for miestas in all_miestai %}
+                                            <option value="{{ miestas }}"
+                                                    {% if miestas == miestas_filter %}selected{% endif %}>{{ miestas }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </form>
+                            </div>
 
 
                             <table class="table table-hover table-striped align-middle">
@@ -58,42 +51,58 @@
                                 <tr>
                                     <th class="text-end">#</th>
                                     <th class="text-start">
-                                        <a href="?{% for k,v in request.GET.items %}{% if k != 'sort' and k != 'page' %}{{ k }}={{ v|urlencode }}&{% endif %}{% endfor %}
+                                        <a href="?
+                                                {% for k,v in request.GET.items %}{% if k != 'sort' and k != 'page' %}{{ k }}={{ v|urlencode }}&{% endif %}{% endfor %}
     sort={% if sort_param == 'pavadinimas' %}-pavadinimas{% else %}pavadinimas{% endif %}"
-   class="text-decoration-none text-dark d-flex align-items-center gap-1">
-    Pavadinimas
-    {% if sort_param == 'pavadinimas' %}
-        <span class="material-symbols-outlined">arrow_drop_up</span>
-    {% elif sort_param == '-pavadinimas' %}
-        <span class="material-symbols-outlined">arrow_drop_down</span>
-    {% endif %}
-</a>
-</th>
+                                           class="text-decoration-none text-dark d-flex align-items-center gap-1">
+                                            Pavadinimas
+                                            {% if sort_param == 'pavadinimas' %}
+                                                <span class="material-symbols-outlined">arrow_drop_up</span>
+                                            {% elif sort_param == '-pavadinimas' %}
+                                                <span class="material-symbols-outlined">arrow_drop_down</span>
+                                            {% endif %}
+                                        </a>
+                                    </th>
                                     <th class="text-center">Miestas</th>
                                     <th class="text-center">Valdyti</th>
                                 </tr>
                                 </thead>
-                                <tbody>
+                                <tbody id="table-body">
                                 {% for ansamblis in ansambliai %}
                                     <tr>
                                         <td class="align-middle text-end">{{ forloop.counter }}</td>
                                         <td class="align-middle text-start fw-bold">{{ ansamblis.pavadinimas }}</td>
                                         <td class="align-middle text-center">{{ ansamblis.miestas }}</td>
                                         <td class="align-middle text-center">
-                                            <div class="d-flex justify-content-center gap-2">
-                                                <a href="{% url 'ansamblis_edit' ansamblis.id %}"
-                                                   class="btn btn-success d-flex align-items-center justify-content-center">
-                                                    <span class="material-symbols-outlined me-2">edit</span> Redaguoti
-                                                </a>
-                                                <button type="button"
-                                                        class="btn btn-danger d-flex align-items-center justify-content-center"
-                                                        data-bs-toggle="modal"
-                                                        data-bs-target="#deleteModal"
-                                                        onclick="setDeleteUrl({{ ansamblis.id }}, '{{ ansamblis.pavadinimas }}')">
-                                                    <span class="material-symbols-outlined me-2">delete</span> Ištrinti
+                                            <div class="dropdown d-inline-block">
+                                                <button class="btn btn-sm badge-ansamblis dropdown-toggle d-flex align-items-center justify-content-center px-3"
+                                                        type="button" id="valdytiDropdown_{{ ansamblis.id }}"
+                                                        data-bs-toggle="dropdown"
+                                                        aria-expanded="false">
+                                                    <span class="material-symbols-outlined me-1">manage_accounts</span>
+                                                    Valdyti
                                                 </button>
+                                                <ul class="dropdown-menu text-center"
+                                                    aria-labelledby="valdytiDropdown_{{ ansamblis.id }}">
+                                                    <li>
+                                                        <a class="dropdown-item d-flex align-items-center justify-content-center gap-2 py-2"
+                                                           href="{% url 'ansamblis_edit' ansamblis.id %}">
+                                                            <span class="material-symbols-outlined">edit</span>
+                                                            Redaguoti
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <button class="dropdown-item d-flex align-items-center justify-content-center gap-2 py-2 text-danger"
+                                                                onclick="setDeleteUrl({{ ansamblis.id }}, '{{ ansamblis.pavadinimas }}')"
+                                                                data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                                            <span class="material-symbols-outlined">delete_forever</span>
+                                                            Ištrinti
+                                                        </button>
+                                                    </li>
+                                                </ul>
                                             </div>
                                         </td>
+
                                     </tr>
                                 {% empty %}
                                     <tr>
@@ -102,31 +111,36 @@
                                 {% endfor %}
                                 </tbody>
                             </table>
-                        {% if page_obj.has_other_pages %}
-    <div class="d-flex justify-content-center mt-3">
-        <nav>
-            <ul class="pagination">
-                {% if page_obj.has_previous %}
-                    <li class="page-item">
-                        <a class="page-link" href="?{% for k,v in request.GET.items %}{% if k != 'page' %}{{ k }}={{ v|urlencode }}&{% endif %}{% endfor %}page={{ page_obj.previous_page_number }}">«</a>
-                    </li>
-                {% endif %}
-                {% for i in page_obj.paginator.page_range %}
-                    {% if page_obj.number == i %}
-                        <li class="page-item active"><span class="page-link">{{ i }}</span></li>
-                    {% elif i >= page_obj.number|add:'-2' and i <= page_obj.number|add:'2' %}
-                        <li class="page-item"><a class="page-link" href="?{% for k,v in request.GET.items %}{% if k != 'page' %}{{ k }}={{ v|urlencode }}&{% endif %}{% endfor %}page={{ i }}">{{ i }}</a></li>
-                    {% endif %}
-                {% endfor %}
-                {% if page_obj.has_next %}
-                    <li class="page-item">
-                        <a class="page-link" href="?{% for k,v in request.GET.items %}{% if k != 'page' %}{{ k }}={{ v|urlencode }}&{% endif %}{% endfor %}page={{ page_obj.next_page_number }}">»</a>
-                    </li>
-                {% endif %}
-            </ul>
-        </nav>
-    </div>
-{% endif %}
+                            {% if page_obj.has_other_pages %}
+                                <div class="d-flex justify-content-center mt-3">
+                                    <nav>
+                                        <ul class="pagination">
+                                            {% if page_obj.has_previous %}
+                                                <li class="page-item">
+                                                    <a class="page-link" href="?
+                                                            {% for k,v in request.GET.items %}{% if k != 'page' %}{{ k }}={{ v|urlencode }}&{% endif %}{% endfor %}page={{ page_obj.previous_page_number }}">«</a>
+                                                </li>
+                                            {% endif %}
+                                            {% for i in page_obj.paginator.page_range %}
+                                                {% if page_obj.number == i %}
+                                                    <li class="page-item active"><span class="page-link">{{ i }}</span>
+                                                    </li>
+                                                {% elif i >= page_obj.number|add:'-2' and i <= page_obj.number|add:'2' %}
+                                                    <li class="page-item"><a class="page-link" href="?
+                                                            {% for k,v in request.GET.items %}{% if k != 'page' %}{{ k }}={{ v|urlencode }}&{% endif %}{% endfor %}page={{ i }}">{{ i }}</a>
+                                                    </li>
+                                                {% endif %}
+                                            {% endfor %}
+                                            {% if page_obj.has_next %}
+                                                <li class="page-item">
+                                                    <a class="page-link" href="?
+                                                            {% for k,v in request.GET.items %}{% if k != 'page' %}{{ k }}={{ v|urlencode }}&{% endif %}{% endfor %}page={{ page_obj.next_page_number }}">»</a>
+                                                </li>
+                                            {% endif %}
+                                        </ul>
+                                    </nav>
+                                </div>
+                            {% endif %}
 
                         </div>
                     </div>
@@ -177,4 +191,21 @@
             document.getElementById("deleteForm").setAttribute("action", `/ansambliai/${ansamblisId}/delete/`);
         }
     </script>
+    <script>
+        const searchInput = document.getElementById("searchInput");
+        const hiddenInput = document.getElementById("hiddenSearchInput");
+        const tableRows = document.querySelectorAll("#table-body tr");
+
+        searchInput.addEventListener("keyup", function () {
+            const query = this.value.toLowerCase();
+            hiddenInput.value = query;
+
+            tableRows.forEach((row) => {
+                const nameCell = row.querySelector("td:nth-child(2)");
+                const name = nameCell ? nameCell.textContent.toLowerCase() : "";
+                row.style.display = name.includes(query) ? "" : "none";
+            });
+        });
+    </script>
+
 {% endblock content %}

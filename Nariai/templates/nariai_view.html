@@ -8,8 +8,8 @@
             <div class="col-md-8">
                 <div class="card shadow-lg rounded-4">
                     <!-- Header -->
-                    <div class="card-header py-3 text-center bg-primary text-white rounded-top">
-                        <h4 class="mb-0">
+                    <div class="card-header py-3 table-header-custom rounded-top">
+                        <h4 class="mb-0 d-flex align-items-center">
                             <span class="material-symbols-outlined me-2">person</span>
                             {{ user.username }} - Informacija
                         </h4>
@@ -19,39 +19,39 @@
                     <div class="card-body">
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item d-flex align-items-center">
-                                <span class="material-symbols-outlined text-primary me-2">badge</span>
+                                <span class="material-symbols-outlined primary me-2">badge</span>
                                 <strong>Vartotojo vardas:</strong>
                                 <span class="ms-2">{{ user.username }}</span>
                             </li>
                             <li class="list-group-item d-flex align-items-center">
-                                <span class="material-symbols-outlined text-primary me-2">mail</span>
+                                <span class="material-symbols-outlined primary me-2">mail</span>
                                 <strong>El. paštas:</strong>
                                 <span class="ms-2">{{ user.email|default:"Nėra" }}</span>
                             </li>
                             <li class="list-group-item d-flex align-items-center">
-                                <span class="material-symbols-outlined text-primary me-2">phone</span>
+                                <span class="material-symbols-outlined primary me-2">phone</span>
                                 <strong>Telefono numeris:</strong>
                                 <span class="ms-2">{{ user.phone_number|default:"Nėra" }}</span>
                             </li>
                             <li class="list-group-item d-flex align-items-center">
-                                <span class="material-symbols-outlined text-primary me-2">verified_user</span>
+                                <span class="material-symbols-outlined primary me-2">verified_user</span>
                                 <strong>Rolė:</strong>
                                 <span class="ms-2">{{ user.get_role_display }}</span>
                             </li>
                             <li class="list-group-item d-flex align-items-center">
-                                <span class="material-symbols-outlined text-primary me-2">event</span>
+                                <span class="material-symbols-outlined primary me-2">event</span>
                                 <strong>Paskyros sukūrimo data:</strong>
                                 <span class="ms-2">{{ user.date_joined|date:"Y-m-d H:i" }}</span>
                             </li>
                             <li class="list-group-item d-flex align-items-center">
-                                <span class="material-symbols-outlined text-primary me-2">history</span>
+                                <span class="material-symbols-outlined primary me-2">history</span>
                                 <strong>Paskutinį kartą prisijungė:</strong>
                                 <span class="ms-2">{{ user.last_login|default:"Nėra" }}</span>
                             </li>
 
                             <!-- ✅ Ansambliai Display -->
                             <li class="list-group-item d-flex align-items-center">
-                                <span class="material-symbols-outlined text-primary me-2">groups</span>
+                                <span class="material-symbols-outlined primary me-2">groups</span>
                                 <strong>Ansambliai:</strong>
                                 <div class="ms-2">
                                     {% if user.ansambliai.all %}
@@ -73,7 +73,7 @@
                         <a href="{% url 'nariai' %}" class="btn btn-outline-secondary d-flex align-items-center">
                             <span class="material-symbols-outlined me-1">arrow_back</span> Grįžti
                         </a>
-                        <a href="{% url 'nariai_edit' user.id %}" class="btn btn-outline-success d-flex align-items-center">
+                        <a href="{% url 'nariai_edit' user.id %}" class="btn primary-background d-flex align-items-center">
                             <span class="material-symbols-outlined me-1">edit</span> Redaguoti
                         </a>
                     </div>

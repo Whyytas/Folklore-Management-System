@@ -7,9 +7,11 @@
         <div class="row justify-content-center">
             <div class="col-md-6">
                 <div class="card shadow">
-                    <div class="card-header py-3 text-center bg-primary text-white">
+                    <div class="card-header py-3 text-center table-header-custom d-flex justify-content-center align-items-center gap-2">
+                        <span class="material-symbols-outlined">person_add</span>
                         <h4 class="mb-0">Pridėti naują narį</h4>
                     </div>
+
                     <div class="card-body">
 
                         <!-- ✅ Display Success & Error Messages -->
@@ -66,7 +68,7 @@
                                 </label>
                                 <div class="input-group">
                                     <input type="text" class="form-control" id="id_username" name="username" required>
-                                    <button type="button" class="btn btn-outline-primary" id="generate-username">
+                                    <button type="button" class="btn badge-ansamblis" id="generate-username">
                                         <span class="material-symbols-outlined me-1">autorenew</span> Sukurti
                                         prisijungimo vardą
                                     </button>
@@ -154,7 +156,7 @@
                                    class="btn btn-outline-secondary d-flex align-items-center">
                                     <span class="material-symbols-outlined me-1">arrow_back</span> Atšaukti
                                 </a>
-                                <button type="submit" class="btn btn-outline-dark d-flex align-items-center">
+                                <button type="submit" class="btn primary-background d-flex align-items-center">
                                     <span class="material-symbols-outlined me-1">save</span> Pridėti narį
                                 </button>
                             </div>
@@ -188,25 +190,25 @@
             });
 
             function checkUsernameAvailability(username, count, callback) {
-    let finalUsername = count > 0 ? username + count : username;
-    const url = `/nariai/check-username/?username=${encodeURIComponent(finalUsername)}`;
+                let finalUsername = count > 0 ? username + count : username;
+                const url = `/nariai/check-username/?username=${encodeURIComponent(finalUsername)}`;
 
-    fetch(url)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`Server returned ${response.status}`);
+                fetch(url)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`Server returned ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.exists) {
+                            checkUsernameAvailability(username, count + 1, callback);
+                        } else {
+                            callback(finalUsername);
+                        }
+                    })
+                    .catch(error => console.error("Klaida tikrinant prisijungimo vardą:", error));
             }
-            return response.json();
-        })
-        .then(data => {
-            if (data.exists) {
-                checkUsernameAvailability(username, count + 1, callback);
-            } else {
-                callback(finalUsername);
-            }
-        })
-        .catch(error => console.error("Klaida tikrinant prisijungimo vardą:", error));
-}
 
         });
         document.addEventListener("DOMContentLoaded", function () {

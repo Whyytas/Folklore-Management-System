@@ -5,9 +5,11 @@
         <div class="row justify-content-center">
             <div class="col-md-10">
                 <div class="card shadow">
-                    <div class="card-header py-3 text-center bg-success text-white">
+                    <div class="card-header py-3 text-center table-header-custom d-flex justify-content-left align-items-center gap-2">
+                        <span class="material-symbols-outlined">auto_awesome_motion</span>
                         <h4 class="mb-0">Generuoti naują programą</h4>
                     </div>
+
                     <div class="card-body">
                         <form id="programa-form">
                             {% csrf_token %}
@@ -52,7 +54,7 @@
                             </div>
 
                             <div class="mb-3 text-end">
-                                <button id="generate-kuriniai-btn" type="button" class="btn btn-primary">
+                                <button id="generate-kuriniai-btn" type="button" class="btn primary-background">
                                     <span class="material-symbols-outlined align-middle me-1" style="font-size: 20px;">autorenew</span>
                                     Generuoti Kūrinius
                                 </button>
@@ -69,6 +71,9 @@
                                                    class="form-control form-control-sm mt-2" placeholder="Ieškoti...">
                                         </div>
                                         <div class="card-body" id="all-kuriniai"></div>
+                                        <div id="kuriniai-pagination"
+                                             class="mt-3 d-flex justify-content-center gap-2 px-2 pb-2"></div>
+
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -92,7 +97,7 @@
 
                             <div class="d-flex justify-content-between mt-4">
                                 <a href="{% url 'programos' %}" class="btn btn-outline-secondary">Atšaukti</a>
-                                <button type="submit" class="btn btn-outline-success">Išsaugoti Programą</button>
+                                <button type="submit" class="btn primary-background">Išsaugoti</button>
                             </div>
                         </form>
                     </div>
@@ -218,12 +223,13 @@
         }
 
         document.addEventListener("DOMContentLoaded", function () {
+            const allKuriniaiEl = document.getElementById("all-kuriniai");
             const csrfToken = document.querySelector("[name=csrfmiddlewaretoken]").value;
             const ansamblisSelect = document.getElementById("ansamblis");
             const tipasSelect = document.getElementById("tipas");
             const trukmeInput = document.getElementById("trukme");
             const kuriniaiContainer = document.getElementById("kuriniai-container");
-            const allKuriniaiEl = document.getElementById("all-kuriniai");
+
             const selectedKuriniaiEl = document.getElementById("selected-kuriniai");
             const totalTrukmeEl = document.getElementById("total-trukme");
             const loader = document.getElementById("kuriniai-loading");
@@ -246,6 +252,38 @@
                 totalTrukmeEl.textContent = `${mins}:${secs}`;
             }
 
+            let allKuriniaiCache = [];
+
+            function renderPaginatedKuriniai(kuriniai, container, page = 1, perPage = 10) {
+                const start = (page - 1) * perPage;
+                const end = start + perPage;
+                const pageItems = kuriniai.slice(start, end);
+
+                container.innerHTML = "";
+                pageItems.forEach(k => {
+                    if (!document.getElementById(`selected-${k.id}`)) {
+                        renderKurinys(k, container, false);
+                    }
+                });
+
+                renderPaginationControls(kuriniai.length, page, container, perPage);
+            }
+
+
+            function renderPaginationControls(totalItems, currentPage, container, perPage = 10) {
+                const totalPages = Math.ceil(totalItems / perPage);
+                const paginationEl = document.getElementById("kuriniai-pagination");
+                paginationEl.innerHTML = "";
+
+                for (let i = 1; i <= totalPages; i++) {
+                    const btn = document.createElement("button");
+                    btn.className = `btn btn-sm ${i === currentPage ? 'btn-dark' : 'btn-outline-secondary'}`;
+                    btn.textContent = i;
+                    btn.addEventListener("click", () => renderPaginatedKuriniai(allKuriniaiCache, container, i, perPage));
+                    paginationEl.appendChild(btn);
+                }
+            }
+
             function renderKurinys(k, container, isSelected) {
                 const wrapper = document.createElement("div");
                 wrapper.className = "kuriniai-item card mb-2";
@@ -253,28 +291,36 @@
                 wrapper.dataset.id = k.id;
                 wrapper.dataset.trukme = k.trukme;
 
-                wrapper.innerHTML = `
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <div class="fw-bold">${k.pavadinimas}</div>
-                        <small class="text-muted">
-                            <span class="badge bg-secondary me-1">${k.tipas}</span>
-                            <span class="badge bg-info text-dark">${k.regionas || ''}</span>
-                        </small>
-                    </div>
-                    <div class="d-flex align-items-center gap-2">
-                        <button class="btn btn-outline-${isSelected ? "danger" : "primary"} btn-sm d-flex align-items-center">
-                            <span class="material-symbols-outlined me-1">
-                             ${isSelected ? "remove_circle" : "add_circle"}
-                            </span>
-                             <span>${k.trukme}</span>
-                         </button>
+                // Assign color only to selected cards
+                let bgClass = "";
+                if (isSelected) {
+                    const tipasLower = (k.tipas || "").toLowerCase();
+                    if (tipasLower.includes("daina")) bgClass = "bg-warning-subtle";
+                    else if (tipasLower.includes("šokis")) bgClass = "bg-danger-subtle";
+                    else bgClass = "bg-success-subtle";
+                }
 
-                    </div>
+                wrapper.innerHTML = `
+        <div class="card-body ${bgClass}">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="fw-bold">${k.pavadinimas}</div>
+                    <small class="text-muted">
+                        <span class="badge bg-secondary me-1">${k.tipas}</span>
+                        <span class="badge bg-info text-dark">${k.regionas || ''}</span>
+                    </small>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                    <button class="btn btn-outline-${isSelected ? "danger" : "primary"} btn-sm d-flex align-items-center">
+                        <span class="material-symbols-outlined me-1">
+                            ${isSelected ? "remove_circle" : "add_circle"}
+                        </span>
+                        <span>${k.trukme}</span>
+                    </button>
                 </div>
             </div>
-        `;
+        </div>
+    `;
 
                 const button = wrapper.querySelector("button");
                 button.addEventListener("click", () => {
@@ -351,17 +397,30 @@
                             document.getElementById("empty-message")?.remove();
                         });
                         updateTotalTrukme();
+                        allKuriniaiCache = [];
+
 
                         fetch(`/kuriniai/by-ansamblis-pozymis/?ansamblis=${ansamblisId}&pozymis=${encodeURIComponent(tipas)}`)
                             .then(res => res.json())
                             .then(extraKuriniai => {
-                                extraKuriniai.forEach(k => {
-                                    if (document.getElementById(`selected-${k.id}`) || document.getElementById(`kurinys-${k.id}`)) return;
-                                    renderKurinys(k, allKuriniaiEl, false);
-                                });
-                            });
+                                allKuriniaiCache = extraKuriniai.filter(k =>
+                                    !document.getElementById(`selected-${k.id}`) &&
+                                    !document.getElementById(`kurinys-${k.id}`)
+                                );
 
-                        loader.style.display = "none";
+                                if (allKuriniaiCache.length === 0) {
+                                    allKuriniaiEl.innerHTML = `<div class="text-muted text-center py-3">Nėra papildomų kūrinių.</div>`;
+                                } else {
+                                    renderPaginatedKuriniai(allKuriniaiCache, allKuriniaiEl, 1);
+
+                                }
+
+                                loader.style.display = "none";
+                            }).catch(err => {
+                            console.error("Nepavyko gauti papildomų kūrinių:", err);
+                            allKuriniaiEl.innerHTML = `<div class="text-danger text-center py-3">Klaida gaunant kūrinius.</div>`;
+                            loader.style.display = "none";
+                        });
                     })
 
                     .catch(err => {

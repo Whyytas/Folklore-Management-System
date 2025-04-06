@@ -103,7 +103,7 @@ def get_kuriniai_by_ansamblis(request, pk):
             "tipas": kurinys.tipas or "N/A",
             "regionas": kurinys.regionas or "N/A",
             "lyrics": kurinys.lyrics,
-            "aprašymas": kurinys.aprašymas,
+            "aprašymas": kurinys.aprasymas,
             "youtube_url": kurinys.youtube_url,
             "natos": kurinys.natos.url if kurinys.natos else "",
             "natos_image": kurinys.natos_image.url if kurinys.natos_image else "",

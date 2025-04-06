@@ -9,7 +9,8 @@
                 <div class="card shadow">
                     <div class="card-header d-flex justify-content-between align-items-center py-3 table-header-custom">
                         <h4>Padaliniai</h4>
-                        <a href="{% url 'padaliniai_add' %}" class="btn btn-light d-flex align-items-center action-btn">
+                        <a href="{% url 'padaliniai_add' %}"
+                           class="btn badge-ansamblis d-flex align-items-center action-btn">
                             <span class="material-symbols-outlined me-2">add</span> Pridėti
                         </a>
                     </div>
@@ -17,17 +18,16 @@
                     <div class="card-body">
                         <div class="table-responsive">
                             <!-- Search bar -->
-                            <form method="get" class="d-flex mb-3">
-                                <div class="input-group w-25">
+                            <div class="mb-4 px-2" style="max-width: 400px;">
+                                <div class="input-group">
         <span class="input-group-text">
             <span class="material-symbols-outlined">search</span>
         </span>
-                                    <input type="text" name="search" value="{{ search }}" class="form-control"
-                                           placeholder="Ieškoti pagal pavadinimą...">
+                                    <input type="text" id="searchInput" class="form-control"
+                                           placeholder="Ieškoti pagal pavadinimą..."/>
                                 </div>
-                                <input type="hidden" name="sort" value="{{ sort_param }}">
-                                <button type="submit" class="btn btn-outline-primary ms-2">Ieškoti</button>
-                            </form>
+                            </div>
+
                             <table class="table table-hover table-striped align-middle">
                                 <thead class="thead-dark">
                                 <tr>
@@ -50,7 +50,7 @@
                                 </tr>
                                 </thead>
 
-                                <tbody>
+                                <tbody id="table-body">
                                 {% for padalinys in padaliniai %}
                                     <tr>
                                         <td class="align-middle text-end">{{ forloop.counter }}</td>
@@ -59,20 +59,34 @@
                                         <td class="align-middle text-center">{{ padalinys.tel_nr }}</td>
 
                                         <td class="align-middle text-center">
-                                            <div class="d-flex justify-content-center gap-2">
-                                                <a href="{% url 'padaliniai_edit' padalinys.id %}"
-                                                   class="btn btn-success d-flex align-items-center justify-content-center">
-                                                    <span class="material-symbols-outlined me-2">edit</span> Redaguoti
-                                                </a>
-
-                                                <button type="button"
-                                                        class="btn btn-danger d-flex align-items-center justify-content-center"
-                                                        data-bs-toggle="modal" data-bs-target="#deleteModal"
-                                                        onclick="setDeleteUrl({{ padalinys.id }}, '{{ padalinys.pavadinimas }}')">
-                                                    <span class="material-symbols-outlined me-2">delete</span> Ištrinti
+                                            <div class="dropdown d-inline-block">
+                                                <button class="btn btn-sm badge-ansamblis dropdown-toggle d-flex align-items-center justify-content-center px-3"
+                                                        type="button" id="valdytiDropdown_{{ padalinys.id }}"
+                                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <span class="material-symbols-outlined me-1">manage_accounts</span>
+                                                    Valdyti
                                                 </button>
+                                                <ul class="dropdown-menu text-center"
+                                                    aria-labelledby="valdytiDropdown_{{ padalinys.id }}">
+                                                    <li>
+                                                        <a class="dropdown-item d-flex align-items-center justify-content-center gap-2 py-2"
+                                                           href="{% url 'padaliniai_edit' padalinys.id %}">
+                                                            <span class="material-symbols-outlined">edit</span>
+                                                            Redaguoti
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <button class="dropdown-item d-flex align-items-center justify-content-center gap-2 py-2 text-danger"
+                                                                onclick="setDeleteUrl({{ padalinys.id }}, '{{ padalinys.pavadinimas }}')"
+                                                                data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                                            <span class="material-symbols-outlined">delete_forever</span>
+                                                            Ištrinti
+                                                        </button>
+                                                    </li>
+                                                </ul>
                                             </div>
                                         </td>
+
                                     </tr>
                                 {% empty %}
                                     <tr>
@@ -162,4 +176,24 @@
             </div>
         </div>
     </div>
+    <script>
+        document.getElementById("searchInput").addEventListener("keyup", function () {
+            const searchValue = this.value.toLowerCase();
+            const rows = document.querySelectorAll("#table-body tr");
+
+            rows.forEach(row => {
+                const nameElement = row.querySelector("td:nth-child(2)");
+                if (nameElement) {
+                    const name = nameElement.textContent.toLowerCase();
+                    row.style.display = name.includes(searchValue) ? "" : "none";
+                }
+            });
+        });
+
+        function setDeleteUrl(padalinysId, padalinysName) {
+            document.getElementById("padalinysName").innerText = padalinysName;
+            document.getElementById("deleteForm").setAttribute("action", `/padaliniai/${padalinysId}/delete/`);
+        }
+    </script>
+
 {% endblock %}

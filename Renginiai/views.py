@@ -91,10 +91,9 @@ def delete_renginys(request, renginys_id):
     if request.method == "POST":
         renginys = get_object_or_404(Renginys, id=renginys_id)
         renginys.delete()
-        return JsonResponse({"success": True})
+        return redirect("renginiai")  # ✅ Redirect to the renginiai list
 
     return JsonResponse({"error": "Invalid request method"}, status=400)
-
 
 def publicEvents(request):
     return render(request, 'renginiaiPublic.html', )

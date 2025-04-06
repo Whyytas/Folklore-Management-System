@@ -1,8 +1,13 @@
 @charset "UTF-8";
 
 .table-header-custom {
-    background-color: #28a745;
+    background-color: #183925 !important;
+    color: white !important;
+    display: flex !important;
+    align-items: center !important;
 }
+
+
 
 .table-header-custom h4 {
     color: #ffffff;

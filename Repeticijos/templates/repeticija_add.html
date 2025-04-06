@@ -6,9 +6,11 @@
             <div class="col-md-10">
                 <div class="card shadow">
                     <!-- Form Header -->
-                    <div class="card-header py-3 text-center bg-primary text-white">
+                    <div class="card-header py-3 text-center table-header-custom text-white d-flex align-items-center gap-2">
+                        <span class="material-symbols-outlined">schedule</span>
                         <h4 class="mb-0">Pridėti naują repeticiją</h4>
                     </div>
+
                     <div class="card-body">
                         <form id="repeticija-form">
                             {% csrf_token %}
@@ -77,7 +79,7 @@
                                    class="btn btn-outline-secondary d-flex align-items-center">
                                     <span class="material-symbols-outlined me-1">arrow_back</span> Atšaukti
                                 </a>
-                                <button type="submit" class="btn btn-outline-dark d-flex align-items-center">
+                                <button type="submit" class="btn primary-background d-flex align-items-center">
                                     <span class="material-symbols-outlined me-1">save</span> Išsaugoti repeticiją
                                 </button>
                             </div>

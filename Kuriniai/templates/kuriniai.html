@@ -4,14 +4,17 @@
 {% block content %}
     <div class="container-fluid mt-4">
         <div class="row justify-content-center">
-            <div class="col-lg-10">
-                <div class="card shadow">
+            <div class="col-12" style="max-width: 100%;">
+                <div class="card shadow w-100 p-0">
                     <!-- Header with Add Button -->
                     <div class="card-header d-flex justify-content-between align-items-center py-3 table-header-custom">
-                        <h4>Kūrinių Sąrašas</h4>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="material-symbols-outlined">music_note</span>
+                            <h4 class="mb-0">Kūrinių Sąrašas</h4>
+                        </div>
                         {% if request.user.role != "narys" %}
                             <a href="{% url 'kuriniai_add' %}"
-                               class="btn btn-light d-flex align-items-center action-btn">
+                               class="btn badge-ansamblis d-flex align-items-center action-btn">
                                 <span class="material-symbols-outlined me-2">add</span> Pridėti
                             </a>
                         {% endif %}
@@ -76,7 +79,7 @@
                             </select>
                         </div>
                         <div class="col-md-auto">
-                            <button type="submit" class="btn btn-outline-primary w-100">Filtruoti</button>
+                            <button type="submit" class="btn table-header-custom w-100">Filtruoti</button>
                         </div>
                     </form>
                     <!-- Table Content -->
@@ -87,30 +90,38 @@
                                 <tr>
                                     <th class="text-end">#</th>
                                     <th class="text-start">
-                                        <a href="?{% for k,v in request.GET.items %}{% if k != 'sort' and k != 'page' %}{{ k }}={{ v|urlencode }}&{% endif %}{% endfor %}sort={% if sort_param == 'pavadinimas' %}-pavadinimas{% else %}pavadinimas{% endif %}"
-   class="text-decoration-none text-dark d-flex align-items-center gap-1">
-    Pavadinimas
-    {% if sort_param == 'pavadinimas' %}
-        <span class="material-symbols-outlined">arrow_drop_up</span>
-    {% elif sort_param == '-pavadinimas' %}
-        <span class="material-symbols-outlined">arrow_drop_down</span>
-    {% endif %}
-</a>
+                                        <a href="?
+
+
+
+                                                {% for k,v in request.GET.items %}{% if k != 'sort' and k != 'page' %}{{ k }}={{ v|urlencode }}&{% endif %}{% endfor %}sort={% if sort_param == 'pavadinimas' %}-pavadinimas{% else %}pavadinimas{% endif %}"
+                                           class="text-decoration-none text-dark d-flex align-items-center gap-1">
+                                            Pavadinimas
+                                            {% if sort_param == 'pavadinimas' %}
+                                                <span class="material-symbols-outlined">arrow_drop_up</span>
+                                            {% elif sort_param == '-pavadinimas' %}
+                                                <span class="material-symbols-outlined">arrow_drop_down</span>
+                                            {% endif %}
+                                        </a>
 
 
                                     </th>
 
                                     <th class="text-center">Tipas</th>
                                     <th class="text-center">
-                                        <a href="?{% for k,v in request.GET.items %}{% if k != 'sort' and k != 'page' %}{{ k }}={{ v|urlencode }}&{% endif %}{% endfor %}sort={% if sort_param == 'trukme' %}-trukme{% else %}trukme{% endif %}"
-   class="text-decoration-none text-dark d-flex justify-content-center align-items-center gap-1">
-    Trukmė
-    {% if sort_param == 'trukme' %}
-        <span class="material-symbols-outlined">arrow_drop_up</span>
-    {% elif sort_param == '-trukme' %}
-        <span class="material-symbols-outlined">arrow_drop_down</span>
-    {% endif %}
-</a>
+                                        <a href="?
+
+
+
+                                                {% for k,v in request.GET.items %}{% if k != 'sort' and k != 'page' %}{{ k }}={{ v|urlencode }}&{% endif %}{% endfor %}sort={% if sort_param == 'trukme' %}-trukme{% else %}trukme{% endif %}"
+                                           class="text-decoration-none text-dark d-flex justify-content-center align-items-center gap-1">
+                                            Trukmė
+                                            {% if sort_param == 'trukme' %}
+                                                <span class="material-symbols-outlined">arrow_drop_up</span>
+                                            {% elif sort_param == '-trukme' %}
+                                                <span class="material-symbols-outlined">arrow_drop_down</span>
+                                            {% endif %}
+                                        </a>
 
 
                                     </th>
@@ -161,17 +172,17 @@
                                         <!-- Peržiūra Dropdown -->
                                         <td class="align-middle text-center">
                                             <div class="dropdown d-inline-block">
-                                                <button class="btn btn-sm btn-primary dropdown-toggle d-flex align-items-center justify-content-center px-3"
+                                                <button class="btn btn-sm badge-ansamblis dropdown-toggle d-flex align-items-center justify-content-center px-3"
                                                         type="button" id="perziuraDropdown_{{ kurinys.id }}"
                                                         data-bs-toggle="dropdown" aria-expanded="false">
                                                     <span class="material-symbols-outlined me-1">visibility</span>
                                                     Peržiūra
                                                 </button>
-                                                <ul class="dropdown-menu text-center"
+                                                <ul class="dropdown-menu dropdown-menu-end text-center"
                                                     aria-labelledby="perziuraDropdown_{{ kurinys.id }}">
                                                     {% if kurinys.youtube_url %}
                                                         <li>
-                                                            <a class="dropdown-item d-flex align-items-center justify-content-center gap-2"
+                                                            <a class="dropdown-item d-flex align-items-center justify-content-center gap-2 py-2"
                                                                href="{{ kurinys.youtube_url }}" target="_blank">
                                                                 <span class="material-symbols-outlined">ondemand_video</span>
                                                                 Video
@@ -180,7 +191,7 @@
                                                     {% endif %}
                                                     {% if kurinys.tipas == "Daina" and kurinys.lyrics %}
                                                         <li>
-                                                            <button class="dropdown-item d-flex align-items-center justify-content-center gap-2"
+                                                            <button class="dropdown-item d-flex align-items-center justify-content-center gap-2 py-2"
                                                                     onclick="showLyrics('{{ kurinys.pavadinimas }}', `{{ kurinys.lyrics|escapejs }}`)">
                                                                 <span class="material-symbols-outlined">library_books</span>
                                                                 Žodžiai
@@ -189,7 +200,7 @@
                                                     {% endif %}
                                                     {% if kurinys.aprašymas %}
                                                         <li>
-                                                            <button class="dropdown-item d-flex align-items-center justify-content-center gap-2"
+                                                            <button class="dropdown-item d-flex align-items-center justify-content-center gap-2 py-2"
                                                                     onclick="showDescription('{{ kurinys.pavadinimas }}', `{{ kurinys.aprašymas|escapejs }}`)">
                                                                 <span class="material-symbols-outlined">description</span>
                                                                 Aprašymas
@@ -198,7 +209,7 @@
                                                     {% endif %}
                                                     {% if kurinys.natos %}
                                                         <li>
-                                                            <button class="dropdown-item d-flex align-items-center justify-content-center gap-2"
+                                                            <button class="dropdown-item d-flex align-items-center justify-content-center gap-2 py-2"
                                                                     onclick="showPDF('{{ kurinys.pavadinimas }}', '{{ kurinys.natos.url }}')">
                                                                 <span class="material-symbols-outlined">picture_as_pdf</span>
                                                                 PDF
@@ -207,16 +218,15 @@
                                                     {% endif %}
                                                     {% if kurinys.natos_image %}
                                                         <li>
-                                                            <button class="dropdown-item d-flex align-items-center justify-content-center gap-2"
+                                                            <button class="dropdown-item d-flex align-items-center justify-content-center gap-2 py-2"
                                                                     onclick="showImage('{{ kurinys.pavadinimas }}', '{{ kurinys.natos_image.url }}')">
                                                                 <span class="material-symbols-outlined">image</span>
                                                                 Paveikslėlis
                                                             </button>
                                                         </li>
                                                     {% endif %}
-
-
                                                 </ul>
+
                                             </div>
                                         </td>
 
@@ -225,7 +235,7 @@
                                         {% if request.user.role != "narys" %}
                                             <td class="align-middle text-center">
                                                 <div class="dropdown d-inline-block">
-                                                    <button class="btn btn-sm btn-secondary dropdown-toggle d-flex align-items-center justify-content-center px-3"
+                                                    <button class="btn btn-sm badge-ansamblis dropdown-toggle d-flex align-items-center justify-content-center px-3"
                                                             type="button" id="valdytiDropdown_{{ kurinys.id }}"
                                                             data-bs-toggle="dropdown" aria-expanded="false">
                                                         <span class="material-symbols-outlined me-1">manage_accounts</span>
@@ -234,14 +244,14 @@
                                                     <ul class="dropdown-menu text-center"
                                                         aria-labelledby="valdytiDropdown_{{ kurinys.id }}">
                                                         <li>
-                                                            <a class="dropdown-item d-flex align-items-center justify-content-center gap-2"
+                                                            <a class="dropdown-item d-flex align-items-center gap-2 py-2"
                                                                href="{% url 'kuriniai_edit' kurinys.id %}">
                                                                 <span class="material-symbols-outlined">edit</span>
                                                                 Redaguoti
                                                             </a>
                                                         </li>
                                                         <li>
-                                                            <button class="dropdown-item d-flex align-items-center justify-content-center gap-2"
+                                                            <button class="dropdown-item d-flex align-items-center gap-2 py-2 text-danger"
                                                                     onclick="setDeleteUrl({{ kurinys.id }}, '{{ kurinys.pavadinimas }}');"
                                                                     data-bs-toggle="modal"
                                                                     data-bs-target="#deleteModal">
@@ -250,6 +260,7 @@
                                                             </button>
                                                         </li>
                                                     </ul>
+
                                                 </div>
                                             </td>
                                         {% endif %}
@@ -272,6 +283,11 @@
 
 
 
+
+
+
+
+
                                                             {% for key, val in request.GET.items %}{% if key != 'page' %}{{ key }}={{ val|urlencode }}&{% endif %}{% endfor %}page={{ page_obj.previous_page_number }}">«</a>
                                                 </li>
                                             {% else %}
@@ -288,6 +304,11 @@
 
 
 
+
+
+
+
+
                                                                 {% for key, val in request.GET.items %}{% if key != 'page' %}{{ key }}={{ val|urlencode }}&{% endif %}{% endfor %}page={{ num }}">{{ num }}</a>
                                                     </li>
                                                 {% endif %}
@@ -296,6 +317,11 @@
                                             {% if page_obj.has_next %}
                                                 <li class="page-item">
                                                     <a class="page-link" href="?
+
+
+
+
+
 
 
 
@@ -335,12 +361,17 @@
                             </div>
 
                             <!-- Modal Footer -->
-                            <div class="modal-footer bg-light border-0 d-flex justify-content-center py-2">
+                            <div class="modal-footer bg-light border-0 d-flex justify-content-between px-4 py-2">
+                                <a id="downloadImageBtn" class="btn btn-success d-flex align-items-center px-3 py-1"
+                                   download>
+                                    <span class="material-symbols-outlined me-1">download</span> Atsisiųsti
+                                </a>
                                 <button type="button" class="btn btn-outline-dark d-flex align-items-center px-3 py-1"
                                         data-bs-dismiss="modal">
                                     <span class="material-symbols-outlined me-1">close</span> Uždaryti
                                 </button>
                             </div>
+
                         </div>
                     </div>
                 </div>
@@ -543,8 +574,15 @@
         function showImage(title, imageUrl) {
             document.getElementById("imageModalTitle").innerText = title;
             document.getElementById("imageViewer").src = imageUrl;
+
+            // Set download button
+            const downloadBtn = document.getElementById("downloadImageBtn");
+            downloadBtn.href = imageUrl;
+            downloadBtn.setAttribute("download", title + ".jpg");
+
             new bootstrap.Modal(document.getElementById("imageModal")).show();
         }
+
 
     </script>
 {% endblock content %}

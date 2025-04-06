@@ -5,7 +5,8 @@
         <div class="row justify-content-center">
             <div class="col-md-10">
                 <div class="card shadow">
-                    <div class="card-header py-3 text-center bg-primary text-white">
+                    <div class="card-header py-3 text-center table-header-custom text-white d-flex justify-content-left align-items-center gap-2">
+                        <span class="material-symbols-outlined">edit</span>
                         <h4 class="mb-0">Redaguoti repeticiją</h4>
                     </div>
                     <div class="card-body">
@@ -47,42 +48,15 @@
                                                    class="form-control form-control-sm w-50"
                                                    placeholder="Ieškoti kūrinio...">
                                         </div>
-                                        <div class="card-body kuriniai-list" id="all-kuriniai">
-                                            {% for kurinys in all_kuriniai %}
-                                                {% if kurinys not in repeticija.kuriniai.all %}
-                                                    <div class="kuriniai-item card mb-2" id="kurinys-{{ kurinys.id }}"
-                                                         data-id="{{ kurinys.id }}" data-trukme="{{ kurinys.trukme }}">
-                                                        <div class="card-body d-flex justify-content-between align-items-center">
-                                                            <div>
-                                                                <div class="fw-bold">{{ kurinys.pavadinimas }}</div>
-                                                                <small class="text-muted">
-                                                                    <span class="badge bg-secondary me-1">{{ kurinys.tipas }}</span>
-                                                                    <span class="badge bg-info text-dark">{{ kurinys.regionas }}</span>
-                                                                </small>
-                                                            </div>
-                                                            <div class="d-flex align-items-center gap-2">
-                                                                <button type="button"
-                                                                        class="btn btn-outline-primary btn-sm d-flex align-items-center justify-content-center"
-                                                                        onclick="handleMoveKurinys(this)"
-                                                                        data-id="{{ kurinys.id }}"
-                                                                        data-pavadinimas="{{ kurinys.pavadinimas }}"
-                                                                        data-trukme="{{ kurinys.trukme|default:'00:00' }}"
-                                                                        data-tip="{{ kurinys.tipas }}"
-                                                                        data-regionas="{{ kurinys.regionas }}"
-                                                                        data-lyrics="{{ kurinys.lyrics|default:'' }}"
-                                                                        data-aprasymas="{{ kurinys.aprašymas|default:'' }}"
-                                                                        data-youtube="{{ kurinys.youtube_url|default:'' }}"
-                                                                        data-natos="{{ kurinys.natos|default:'' }}"
-                                                                        data-natosimage="{{ kurinys.natos_image|default:'' }}">
-                                                                    <span class="material-symbols-outlined me-1">add_circle</span>
-                                                                    <span>{{ kurinys.trukme|default:"00:00" }}</span>
-                                                                </button>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                {% endif %}
-                                            {% endfor %}
+                                        <div id="kuriniai-loading" class="text-center my-3 d-none">
+                                            <div class="spinner-border text-primary" role="status">
+                                                <span class="visually-hidden">Kraunama...</span>
+                                            </div>
                                         </div>
+
+                                        <div class="card-body kuriniai-list" id="all-kuriniai"></div>
+                                        <div id="kuriniai-pagination"
+                                             class="mt-3 d-flex justify-content-center gap-2"></div>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -192,7 +166,7 @@
                                    class="btn btn-outline-secondary d-flex align-items-center">
                                     <span class="material-symbols-outlined me-1">arrow_back</span> Atšaukti
                                 </a>
-                                <button type="submit" class="btn btn-outline-dark d-flex align-items-center">
+                                <button type="submit" class="btn primary-background d-flex align-items-center">
                                     <span class="material-symbols-outlined me-1">save</span> Išsaugoti repeticiją
                                 </button>
                             </div>
@@ -362,36 +336,84 @@
                 ghostClass: 'sortable-ghost'
             });
 
+            function paginateKuriniai(items, containerEl, perPage = 10, page = 1) {
+                const totalPages = Math.ceil(items.length / perPage);
+                const start = (page - 1) * perPage;
+                const end = start + perPage;
+                const paginatedItems = items.slice(start, end);
+
+                containerEl.innerHTML = "";
+                paginatedItems.forEach(k => {
+                    const item = document.createElement("div");
+                    item.className = "kuriniai-item card mb-2";
+                    item.id = `kurinys-${k.id}`;
+                    item.dataset.id = k.id;
+                    item.dataset.trukme = k.trukme || "00:00";
+                    item.innerHTML = generateKurinysCardHTML(k, false);
+                    containerEl.appendChild(item);
+                });
+
+                renderPaginationControls(totalPages, page, (newPage) =>
+                    paginateKuriniai(items, containerEl, perPage, newPage)
+                );
+            }
+
+
+            function renderPaginationControls(totalPages, currentPage, onPageChange) {
+                const pagination = document.getElementById("kuriniai-pagination");
+                pagination.innerHTML = "";
+
+                const nav = document.createElement("nav");
+                nav.setAttribute("aria-label", "Kūriniai puslapiai");
+
+                const ul = document.createElement("ul");
+                ul.className = "pagination";
+
+                for (let i = 1; i <= totalPages; i++) {
+                    const li = document.createElement("li");
+                    li.className = `page-item ${i === currentPage ? "active" : ""}`;
+
+                    const a = document.createElement("button");
+                    a.className = "page-link";
+                    a.textContent = i;
+                    a.addEventListener("click", () => onPageChange(i));
+
+                    li.appendChild(a);
+                    ul.appendChild(li);
+                }
+
+                nav.appendChild(ul);
+                pagination.appendChild(nav);
+            }
+
+
             function fetchKuriniai(ansamblisId) {
+                const loadingEl = document.getElementById("kuriniai-loading");
+                const paginationEl = document.getElementById("kuriniai-pagination");
+
+                allKuriniaiEl.innerHTML = "";
+                paginationEl.innerHTML = "";
+                loadingEl.classList.remove("d-none");
+
                 fetch(`/ansambliai/${ansamblisId}/kuriniai/`)
                     .then(res => res.ok ? res.json() : Promise.reject("Nepavyko gauti kūrinių sąrašo."))
                     .then(kuriniai => {
-                        allKuriniaiEl.innerHTML = "";
-
                         const selectedIds = Array.from(selectedKuriniaiEl.querySelectorAll(".kuriniai-item")).map(
                             item => parseInt(item.dataset.id)
                         );
 
-                        kuriniai.forEach(k => {
-                            if (selectedIds.includes(k.id)) return;
-
-                            const item = document.createElement("div");
-                            item.className = "kuriniai-item card mb-2";
-                            item.id = `kurinys-${k.id}`;
-                            item.dataset.id = k.id;
-                            item.dataset.trukme = k.trukme || "00:00";
-                            item.innerHTML = generateKurinysCardHTML(k, false);
-                            allKuriniaiEl.appendChild(item);
-                        });
-
-                        updateEmptyMessage();
-                        updateTotalTrukme();
+                        const filtered = kuriniai.filter(k => !selectedIds.includes(k.id));
+                        paginateKuriniai(filtered, allKuriniaiEl, 10, 1);
                     })
                     .catch(err => {
                         console.error(err);
                         alert("Nepavyko gauti kūrinių.");
+                    })
+                    .finally(() => {
+                        loadingEl.classList.add("d-none");
                     });
             }
+
 
             function updateTotalTrukme() {
                 let totalSeconds = 0;
@@ -469,7 +491,7 @@
                     tipas: container.querySelector(".badge.bg-secondary")?.innerText || "",
                     regionas: container.querySelector(".badge.bg-info")?.innerText || "",
                     lyrics: btn.getAttribute("data-lyrics") || "",
-                    aprašymas: btn.getAttribute("data-aprasymas") || "",
+                    aprasymas: btn.getAttribute("data-aprasymas") || "",
                     youtube_url: btn.getAttribute("data-youtube") || "",
                     natos: btn.getAttribute("data-natos") || "",
                     natos_image: btn.getAttribute("data-natosimage") || ""
@@ -502,7 +524,7 @@
                <span class="material-symbols-outlined me-1">ondemand_video</span> Video</a></li>` : ''}
            ${k.tipas === "Daina" && k.lyrics ? `<li><button type="button" class="dropdown-item" onclick="showLyrics('${k.pavadinimas}', \`${k.lyrics}\`)">
                <span class="material-symbols-outlined me-1">library_books</span> Žodžiai</button></li>` : ''}
-           ${k.aprašymas ? `<li><button type="button" class="dropdown-item" onclick="showDescription('${k.pavadinimas}', \`${k.aprašymas}\`)">
+           ${k.aprasymas ? `<li><button type="button" class="dropdown-item" onclick="showDescription('${k.pavadinimas}', \`${k.aprasymas}\`)">
                <span class="material-symbols-outlined me-1">description</span> Aprašymas</button></li>` : ''}
            ${k.natos ? `<li><button type="button" class="dropdown-item" onclick="showPDF('${k.pavadinimas}', '${k.natos}')">
                <span class="material-symbols-outlined me-1">picture_as_pdf</span> PDF</button></li>` : ''}
@@ -517,7 +539,7 @@
        data-tip="${k.tipas}"
        data-regionas="${k.regionas}"
        data-lyrics="${k.lyrics || ''}"
-       data-aprasymas="${k.aprašymas || ''}"
+       data-aprasymas="${k.aprasymas || ''}"
        data-youtube="${k.youtube_url || ''}"
        data-natos="${k.natos || ''}"
        data-natosimage="${k.natos_image || ''}"
@@ -589,5 +611,7 @@
         window.showDescription = showDescription;
         window.showPDF = showPDF;
         window.showImage = showImage;
+
+
     </script>
 {% endblock %}

@@ -8,8 +8,12 @@
             <div class="col-md-8">
                 <div class="card shadow">
                     <div class="card-header d-flex justify-content-between align-items-center py-3 table-header-custom">
-                        <h4 class="mb-0">Redaguoti Renginį</h4>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="material-symbols-outlined">edit_calendar</span>
+                            <h4 class="mb-0">Redaguoti Renginį</h4>
+                        </div>
                     </div>
+
                     <div class="card-body">
                         <form method="post" id="editRenginysForm">
                             {% csrf_token %}
@@ -98,7 +102,7 @@
                                    class="btn btn-outline-secondary d-flex align-items-center">
                                     <span class="material-symbols-outlined me-1">arrow_back</span> Atšaukti
                                 </a>
-                                <button type="submit" class="btn btn-outline-dark d-flex align-items-center">
+                                <button type="submit" class="btn primary-background d-flex align-items-center">
                                     <span class="material-symbols-outlined me-1">save</span> Išsaugoti renginį
                                 </button>
                             </div>
@@ -112,27 +116,27 @@
     <!-- ✅ JavaScript for Dropdown Selection & Submitting Form -->
 
     <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        flatpickr("#id_data_laikas", {
-            enableTime: true, // ✅ Enables time selection
-            dateFormat: "Y-m-d H:i", // ✅ Lithuanian format
-            time_24hr: true, // ✅ Uses 24-hour format
-            minDate: "today", // ✅ Prevents past dates
-            locale: flatpickr.l10ns.lt, // ✅ Lithuanian localization
-            onClose: function(selectedDates, dateStr, instance) {
-                // ✅ Ensure correct format before submitting
-                let localDate = selectedDates[0];
-                if (localDate) {
-                    let formattedDate = localDate.getFullYear() + "-" +
-                                        String(localDate.getMonth() + 1).padStart(2, '0') + "-" +
-                                        String(localDate.getDate()).padStart(2, '0') + " " +
-                                        String(localDate.getHours()).padStart(2, '0') + ":" +
-                                        String(localDate.getMinutes()).padStart(2, '0');
-                    instance.input.value = formattedDate; // ✅ Ensure proper format
+        document.addEventListener("DOMContentLoaded", function () {
+            flatpickr("#id_data_laikas", {
+                enableTime: true, // ✅ Enables time selection
+                dateFormat: "Y-m-d H:i", // ✅ Lithuanian format
+                time_24hr: true, // ✅ Uses 24-hour format
+                minDate: "today", // ✅ Prevents past dates
+                locale: flatpickr.l10ns.lt, // ✅ Lithuanian localization
+                onClose: function (selectedDates, dateStr, instance) {
+                    // ✅ Ensure correct format before submitting
+                    let localDate = selectedDates[0];
+                    if (localDate) {
+                        let formattedDate = localDate.getFullYear() + "-" +
+                            String(localDate.getMonth() + 1).padStart(2, '0') + "-" +
+                            String(localDate.getDate()).padStart(2, '0') + " " +
+                            String(localDate.getHours()).padStart(2, '0') + ":" +
+                            String(localDate.getMinutes()).padStart(2, '0');
+                        instance.input.value = formattedDate; // ✅ Ensure proper format
+                    }
                 }
-            }
+            });
         });
-    });
-</script>
+    </script>
 
 {% endblock content %}

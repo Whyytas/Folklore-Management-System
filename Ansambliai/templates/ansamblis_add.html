@@ -7,9 +7,11 @@
         <div class="row justify-content-center">
             <div class="col-md-6">
                 <div class="card shadow">
-                    <div class="card-header py-3 text-center bg-primary text-white">
+                    <div class="card-header py-3 table-header-custom d-flex align-items-center gap-2">
+                        <span class="material-symbols-outlined">library_add</span>
                         <h4 class="mb-0">Pridėti naują ansamblį</h4>
                     </div>
+
                     <div class="card-body">
                         <form method="POST">
                             {% csrf_token %}
@@ -17,19 +19,22 @@
                                 <label for="pavadinimas" class="form-label d-flex align-items-center">
                                     <span class="material-symbols-outlined me-2">music_note</span> Pavadinimas
                                 </label>
-                                <input type="text" class="form-control" id="pavadinimas" name="pavadinimas" placeholder="Įveskite pavadinimą" required autocomplete="off" spellcheck="false">
+                                <input type="text" class="form-control" id="pavadinimas" name="pavadinimas"
+                                       placeholder="Įveskite pavadinimą" required autocomplete="off" spellcheck="false">
                             </div>
                             <div class="mb-4">
                                 <label for="miestas" class="form-label d-flex align-items-center">
                                     <span class="material-symbols-outlined me-2">location_city</span> Miestas
                                 </label>
-                                <input type="text" class="form-control" id="miestas" name="miestas" placeholder="Įveskite miestą" required autocomplete="off" spellcheck="false">
+                                <input type="text" class="form-control" id="miestas" name="miestas"
+                                       placeholder="Įveskite miestą" required autocomplete="off" spellcheck="false">
                             </div>
                             <div class="d-flex justify-content-between mt-4">
-                                <a href="{% url 'ansambliai_list' %}" class="btn btn-outline-secondary d-flex align-items-center">
+                                <a href="{% url 'ansambliai_list' %}"
+                                   class="btn btn-outline-secondary d-flex align-items-center">
                                     <span class="material-symbols-outlined me-1">arrow_back</span> Atšaukti
                                 </a>
-                                <button type="submit" class="btn btn-outline-dark d-flex align-items-center">
+                                <button type="submit" class="btn primary-background d-flex align-items-center">
                                     <span class="material-symbols-outlined me-1">save</span> Išsaugoti ansamblį
                                 </button>
                             </div>

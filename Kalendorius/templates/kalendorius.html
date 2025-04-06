@@ -7,9 +7,13 @@
         <div class="row justify-content-center">
             <div class="col-lg-10">
                 <div class="card shadow">
-                    <div class="card-header d-flex justify-content-between align-items-center bg-primary text-white">
-                        <h5 class="mb-0">Kalendorius</h5>
+                    <div class="card-header d-flex justify-content-between align-items-center table-header-custom py-3 text-white">
+                        <div class="d-flex align-items-center">
+                            <span class="material-symbols-outlined me-2">calendar_month</span>
+                            <h5 class="mb-0">Kalendorius</h5>
+                        </div>
                     </div>
+
                     <div class="card-body d-flex justify-content-between">
                         <!-- ✅ Calendar Container -->
                         <div id="responsive-calendar" style="width: 75%;"></div>
@@ -29,150 +33,153 @@
 
     <!-- ✅ Legend Styles -->
     <style>
-    .legend-container {
-        font-size: 0.9rem;
-        background: #f8f9fa;
-        padding: 10px;
-        border-radius: 8px;
+        .legend-container {
+            font-size: 0.9rem;
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 8px;
 
-    }
+        }
 
-    .legend-color {
-        width: 15px;
-        height: 15px;
-        display: inline-block;
-        border-radius: 50%;
-        margin-right: 8px;
-        border: none !important;
-        outline: none !important;
-    }
+        .legend-color {
+            width: 15px;
+            height: 15px;
+            display: inline-block;
+            border-radius: 50%;
+            margin-right: 8px;
+            border: none !important;
+            outline: none !important;
+        }
 
-    .fc-event-custom {
-        font-size: 16px;
-        line-height: 1.2;
-        text-align: left;
-        white-space: normal;
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 4px 6px;
-        margin-bottom: 5px;
-        background-color: rgba(255, 255, 255, 0.8);
-        border-radius: 4px;
-    }
+        .fc-event-custom {
+            font-size: 16px;
+            line-height: 1.2;
+            text-align: left;
+            white-space: normal;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 4px 6px;
+            margin-bottom: 5px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 4px;
+        }
 
-    .event-time, .event-title {
-        font-size: 14px;
-        line-height: 1.1;
-    }
+        .event-time, .event-title {
+            font-size: 14px;
+            line-height: 1.1;
+        }
 
-    .fc-daygrid-event-dot {
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        display: inline-block;
-        border: none !important;
-        outline: none !important;
-        margin-right: 5px;
-    }
-</style>
+        .fc-daygrid-event-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            border: none !important;
+            outline: none !important;
+            margin-right: 5px;
+        }
+    </style>
 
 
     <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        var calendarEl = document.getElementById('responsive-calendar');
-        var legendEl = document.getElementById('event-legend');
-        var eventColors = {}; // ✅ Store unique event types to prevent duplicates
+        document.addEventListener('DOMContentLoaded', function () {
+            var calendarEl = document.getElementById('responsive-calendar');
+            var legendEl = document.getElementById('event-legend');
+            var eventColors = {}; // ✅ Store unique event types to prevent duplicates
 
-        function getCalendarHeight() {
-            return window.innerWidth < 768 ? window.innerHeight * 0.4 : 450;
-        }
+            function getCalendarHeight() {
+                return window.innerWidth < 768 ? window.innerHeight * 0.4 : 450;
+            }
 
-        var calendar = new FullCalendar.Calendar(calendarEl, {
-            initialView: 'dayGridMonth',
-            themeSystem: 'bootstrap5',
-            height: getCalendarHeight(),
-            contentHeight: 'auto',
-            aspectRatio: 1.5,
-            headerToolbar: {
-                left: 'prev,next',
-                center: 'title',
-                right: ''
-            },
-            events: '/kalendorius/events/', // ✅ Fetch events dynamically
-            locale: 'lt',
-            eventClick: function(info) {
-                if (info.event.url) {
-                    window.location.href = info.event.url;
-                    info.jsEvent.preventDefault();
-                }
-            },
-            eventContent: function(info) {
-                let eventType = info.event.extendedProps?.type || "Tipas";
-                let eventTime = new Date(info.event.start).toLocaleTimeString('lt-LT', {hour: '2-digit', minute: '2-digit'});
-                let eventTitle = info.event.title;
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                themeSystem: 'bootstrap5',
+                height: getCalendarHeight(),
+                contentHeight: 'auto',
+                aspectRatio: 1.5,
+                headerToolbar: {
+                    left: 'prev,next',
+                    center: 'title',
+                    right: ''
+                },
+                events: '/kalendorius/events/', // ✅ Fetch events dynamically
+                locale: 'lt',
+                eventClick: function (info) {
+                    if (info.event.url) {
+                        window.location.href = info.event.url;
+                        info.jsEvent.preventDefault();
+                    }
+                },
+                eventContent: function (info) {
+                    let eventType = info.event.extendedProps?.type || "Tipas";
+                    let eventTime = new Date(info.event.start).toLocaleTimeString('lt-LT', {
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                    let eventTitle = info.event.title;
 
-                return {
-                    html: `<div class="fc-event-custom">
+                    return {
+                        html: `<div class="fc-event-custom">
                                 <strong>${eventType}</strong>
                                 <div class="event-time">${eventTime}</div>
                                 <div class="event-title">${eventTitle}</div>
                            </div>`
-                };
-            },
-            eventDidMount: function (info) {
-                let eventType = info.event.extendedProps?.type;
-                let eventColor = info.event.extendedProps?.color;
+                    };
+                },
+                eventDidMount: function (info) {
+                    let eventType = info.event.extendedProps?.type;
+                    let eventColor = info.event.extendedProps?.color;
 
-                if (!eventType || !eventColor) {
-                    console.warn("⚠️ Missing type or color:", info.event);
-                    return;
-                }
+                    if (!eventType || !eventColor) {
+                        console.warn("⚠️ Missing type or color:", info.event);
+                        return;
+                    }
 
-                console.log(`✅ Processing Event: ${info.event.title}, Type: ${eventType}, Color: ${eventColor}`);
+                    console.log(`✅ Processing Event: ${info.event.title}, Type: ${eventType}, Color: ${eventColor}`);
 
-                // ✅ Fix legend (prevent duplicates)
-                if (!eventColors.hasOwnProperty(eventType)) {
-                    eventColors[eventType] = eventColor;
+                    // ✅ Fix legend (prevent duplicates)
+                    if (!eventColors.hasOwnProperty(eventType)) {
+                        eventColors[eventType] = eventColor;
 
-                    console.log(`🎨 Adding legend item for type: ${eventType}, Color: ${eventColor}`);
+                        console.log(`🎨 Adding legend item for type: ${eventType}, Color: ${eventColor}`);
 
-                    let legendItem = document.createElement("li");
-                    legendItem.classList.add("d-flex", "align-items-center");
-                    legendItem.setAttribute("data-event-type", eventType);
-                    legendItem.innerHTML = `
+                        let legendItem = document.createElement("li");
+                        legendItem.classList.add("d-flex", "align-items-center");
+                        legendItem.setAttribute("data-event-type", eventType);
+                        legendItem.innerHTML = `
                         <span class="legend-color" style="background-color: ${eventColor}; width: 15px; height: 15px; border-radius: 50%; display: inline-block; margin-right: 8px;"></span>
                         <span>${eventType}</span>
                     `;
-                    legendEl.appendChild(legendItem);
+                        legendEl.appendChild(legendItem);
+                    }
+
+                    // ✅ Fix event dot color inside calendar
+                    let dotElement = info.el.querySelector(".fc-daygrid-event-dot");
+                    if (dotElement) {
+                        dotElement.style.backgroundColor = eventColor;
+                    } else {
+                        let newDot = document.createElement("div");
+                        newDot.classList.add("fc-daygrid-event-dot");
+                        newDot.style.width = "8px";
+                        newDot.style.height = "8px";
+                        newDot.style.borderRadius = "50%";
+                        newDot.style.backgroundColor = eventColor;
+                        newDot.style.marginRight = "5px";
+                        newDot.style.display = "inline-block";
+                        info.el.prepend(newDot);
+                    }
                 }
+            });
 
-                // ✅ Fix event dot color inside calendar
-                let dotElement = info.el.querySelector(".fc-daygrid-event-dot");
-                if (dotElement) {
-                    dotElement.style.backgroundColor = eventColor;
-                } else {
-                    let newDot = document.createElement("div");
-                    newDot.classList.add("fc-daygrid-event-dot");
-                    newDot.style.width = "8px";
-                    newDot.style.height = "8px";
-                    newDot.style.borderRadius = "50%";
-                    newDot.style.backgroundColor = eventColor;
-                    newDot.style.marginRight = "5px";
-                    newDot.style.display = "inline-block";
-                    info.el.prepend(newDot);
-                }
-            }
+            calendar.render();
+
+            // ✅ Resize dynamically
+            window.addEventListener('resize', function () {
+                calendar.setOption('height', getCalendarHeight());
+            });
         });
-
-        calendar.render();
-
-        // ✅ Resize dynamically
-        window.addEventListener('resize', function () {
-            calendar.setOption('height', getCalendarHeight());
-        });
-    });
-</script>
+    </script>
 
 
 

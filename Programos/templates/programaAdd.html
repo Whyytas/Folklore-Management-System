@@ -5,9 +5,11 @@
         <div class="row justify-content-center">
             <div class="col-md-10">
                 <div class="card shadow">
-                    <div class="card-header py-3 text-center bg-success text-white">
+                    <div class="card-header py-3 text-center table-header-custom d-flex align-items-center justify-content-left gap-2">
+                        <span class="material-symbols-outlined">library_add</span>
                         <h4 class="mb-0">Pridėti naują programą</h4>
                     </div>
+
                     <div class="card-body">
                         <form id="programa-form">
                             {% csrf_token %}
@@ -38,7 +40,6 @@
                                 </select>
                             </div>
 
-                            <!-- Kūriniai Selection (Reused) -->
                             <div id="kuriniai-container" class="row" style="display:none;">
                                 <div class="col-md-6">
                                     <div class="card">
@@ -48,6 +49,9 @@
                                                    class="form-control form-control-sm mt-2" placeholder="Ieškoti...">
                                         </div>
                                         <div class="card-body" id="all-kuriniai"></div>
+                                        <div id="kuriniai-pagination"
+                                             class="mt-3 d-flex justify-content-center gap-2 px-2"></div>
+
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -66,7 +70,7 @@
 
                             <div class="d-flex justify-content-between mt-4">
                                 <a href="{% url 'programos' %}" class="btn btn-outline-secondary">Atšaukti</a>
-                                <button type="submit" class="btn btn-outline-success">Išsaugoti Programą</button>
+                                <button type="submit" class="btn primary-background">Išsaugoti</button>
                             </div>
                         </form>
                     </div>
@@ -207,6 +211,101 @@
             const selectedKuriniaiEl = document.getElementById("selected-kuriniai");
             const totalTrukmeEl = document.getElementById("total-trukme");
 
+            let allKuriniaiCache = [];
+
+            function paginateKuriniai(items, containerEl, perPage = 10, page = 1) {
+                const totalPages = Math.ceil(items.length / perPage);
+                const start = (page - 1) * perPage;
+                const end = start + perPage;
+                const paginatedItems = items.slice(start, end);
+
+                containerEl.innerHTML = "";
+                paginatedItems.forEach(k => {
+                    const html = generateKurinysHTML(k);  // this wraps your existing insertAdjacentHTML logic
+                    containerEl.insertAdjacentHTML('beforeend', html);
+                });
+
+                renderPaginationControls(totalPages, page, containerEl);
+            }
+
+            function generateKurinysHTML(k) {
+                return `
+    <div class="kuriniai-item card mb-2" id="kurinys-${k.id}" data-id="${k.id}" data-trukme="${k.trukme || '00:00'}">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="fw-bold">${k.pavadinimas}</div>
+                    <small class="text-muted">
+                        <span class="badge bg-secondary me-1">${k.tipas}</span>
+                        <span class="badge bg-info text-dark">${k.regionas}</span>
+                    </small>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                    <div class="dropdown">
+                        <button class="btn btn-outline-secondary btn-sm d-flex align-items-center justify-content-center"
+                                type="button" title="Peržiūra"
+                                id="perziuraBtn${k.id}" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span class="material-symbols-outlined">visibility</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="perziuraBtn${k.id}">
+                            ${k.youtube_url ? `
+                            <li><a class="dropdown-item" href="${k.youtube_url}" target="_blank">
+                                <span class="material-symbols-outlined me-1">ondemand_video</span> Video</a></li>` : ''}
+                            ${k.tipas === "Daina" && k.lyrics ? `
+                            <li><button type="button" class="dropdown-item"
+                                onclick="showLyrics('${k.pavadinimas}', \`${k.lyrics}\`)">
+                                <span class="material-symbols-outlined me-1">library_books</span> Žodžiai</button></li>` : ''}
+                            ${k.aprasymas ? `
+                            <li><button type="button" class="dropdown-item"
+                                onclick="showDescription('${k.pavadinimas}', \`${k.aprasymas}\`)">
+                                <span class="material-symbols-outlined me-1">description</span> Aprašymas</button></li>` : ''}
+                            ${k.natos ? `
+                            <li><button type="button" class="dropdown-item"
+                                onclick="showPDF('${k.pavadinimas}', '${k.natos}')">
+                                <span class="material-symbols-outlined me-1">picture_as_pdf</span> PDF</button></li>` : ''}
+                            ${k.natos_image ? `
+                            <li><button type="button" class="dropdown-item"
+                                onclick="showImage('${k.pavadinimas}', '${k.natos_image}')">
+                                <span class="material-symbols-outlined me-1">image</span> Paveikslėlis</button></li>` : ''}
+                        </ul>
+                    </div>
+                    <button type="button"
+                            class="btn btn-outline-primary btn-sm d-flex align-items-center justify-content-center"
+                            onclick="moveKurinys(
+                                ${k.id},
+                                \`${k.pavadinimas}\`,
+                                '${k.trukme || '00:00'}',
+                                '${k.tipas}',
+                                '${k.regionas}',
+                                \`${k.lyrics || ''}\`,
+                                \`${k.aprasymas || ''}\`,
+                                '${k.youtube_url || ''}',
+                                '${k.natos || ''}',
+                                '${k.natos_image || ''}'
+                            )">
+                        <span class="material-symbols-outlined me-1">add_circle</span>${k.trukme || "00:00"}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>`;
+            }
+
+
+            function renderPaginationControls(totalPages, currentPage) {
+                const pagination = document.getElementById("kuriniai-pagination");
+                pagination.innerHTML = "";
+
+                for (let i = 1; i <= totalPages; i++) {
+                    const btn = document.createElement("button");
+                    btn.className = `btn btn-sm ${i === currentPage ? 'btn-dark' : 'btn-outline-secondary'}`;
+                    btn.textContent = i;
+                    btn.addEventListener("click", () => paginateKuriniai(allKuriniaiCache, document.getElementById("all-kuriniai"), 10, i));
+                    pagination.appendChild(btn);
+                }
+            }
+
+
             Sortable.create(selectedKuriniaiEl, {
                 animation: 150,
                 ghostClass: 'sortable-ghost'
@@ -222,152 +321,24 @@
                     return;
                 }
 
+                kuriniaiContainer.style.display = "flex";
+                allKuriniaiEl.innerHTML = '<div class="text-center py-4 w-100"><div class="spinner-border primary" role="status"></div></div>';
+
                 fetch(`/ansambliai/${ansamblisId}/kuriniai/`)
-                    .then(res => res.ok ? res.json() : Promise.reject())
-                    .then(kuriniai => {
-                        allKuriniaiEl.innerHTML = "";
-                        selectedKuriniaiEl.innerHTML = '<p id="empty-message" class="text-muted text-center">Nėra pasirinktų kūrinių</p>';
-
-                        kuriniai.forEach(k => {
-                            const html = `
-   <div class="kuriniai-item card mb-2" id="kurinys-${k.id}" data-id="${k.id}" data-trukme="${k.trukme}">
-   <div class="card-body">
-   <div class="d-flex justify-content-between align-items-center">
-       <div>
-           <div class="fw-bold">${k.pavadinimas}</div>
-           <small class="text-muted">
-               <span class="badge bg-secondary me-1">${k.tipas}</span>
-               <span class="badge bg-info text-dark">${k.regionas}</span>
-           </small>
-       </div>
-      <div class="d-flex align-items-center gap-2">
-   <!-- Peržiūra Dropdown (LEFT) -->
-   <div class="dropdown">
-   <button class="btn btn-outline-secondary btn-sm d-flex align-items-center justify-content-center"
-           type="button" title="Peržiūra"
-           id="perziuraBtn${k.id}" data-bs-toggle="dropdown" aria-expanded="false">
-       <span class="material-symbols-outlined">visibility</span>
-   </button>
-   <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="perziuraBtn${k.id}">
-       ${k.youtube_url ? `
-       <li><a class="dropdown-item" href="${k.youtube_url}" target="_blank">
-           <span class="material-symbols-outlined me-1">ondemand_video</span> Video
-       </a></li>` : ''}
-       ${k.tipas === "Daina" && k.lyrics ? `
-       <li><button class="dropdown-item" onclick="showLyrics('${k.pavadinimas}', \`${k.lyrics}\`)">
-           <span class="material-symbols-outlined me-1">library_books</span> Žodžiai
-       </button></li>` : ''}
-       ${k.aprašymas ? `
-       <li><button class="dropdown-item" onclick="showDescription('${k.pavadinimas}', \`${k.aprašymas}\`)">
-           <span class="material-symbols-outlined me-1">description</span> Aprašymas
-       </button></li>` : ''}
-       ${k.natos ? `
-       <li><button class="dropdown-item" onclick="showPDF('${k.pavadinimas}', '${k.natos}')">
-           <span class="material-symbols-outlined me-1">picture_as_pdf</span> PDF
-       </button></li>` : ''}
-       ${k.natos_image ? `
-       <li><button class="dropdown-item" onclick="showImage('${k.pavadinimas}', '${k.natos_image}')">
-           <span class="material-symbols-outlined me-1">image</span> Paveikslėlis
-       </button></li>` : ''}
-   </ul>
-   </div>
-
-   <!-- Add Button -->
-   <button type="button" class="btn btn-outline-primary btn-sm d-flex align-items-center justify-content-center"
-   onclick="moveKurinys(
-       ${k.id},
-       \`${k.pavadinimas}\`,
-       '${k.trukme}',
-       '${k.tipas}',
-       '${k.regionas}',
-       \`${k.lyrics || ''}\`,
-       \`${k.aprašymas || ''}\`,
-       '${k.youtube_url || ''}',
-       '${k.natos || ''}',
-       '${k.natos_image || ''}'
-   )">
-   <span class="material-symbols-outlined me-1">add_circle</span>${k.trukme}
-   </button>
-
-   </div>
-
-   </div>
-   </div>
-   </div>`;
-                            allKuriniaiEl.insertAdjacentHTML('beforeend', html);
-                        });
-
-                        kuriniaiContainer.style.display = "flex";
+                    .then(res => res.ok ? res.json() : Promise.reject("Klaida gavus kūrinius"))
+                    .then(data => {
+                        allKuriniaiCache = data;
+                        paginateKuriniai(allKuriniaiCache, allKuriniaiEl, 10, 1);
                     })
-                    .catch(() => alert("Nepavyko gauti kūrinių sąrašo."));
+                    .catch(err => {
+                        allKuriniaiEl.innerHTML = `<p class="text-danger text-center">Nepavyko gauti kūrinių.</p>`;
+                        console.error(err);
+                    });
             });
-
-            // Move kūrinys to selected list
-            window.moveKurinys = function (id, name, trukme, tipas, regionas, lyrics, aprašymas, youtube_url, natos, natos_image) {
-                if (document.getElementById(`selected-${id}`)) return;
-
-                const html = `
-   <div class="kuriniai-item card mb-2" id="selected-${id}" data-id="${id}" data-trukme="${trukme}">
-   <div class="card-body">
-   <div class="d-flex justify-content-between align-items-center">
-       <div>
-           <div class="fw-bold">${name}</div>
-           <small class="text-muted">
-               <span class="badge bg-secondary me-1">${tipas}</span>
-               <span class="badge bg-info text-dark">${regionas}</span>
-           </small>
-       </div>
-       <div class="d-flex align-items-center gap-2">
-           <!-- Peržiūra Dropdown -->
-           <div class="dropdown">
-               <button class="btn btn-outline-secondary btn-sm d-flex align-items-center justify-content-center"
-                       type="button" title="Peržiūra"
-                       id="perziuraSelBtn${id}" data-bs-toggle="dropdown" aria-expanded="false">
-                   <span class="material-symbols-outlined">visibility</span>
-               </button>
-               <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="perziuraSelBtn${id}">
-                   ${youtube_url ? `
-                   <li><a class="dropdown-item" href="${youtube_url}" target="_blank">
-                       <span class="material-symbols-outlined me-1">ondemand_video</span> Video
-                   </a></li>` : ''}
-                   ${tipas === "Daina" && lyrics ? `
-                   <li><button class="dropdown-item" onclick="showLyrics('${name}', \`${lyrics}\`)">
-                       <span class="material-symbols-outlined me-1">library_books</span> Žodžiai
-                   </button></li>` : ''}
-                   ${aprašymas ? `
-                   <li><button class="dropdown-item" onclick="showDescription('${name}', \`${aprašymas}\`)">
-                       <span class="material-symbols-outlined me-1">description</span> Aprašymas
-                   </button></li>` : ''}
-                   ${natos ? `
-                   <li><button class="dropdown-item" onclick="showPDF('${name}', '${natos}')">
-                       <span class="material-symbols-outlined me-1">picture_as_pdf</span> PDF
-                   </button></li>` : ''}
-                   ${natos_image ? `
-                   <li><button class="dropdown-item" onclick="showImage('${name}', '${natos_image}')">
-                       <span class="material-symbols-outlined me-1">image</span> Paveikslėlis
-                   </button></li>` : ''}
-               </ul>
-           </div>
-
-           <!-- Remove Button -->
-           <button type="button" class="btn btn-outline-danger btn-sm d-flex align-items-center justify-content-center"
-                   onclick="removeKurinys(${id}, '${name}', '${trukme}', '${tipas}', '${regionas}', \`${lyrics}\`, \`${aprašymas}\`, '${youtube_url}', '${natos}', '${natos_image}')">
-               <span class="material-symbols-outlined me-1">remove_circle</span>${trukme}
-           </button>
-       </div>
-   </div>
-   </div>
-   </div>`;
-
-                selectedKuriniaiEl.insertAdjacentHTML('beforeend', html);
-                document.getElementById(`kurinys-${id}`).remove();
-                updateEmptyMessage();
-                updateTotalTrukme();
-            };
 
 
             // Move kūrinys back to available list
-            window.removeKurinys = function (id, name, trukme, tipas, regionas, lyrics, aprašymas, youtube_url, natos, natos_image) {
+            window.removeKurinys = function (id, name, trukme, tipas, regionas, lyrics, aprasymas, youtube_url, natos, natos_image) {
                 const html = `
    <div class="kuriniai-item card mb-2" id="kurinys-${id}" data-id="${id}" data-trukme="${trukme}">
    <div class="card-body">
@@ -395,8 +366,8 @@
                    <li><button class="dropdown-item" onclick="showLyrics('${name}', \`${lyrics}\`)">
                        <span class="material-symbols-outlined me-1">library_books</span> Žodžiai
                    </button></li>` : ''}
-                   ${aprašymas ? `
-                   <li><button class="dropdown-item" onclick="showDescription('${name}', \`${aprašymas}\`)">
+                   ${aprasymas ? `
+                   <li><button class="dropdown-item" onclick="showDescription('${name}', \`${aprasymas}\`)">
                        <span class="material-symbols-outlined me-1">description</span> Aprašymas
                    </button></li>` : ''}
                    ${natos ? `
@@ -418,7 +389,7 @@
                        '${tipas}',
                        '${regionas}',
                        \`${lyrics}\`,
-                       \`${aprašymas}\`,
+                       \`${aprasymas}\`,
                        '${youtube_url}',
                        '${natos}',
                        '${natos_image}'
@@ -515,6 +486,7 @@
         window.showDescription = showDescription;
         window.showPDF = showPDF;
         window.showImage = showImage;
+
 
     </script>
 {% endblock %}

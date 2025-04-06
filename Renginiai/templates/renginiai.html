@@ -1,58 +1,57 @@
-{% extends "layouts/base.html" %}
-
-{% block title %} Renginiai Sąrašas {% endblock %}
-
-{% block content %}
+{% extends "layouts/base.html" %} {% block title %} Renginiai Sąrašas {% endblock %} {% block content %}
     <div class="container-fluid mt-4">
         <div class="row justify-content-center">
             <div class="col-lg-10">
                 <div class="card shadow">
                     <div class="card-header d-flex justify-content-between align-items-center py-3 table-header-custom">
-                        <h4>Renginiai Sąrašas</h4>
+                        <h4 class="mb-0 d-flex align-items-center gap-2">
+                            <span class="material-symbols-outlined">today</span>
+                            Renginiai Sąrašas
+                        </h4>
                         {% if request.user.role != "narys" %}
                             <a href="{% url 'renginiai_add' %}"
-                               class="btn btn-light d-flex align-items-center action-btn">
+                               class="btn badge-ansamblis d-flex align-items-center action-btn">
                                 <span class="material-symbols-outlined me-2">add</span> Pridėti
                             </a>
                         {% endif %}
-
                     </div>
 
+
                     <div class="card-body">
-
                         <div class="table-responsive">
-                            <form method="get" class="d-flex align-items-center mb-3 ms-2">
-                                <input type="hidden" name="sort" value="{{ sort_field }}">
-                                <input type="hidden" name="dir" value="{{ sort_dir }}">
-                                {% if programa_id %}
-                                    <input type="hidden" name="programa_id" value="{{ programa_id }}">
-                                {% endif %}
-                                <label for="search" class="me-2 fw-bold">Ieškoti:</label>
-                                <div class="input-group w-25">
-                                    <input type="text" id="search" name="search" class="form-control"
-                                           value="{{ search }}" placeholder="Ieškoti pagal pavadinimą...">
-                                    <button class="btn btn-outline-secondary" type="submit">
-                                        <span class="material-symbols-outlined">search</span>
-                                    </button>
-                                </div>
-                            </form>
+                            <div class="d-flex flex-column flex-md-row gap-3 px-2 mb-4">
+                                <!-- Search form -->
+                                <form method="get" class="flex-fill">
+                                    <input type="hidden" name="sort" value="{{ sort_field }}"/>
+                                    <input type="hidden" name="dir" value="{{ sort_dir }}"/>
+                                    <input type="hidden" name="programa_id" value="{{ programa_id }}"/>
+                                    <div class="input-group">
+            <span class="input-group-text">
+                <span class="material-symbols-outlined">search</span>
+            </span>
+                                        <input type="text" id="search" name="search" class="form-control"
+                                               value="{{ search }}" placeholder="Ieškoti pagal pavadinimą..."/>
+                                    </div>
+                                </form>
 
-                            <!-- Filter by Programa -->
-                            <form method="get" class="d-flex align-items-center mb-3">
-                                <input type="hidden" name="sort" value="{{ sort_field }}">
-                                <input type="hidden" name="dir" value="{{ sort_dir }}">
-                                <label for="programa_id" class="me-2 fw-bold">Programa:</label>
-                                <select name="programa_id" id="programa_id" class="form-select w-auto"
-                                        onchange="this.form.submit()">
-                                    <option value="">Visos programos</option>
-                                    {% for p in programos %}
-                                        <option value="{{ p.id }}"
-                                                {% if p.id|stringformat:"s" == programa_id %}selected{% endif %}>
-                                            {{ p.pavadinimas }}
-                                        </option>
-                                    {% endfor %}
-                                </select>
-                            </form>
+                                <!-- Programa filter -->
+                                <form method="get" class="flex-fill">
+                                    <input type="hidden" name="sort" value="{{ sort_field }}"/>
+                                    <input type="hidden" name="dir" value="{{ sort_dir }}"/>
+                                    <input type="hidden" name="search" value="{{ search }}"/>
+                                    <select name="programa_id" id="programa_id" class="form-select h-100"
+                                            onchange="this.form.submit()">
+                                        <option value="">Visos programos</option>
+                                        {% for p in programos %}
+                                            <option value="{{ p.id }}"
+                                                    {% if p.id|stringformat:"s" == programa_id %}selected{% endif %}>
+                                                {{ p.pavadinimas }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </form>
+                            </div>
+
 
                             <table class="table table-hover table-striped align-middle">
                                 <thead class="thead-dark">
@@ -61,12 +60,12 @@
                                     <th class="text-start">
                                         <a href="?sort=pavadinimas&dir={% if sort_field == 'pavadinimas' and sort_dir == 'asc' %}desc{% else %}asc{% endif %}"
                                            class="text-decoration-none text-dark">
-                                            Pavadinimas
-                                            {% if sort_field == 'pavadinimas' %}
-                                                <span class="material-symbols-outlined align-middle">
-                {% if sort_dir == 'asc' %}arrow_drop_up{% else %}arrow_drop_down{% endif %}
-            </span>
-                                            {% endif %}
+                                            Pavadinimas {% if sort_field == 'pavadinimas' %}
+                                            <span class="material-symbols-outlined align-middle">
+                                                {% if sort_dir == 'asc' %}arrow_drop_up{% else %}
+                                                    arrow_drop_down{% endif %}
+                                            </span>
+                                        {% endif %}
                                         </a>
                                     </th>
                                     <th class="text-start">Adresas</th>
@@ -74,31 +73,28 @@
                                     <th class="text-center">
                                         <a href="?sort=data_laikas&dir={% if sort_field == 'data_laikas' and sort_dir == 'asc' %}desc{% else %}asc{% endif %}"
                                            class="text-decoration-none text-dark">
-                                            Data
-                                            {% if sort_field == 'data_laikas' %}
-                                                <span class="material-symbols-outlined align-middle">
-                {% if sort_dir == 'asc' %}arrow_drop_up{% else %}arrow_drop_down{% endif %}
-            </span>
-                                            {% endif %}
+                                            Data {% if sort_field == 'data_laikas' %}
+                                            <span class="material-symbols-outlined align-middle">
+                                                {% if sort_dir == 'asc' %}arrow_drop_up{% else %}
+                                                    arrow_drop_down{% endif %}
+                                            </span>
+                                        {% endif %}
                                         </a>
                                     </th>
                                     {% if request.user.role != "narys" %}
                                         <th class="text-center">Valdyti</th>
                                     {% endif %}
-
                                 </tr>
                                 </thead>
 
-                                <tbody>
+                                <tbody id="table-body">
                                 {% for renginys in renginiai %}
                                     <tr>
                                         <td class="align-middle text-end">{{ forloop.counter }}</td>
                                         <td class="align-middle text-start fw-bold">{{ renginys.pavadinimas }}</td>
                                         <td class="align-middle text-start">{{ renginys.adresas }}</td>
                                         <td class="align-middle text-center">
-                                            {% if renginys.programa %}
-                                                {{ renginys.programa.pavadinimas }}
-                                            {% else %}
+                                            {% if renginys.programa %} {{ renginys.programa.pavadinimas }} {% else %}
                                                 <span class="text-muted">Nėra programos</span>
                                             {% endif %}
                                         </td>
@@ -108,26 +104,41 @@
 
                                         {% if request.user.role != "narys" %}
                                             <td class="align-middle text-center">
-                                                <div class="d-flex justify-content-center gap-2">
-                                                    <a href="{% url 'renginiai_edit' renginys.id %}"
-                                                       class="btn btn-success d-flex align-items-center justify-content-center"
-                                                       style="width: 130px; height: 40px;">
-                                                        <span class="material-symbols-outlined me-2">edit</span>
-                                                        Redaguoti
-                                                    </a>
-
-                                                    <button type="button"
-                                                            class="btn btn-danger d-flex align-items-center justify-content-center"
-                                                            data-bs-toggle="modal" data-bs-target="#deleteModal"
-                                                            onclick="setDeleteUrl({{ renginys.id }}, '{{ renginys.pavadinimas }}')"
-                                                            style="width: 130px; height: 40px;">
-                                                        <span class="material-symbols-outlined me-2">delete</span>
-                                                        Ištrinti
+                                                <div class="dropdown d-inline-block">
+                                                    <button
+                                                            class="btn btn-sm badge-ansamblis dropdown-toggle d-flex align-items-center justify-content-center px-3"
+                                                            type="button"
+                                                            id="valdytiDropdown_{{ renginys.id }}"
+                                                            data-bs-toggle="dropdown"
+                                                            aria-expanded="false"
+                                                    >
+                                                        <span class="material-symbols-outlined me-1">manage_accounts</span>
+                                                        Valdyti
                                                     </button>
+                                                    <ul class="dropdown-menu text-center"
+                                                        aria-labelledby="valdytiDropdown_{{ renginys.id }}">
+                                                        <li>
+                                                            <a class="dropdown-item d-flex align-items-center justify-content-center gap-2 py-2"
+                                                               href="{% url 'renginiai_edit' renginys.id %}">
+                                                                <span class="material-symbols-outlined">edit</span>
+                                                                Redaguoti
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <button
+                                                                    class="dropdown-item d-flex align-items-center justify-content-center gap-2 py-2 text-danger"
+                                                                    onclick="setDeleteUrl({{ renginys.id }}, '{{ renginys.pavadinimas }}')"
+                                                                    data-bs-toggle="modal"
+                                                                    data-bs-target="#deleteModal"
+                                                            >
+                                                                <span class="material-symbols-outlined">delete_forever</span>
+                                                                Ištrinti
+                                                            </button>
+                                                        </li>
+                                                    </ul>
                                                 </div>
                                             </td>
                                         {% endif %}
-
                                     </tr>
                                 {% empty %}
                                     <tr>
@@ -140,41 +151,47 @@
                                 <ul class="pagination">
                                     {% if page_obj.has_previous %}
                                         <li class="page-item">
-                                            <a class="page-link"
-                                               href="?page={{ num }}&sort={{ sort_field }}&dir=
-                                                       {{ sort_dir }}{% if programa_id %}&programa_id={{ programa_id }}{% endif %}{% if search %}&search={{ search }}{% endif %}"
-                                            >«</a>
+                                            <a
+                                                    class="page-link"
+                                                    href="?page={{ num }}&sort={{ sort_field }}&dir=
+
+                                                            {{ sort_dir }}{% if programa_id %}&programa_id={{ programa_id }}{% endif %}{% if search %}&search={{ search }}{% endif %}"
+                                            >
+                                                «
+                                            </a>
                                         </li>
                                     {% else %}
                                         <li class="page-item disabled"><span class="page-link">«</span></li>
-                                    {% endif %}
-
-                                    {% for num in page_obj.paginator.page_range %}
-                                        {% if page_obj.number == num %}
-                                            <li class="page-item active"><span class="page-link">{{ num }}</span></li>
-                                        {% else %}
-                                            <li class="page-item">
-                                                <a class="page-link"
-                                                   href="?page={{ num }}&sort={{ sort_field }}&dir=
-                                                           {{ sort_dir }}{% if programa_id %}&programa_id={{ programa_id }}{% endif %}{% if search %}&search={{ search }}{% endif %}"
-                                                >{{ num }}</a>
-                                            </li>
-                                        {% endif %}
-                                    {% endfor %}
-
-                                    {% if page_obj.has_next %}
-                                        <li class="page-item">
-                                            <a class="page-link"
-                                               href="?page={{ num }}&sort={{ sort_field }}&dir=
-                                                       {{ sort_dir }}{% if programa_id %}&programa_id={{ programa_id }}{% endif %}{% if search %}&search={{ search }}{% endif %}"
-                                            >»</a>
-                                        </li>
+                                    {% endif %} {% for num in page_obj.paginator.page_range %}
+                                    {% if page_obj.number == num %}
+                                        <li class="page-item active"><span class="page-link">{{ num }}</span></li>
                                     {% else %}
-                                        <li class="page-item disabled"><span class="page-link">»</span></li>
-                                    {% endif %}
+                                        <li class="page-item">
+                                            <a
+                                                    class="page-link"
+                                                    href="?page={{ num }}&sort={{ sort_field }}&dir=
+
+                                                            {{ sort_dir }}{% if programa_id %}&programa_id={{ programa_id }}{% endif %}{% if search %}&search={{ search }}{% endif %}"
+                                            >
+                                                {{ num }}
+                                            </a>
+                                        </li>
+                                    {% endif %} {% endfor %} {% if page_obj.has_next %}
+                                    <li class="page-item">
+                                        <a
+                                                class="page-link"
+                                                href="?page={{ num }}&sort={{ sort_field }}&dir=
+
+                                                        {{ sort_dir }}{% if programa_id %}&programa_id={{ programa_id }}{% endif %}{% if search %}&search={{ search }}{% endif %}"
+                                        >
+                                            »
+                                        </a>
+                                    </li>
+                                {% else %}
+                                    <li class="page-item disabled"><span class="page-link">»</span></li>
+                                {% endif %}
                                 </ul>
                             </div>
-
                         </div>
                     </div>
                 </div>
@@ -184,9 +201,8 @@
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content shadow-lg border-0 rounded-4">
                             <div class="modal-header bg-danger text-white">
-                                <h5 class="modal-title d-flex align-items-center">
-                                    <span class="material-symbols-outlined me-2">warning</span> Patvirtinti ištrynimą
-                                </h5>
+                                <h5 class="modal-title d-flex align-items-center"><span
+                                        class="material-symbols-outlined me-2">warning</span> Patvirtinti ištrynimą</h5>
                                 <button type="button" class="btn-close btn-close-white"
                                         data-bs-dismiss="modal"></button>
                             </div>
@@ -197,14 +213,19 @@
                             </div>
 
                             <div class="modal-footer d-flex justify-content-center border-0 pb-4">
-                                <button type="button" class="btn btn-light px-4 py-2 btn-outline-dark"
+                                <button type="button"
+                                        class="btn btn-light px-4 py-2 btn-outline-dark d-flex align-items-center justify-content-center"
                                         data-bs-dismiss="modal">
-                                    <span class="material-symbols-outlined me-2">close</span> Atšaukti
+                                    <span class="material-symbols-outlined me-2">close</span>
+                                    <span>Atšaukti</span>
                                 </button>
+
                                 <form id="deleteForm" method="post">
                                     {% csrf_token %}
-                                    <button type="submit" class="btn btn-danger px-4 py-2">
-                                        <span class="material-symbols-outlined me-2">delete_forever</span> Ištrinti
+                                    <button type="submit"
+                                            class="btn btn-danger px-4 py-2 d-flex align-items-center justify-content-center">
+                                        <span class="material-symbols-outlined me-2">delete_forever</span>
+                                        <span>Ištrinti</span>
                                     </button>
                                 </form>
                             </div>
@@ -214,4 +235,31 @@
             </div>
         </div>
     </div>
+
+    <script>
+        function setDeleteUrl(id, name) {
+            document.getElementById("renginysName").innerText = name;
+            document.getElementById("deleteForm").action = `/renginiai/${id}/delete/`;
+        }
+    </script>
+    <script>
+        document.getElementById("search").addEventListener("keyup", function () {
+            let searchValue = this.value.toLowerCase();
+            let rows = document.querySelectorAll("#table-body tr");
+
+            rows.forEach((row) => {
+                let nameElement = row.querySelector("td:nth-child(2)");
+                if (nameElement) {
+                    let name = nameElement.textContent.toLowerCase();
+                    row.style.display = name.includes(searchValue) ? "" : "none";
+                }
+            });
+        });
+
+        function setDeleteUrl(id, name) {
+            document.getElementById("renginysName").innerText = name;
+            document.getElementById("deleteForm").action = `/renginiai/${id}/delete/`;
+        }
+    </script>
+
 {% endblock content %}

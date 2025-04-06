@@ -1,13 +1,15 @@
 {% extends "layouts/base.html" %}
-{% block title %} Pridėti Programą {% endblock %}
+{% block title %} Redaguoti Programą {% endblock %}
 {% block content %}
     <div class="container mt-4">
         <div class="row justify-content-center">
             <div class="col-md-10">
                 <div class="card shadow">
-                    <div class="card-header py-3 text-center bg-success text-white">
-                        <h4 class="mb-0">Pridėti naują programą</h4>
+                    <div class="card-header py-3 text-center table-header-custom d-flex justify-content-left align-items-center gap-2">
+                        <span class="material-symbols-outlined">edit</span>
+                        <h4 class="mb-0">Redaguoti programą</h4>
                     </div>
+
                     <div class="card-body">
                         <form id="programa-form">
                             {% csrf_token %}
@@ -41,9 +43,7 @@
                             <div class="mb-3">
                                 <label for="ansamblis" class="form-label">Ansamblis</label>
                                 <select class="form-select" id="ansamblis" name="ansamblis" required>
-                                    <option value="" {% if not programa.ansamblis %}selected{% endif %}>Nepasirinktas
-                                        Nepasirinktas
-                                    </option>
+                                    <option value="" {% if not programa.ansamblis %}selected{% endif %}>Nepasirinktas</option>
                                     {% for ansamblis in ansambliai %}
                                         <option value="{{ ansamblis.id }}"
                                                 {% if programa.ansamblis.id == ansamblis.id %}selected{% endif %}>{{ ansamblis.pavadinimas }}</option>
@@ -80,7 +80,7 @@
 
                             <div class="d-flex justify-content-between mt-4">
                                 <a href="{% url 'programos' %}" class="btn btn-outline-secondary">Atšaukti</a>
-                                <button type="submit" class="btn btn-outline-success">Išsaugoti Programą</button>
+                                <button type="submit" class="btn primary-background">Išsaugoti</button>
                             </div>
                         </form>
                     </div>

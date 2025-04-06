@@ -1,85 +1,86 @@
-{% extends "layouts/base.html" %}
-
-{% block title %} Programų Sąrašas {% endblock %}
-
-{% block content %}
+{% extends "layouts/base.html" %} {% block title %} Programų Sąrašas {% endblock %} {% block content %}
     <div class="container-fluid mt-4">
         <div class="row justify-content-center">
             <div class="col-lg-10">
                 <div class="card shadow">
                     <!-- ✅ Header with Add Button -->
-                    <div class="card-header d-flex justify-content-between align-items-center py-3 table-header-custom">
-                        <h4>Programų Sąrašas</h4>
+                    <div class="card-header d-flex justify-content-between align-content-center py-3 table-header-custom">
+                        <h4 class="d-flex align-items-center gap-2">
+                            <span class="material-symbols-outlined">format_list_bulleted</span>
+                            Programų Sąrašas
+                        </h4>
                         {% if request.user.role != "narys" %}
-                            <div class="d-flex justify-content-end mb-3">
+                            <div class="d-flex align-items-center justify-content-end">
                                 <a href="{% url 'program_create' %}"
-                                   class="btn btn-light border d-flex align-items-center">
-                                    <span class="material-symbols-outlined me-2">add</span> Pridėti
-                                </a>
+                                   class="btn badge-ansamblis d-flex align-items-center"> <span
+                                        class="material-symbols-outlined me-2">add</span> Pridėti </a>
                                 <a href="{% url 'program_generate' %}"
-                                   class="btn btn-light border d-flex align-items-center ms-2">
-                                    <span class="material-symbols-outlined me-2">add</span> Generuoti
-                                </a>
+                                   class="btn badge-ansamblis d-flex align-items-center ms-2"> <span
+                                        class="material-symbols-outlined me-2">add</span> Generuoti </a>
                             </div>
                         {% endif %}
-
                     </div>
 
                     <div class="card-body">
                         <!-- ✅ Styled Search Input (Left-Aligned, Icon Inside) -->
-                        <div class="d-flex justify-content-start mt-2 ms-2 mb-2">
-                            <div class="input-group w-25">
-                            <span class="input-group-text">
-                                <span class="material-symbols-outlined">search</span>
-                            </span>
-                                <input type="text" id="searchInput" class="form-control"
-                                       placeholder="Ieškoti pagal pavadinimą...">
+                        <div class="mb-4 px-3 d-flex flex-wrap gap-3">
+                            <!-- Search Input -->
+                            <div class="flex-fill">
+                                <div class="input-group w-100">
+            <span class="input-group-text">
+                <span class="material-symbols-outlined">search</span>
+            </span>
+                                    <input type="text" id="searchInput" class="form-control"
+                                           placeholder="Ieškoti pagal pavadinimą..."/>
+                                </div>
                             </div>
 
+                            <!-- Filter Dropdown -->
+                            <form method="get" class="flex-fill">
+                                <input type="hidden" name="sort" value="{{ sort_field }}"/>
+                                <input type="hidden" name="dir" value="{{ sort_dir }}"/>
+                                <select name="tipas" id="tipas" class="form-select h-100" onchange="this.form.submit()">
+                                    <option value="">Filtruoti pagal tipus</option>
+                                    {% for value, label in tipai %}
+                                        <option value="{{ value }}"
+                                                {% if value == tipas_filter %}selected{% endif %}>{{ label }}</option>
+                                    {% endfor %}
+                                </select>
+                            </form>
                         </div>
-                        <!-- ✅ Filter by Tipas -->
-                        <form method="get" class="d-flex align-items-center ms-2 mb-3">
-                            <input type="hidden" name="sort" value="{{ sort_field }}">
-                            <input type="hidden" name="dir" value="{{ sort_dir }}">
 
-                            <label class="me-2 fw-bold" for="tipas">Tipas:</label>
-                            <select name="tipas" id="tipas" class="form-select w-auto" onchange="this.form.submit()">
-                                <option value="">Visi tipai</option>
-                                {% for value, label in tipai %}
-                                    <option value="{{ value }}"
-                                            {% if value == tipas_filter %}selected{% endif %}>{{ label }}</option>
-                                {% endfor %}
-                            </select>
-                        </form>
 
                         <div class="table-responsive">
                             <table class="table table-hover table-striped align-middle">
                                 <thead class="thead-dark">
                                 <tr>
-                                    <th class="text-end">#</th>  <!-- Align ID to the right -->
+                                    <th class="text-end">#</th>
+                                    <!-- Align ID to the right -->
                                     <!-- Sortable Pavadinimas -->
                                     <th class="text-start">
                                         <a href="?sort=pavadinimas&dir={% if sort_field == 'pavadinimas' and sort_dir == 'asc' %}desc{% else %}asc{% endif %}"
                                            class="text-decoration-none text-dark">
-                                            Pavadinimas
-                                            {% if sort_field == 'pavadinimas' %}
-                                                <span class="material-symbols-outlined align-middle">
-                {% if sort_dir == 'asc' %}arrow_drop_up{% else %}arrow_drop_down{% endif %}
-            </span>
-                                            {% endif %}
+                                            Pavadinimas {% if sort_field == 'pavadinimas' %}
+                                            <span class="material-symbols-outlined align-middle">
+                                                {% if sort_dir == 'asc' %}arrow_drop_up{% else %}
+                                                    arrow_drop_down{% endif %}
+
+                                            </span>
+                                        {% endif %}
                                         </a>
-                                    </th>  <!-- Align Pavadinimas to the left -->
+                                    </th>
+                                    <!-- Align Pavadinimas to the left -->
                                     <th class="text-center">Įrašo trukmė</th>
                                     <!-- Sortable Trukmė -->
                                     <th class="text-center">
                                         <a href="?sort=trukme&dir={% if sort_field == 'trukme' and sort_dir == 'asc' %}desc{% else %}asc{% endif %}"
                                            class="text-decoration-none text-dark">
-                                            Trukmė
-                                            {% if sort_field == 'trukme' %}
-                                                <span class="material-symbols-outlined align-middle">
-                {% if sort_dir == 'asc' %}arrow_drop_up{% else %}arrow_drop_down{% endif %}
-            </span>
-                                            {% endif %}
+                                            Trukmė {% if sort_field == 'trukme' %}
+                                            <span class="material-symbols-outlined align-middle">
+                                                {% if sort_dir == 'asc' %}arrow_drop_up{% else %}
+                                                    arrow_drop_down{% endif %}
+                                            </span>
+                                        {% endif %}
                                         </a>
                                     </th>
                                     <th class="text-center">Tipas</th>
@@ -89,7 +90,6 @@
                                     {% if request.user.role != "narys" %}
                                         <th class="text-center">Valdyti</th>
                                     {% endif %}
-
                                 </tr>
                                 </thead>
 
@@ -100,7 +100,8 @@
                                         <td class="align-middle text-start fw-bold">{{ programa.pavadinimas }}</td>
                                         <td class="text-center">{{ programa.calculate_trukme }}</td>
                                         <!-- ✅ Calculated from kūriniai -->
-                                        <td class="text-center">{{ programa.trukme }}</td>  <!-- ✅ Stored in DB -->
+                                        <td class="text-center">{{ programa.trukme }}</td>
+                                        <!-- ✅ Stored in DB -->
                                         <td class="align-middle text-center">{{ programa.tipas }}</td>
                                         <td class="align-middle text-center">
                                             {{ programa.ansamblis.pavadinimas|default:"—" }}
@@ -109,36 +110,52 @@
                                         <td class="align-middle text-center">
                                             <div class="d-flex justify-content-center">
                                                 <a href="{% url 'programos_kuriniai' programa.id %}"
-                                                   class="btn btn-primary d-flex align-items-center">
+                                                   class="btn badge-ansamblis d-flex align-items-center">
                                                     <span class="material-symbols-outlined me-2">visibility</span>
                                                     Peržiūrėti
                                                 </a>
                                             </div>
-
                                         </td>
 
                                         <!-- ✅ Full Bootstrap Edit & Delete Buttons -->
                                         {% if request.user.role != "narys" %}
                                             <td class="align-middle text-center">
-                                                <div class="d-flex justify-content-center gap-2">
-                                                    <a href="{% url 'program_edit' programa.id %}"
-                                                       class="btn btn-success d-flex align-items-center justify-content-center"
-                                                       style="width: 130px; height: 40px;">
-                                                        <span class="material-symbols-outlined me-2">edit</span>
-                                                        Redaguoti
-                                                    </a>
-                                                    <button type="button"
-                                                            class="btn btn-danger d-flex align-items-center justify-content-center"
-                                                            data-bs-toggle="modal" data-bs-target="#deleteModal"
-                                                            onclick="setDeleteUrl({{ programa.id }}, '{{ programa.pavadinimas }}')"
-                                                            style="width: 130px; height: 40px;">
-                                                        <span class="material-symbols-outlined me-2">delete</span>
-                                                        Ištrinti
+                                                <div class="dropdown d-inline-block">
+                                                    <button
+                                                            class="btn btn-sm badge-ansamblis dropdown-toggle d-flex align-items-center justify-content-center px-3"
+                                                            type="button"
+                                                            id="valdytiDropdown_{{ programa.id }}"
+                                                            data-bs-toggle="dropdown"
+                                                            aria-expanded="false"
+                                                    >
+                                                        <span class="material-symbols-outlined me-1">manage_accounts</span>
+                                                        Valdyti
                                                     </button>
+                                                    <ul class="dropdown-menu text-center"
+                                                        aria-labelledby="valdytiDropdown_{{ programa.id }}">
+                                                        <li>
+                                                            <a class="dropdown-item d-flex align-items-center justify-content-center gap-2 py-2"
+                                                               href="{% url 'program_edit' programa.id %}">
+                                                                <span class="material-symbols-outlined">edit</span>
+                                                                Redaguoti
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <button
+                                                                    class="dropdown-item d-flex align-items-center justify-content-center gap-2 py-2 text-danger"
+                                                                    onclick="setDeleteUrl({{ programa.id }}, '{{ programa.pavadinimas }}')"
+                                                                    data-bs-toggle="modal"
+                                                                    data-bs-target="#deleteModal"
+                                                            >
+                                                                <span class="material-symbols-outlined">delete_forever</span>
+                                                                Ištrinti
+                                                            </button>
+                                                        </li>
+                                                    </ul>
                                                 </div>
                                             </td>
-                                        {% endif %}
 
+                                        {% endif %}
                                     </tr>
                                 {% empty %}
                                     <tr>
@@ -152,37 +169,47 @@
                                 <ul class="pagination">
                                     {% if page_obj.has_previous %}
                                         <li class="page-item">
-                                            <a class="page-link"
-                                               href="?page={{ page_obj.previous_page_number }}&sort={{ sort_field }}&dir=
-                                                       {{ sort_dir }}{% if tipas_filter %}&tipas={{ tipas_filter }}{% endif %}">«</a>
+                                            <a
+                                                    class="page-link"
+                                                    href="?page={{ page_obj.previous_page_number }}&sort={{ sort_field }}&dir=
+
+                                                            {{ sort_dir }}{% if tipas_filter %}&tipas={{ tipas_filter }}{% endif %}"
+                                            >
+                                                «
+                                            </a>
                                         </li>
                                     {% else %}
                                         <li class="page-item disabled"><span class="page-link">«</span></li>
-                                    {% endif %}
-
-                                    {% for num in page_obj.paginator.page_range %}
-                                        {% if page_obj.number == num %}
-                                            <li class="page-item active"><span class="page-link">{{ num }}</span></li>
-                                        {% else %}
-                                            <li class="page-item">
-                                                <a class="page-link" href="?page={{ num }}&sort={{ sort_field }}&dir=
-                                                        {{ sort_dir }}{% if tipas_filter %}&tipas={{ tipas_filter }}{% endif %}">{{ num }}</a>
-                                            </li>
-                                        {% endif %}
-                                    {% endfor %}
-
-                                    {% if page_obj.has_next %}
-                                        <li class="page-item">
-                                            <a class="page-link"
-                                               href="?page={{ page_obj.next_page_number }}&sort={{ sort_field }}&dir=
-                                                       {{ sort_dir }}{% if tipas_filter %}&tipas={{ tipas_filter }}{% endif %}">»</a>
-                                        </li>
+                                    {% endif %} {% for num in page_obj.paginator.page_range %}
+                                    {% if page_obj.number == num %}
+                                        <li class="page-item active"><span class="page-link">{{ num }}</span></li>
                                     {% else %}
-                                        <li class="page-item disabled"><span class="page-link">»</span></li>
-                                    {% endif %}
+                                        <li class="page-item">
+                                            <a
+                                                    class="page-link"
+                                                    href="?page={{ num }}&sort={{ sort_field }}&dir=
+
+                                                            {{ sort_dir }}{% if tipas_filter %}&tipas={{ tipas_filter }}{% endif %}"
+                                            >
+                                                {{ num }}
+                                            </a>
+                                        </li>
+                                    {% endif %} {% endfor %} {% if page_obj.has_next %}
+                                    <li class="page-item">
+                                        <a
+                                                class="page-link"
+                                                href="?page={{ page_obj.next_page_number }}&sort={{ sort_field }}&dir=
+
+                                                        {{ sort_dir }}{% if tipas_filter %}&tipas={{ tipas_filter }}{% endif %}"
+                                        >
+                                            »
+                                        </a>
+                                    </li>
+                                {% else %}
+                                    <li class="page-item disabled"><span class="page-link">»</span></li>
+                                {% endif %}
                                 </ul>
                             </div>
-
                         </div>
                     </div>
                 </div>
@@ -190,8 +217,10 @@
                 <!-- ✅ Improved DELETE CONFIRMATION MODAL -->
                 <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel"
                      aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered"> <!-- ✅ Center Modal -->
-                        <div class="modal-content shadow-lg border-0 rounded-4"> <!-- ✅ Softened corners -->
+                    <div class="modal-dialog modal-dialog-centered">
+                        <!-- ✅ Center Modal -->
+                        <div class="modal-content shadow-lg border-0 rounded-4">
+                            <!-- ✅ Softened corners -->
 
                             <!-- 🔴 Modal Header with Warning Icon -->
                             <div class="modal-header bg-danger text-white">
@@ -225,24 +254,26 @@
                                     </button>
                                 </form>
                             </div>
-
                         </div>
                     </div>
                 </div>
-
-            </div> <!-- End col -->
-        </div> <!-- End row -->
-    </div> <!-- End container -->
+            </div>
+            <!-- End col -->
+        </div>
+        <!-- End row -->
+    </div>
+    <!-- End container -->
 
     <script>
         document.getElementById("searchInput").addEventListener("keyup", function () {
             let searchValue = this.value.toLowerCase();
             let rows = document.querySelectorAll("#table-body tr");
 
-            rows.forEach(row => {
+            rows.forEach((row) => {
                 let nameElement = row.querySelector("td:nth-child(2)"); // Select the second column (Pavadinimas)
 
-                if (nameElement) { // ✅ Ensure the element exists before accessing textContent
+                if (nameElement) {
+                    // ✅ Ensure the element exists before accessing textContent
                     let name = nameElement.textContent.toLowerCase();
                     row.style.display = name.includes(searchValue) ? "" : "none";
                 }
@@ -262,7 +293,7 @@
                     method: "POST",
                     headers: {
                         "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value,
-                    }
+                    },
                 });
 
                 if (response.ok) {
