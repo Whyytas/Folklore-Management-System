@@ -240,6 +240,13 @@
                 let digits = this.value.replace(/[^0-9]/g, "").slice(0, 3); // Only 3 digits max
                 this.value = digits.split("").join(":"); // Join digits with ":"
             });
+            const searchInput = document.getElementById("searchKuriniai");
+            searchInput.addEventListener("input", debounce(() => {
+                const query = searchInput.value.trim().toLowerCase();
+                const filtered = allKuriniaiCache.filter(k => k.pavadinimas.toLowerCase().includes(query));
+                renderPaginatedKuriniai(filtered, allKuriniaiEl, 1, 10);
+            }, 300));
+
 
             function updateTotalTrukme() {
                 let total = 0;
@@ -254,35 +261,45 @@
 
             let allKuriniaiCache = [];
 
-            function renderPaginatedKuriniai(kuriniai, container, page = 1, perPage = 10) {
+            function renderPaginatedKuriniai(items, container, page = 1, perPage = 10) {
+                const filtered = items.filter(k => !document.getElementById(`selected-${k.id}`));
+                const totalPages = Math.ceil(filtered.length / perPage);
                 const start = (page - 1) * perPage;
-                const end = start + perPage;
-                const pageItems = kuriniai.slice(start, end);
+                const paginated = filtered.slice(start, start + perPage);
 
                 container.innerHTML = "";
-                pageItems.forEach(k => {
-                    if (!document.getElementById(`selected-${k.id}`)) {
-                        renderKurinys(k, container, false);
-                    }
-                });
-
-                renderPaginationControls(kuriniai.length, page, container, perPage);
+                paginated.forEach(k => renderKurinys(k, container, false));
+                renderPaginationControls(totalPages, page, newPage => renderPaginatedKuriniai(items, container, newPage, perPage));
             }
 
 
-            function renderPaginationControls(totalItems, currentPage, container, perPage = 10) {
-                const totalPages = Math.ceil(totalItems / perPage);
-                const paginationEl = document.getElementById("kuriniai-pagination");
-                paginationEl.innerHTML = "";
+            function renderPaginationControls(totalPages, currentPage, onPageChange) {
+                const pagination = document.getElementById("kuriniai-pagination");
+                pagination.innerHTML = "";
+
+                const nav = document.createElement("nav");
+                nav.setAttribute("aria-label", "Puslapiavimas");
+
+                const ul = document.createElement("ul");
+                ul.className = "pagination";
 
                 for (let i = 1; i <= totalPages; i++) {
+                    const li = document.createElement("li");
+                    li.className = `page-item ${i === currentPage ? "active" : ""}`;
+
                     const btn = document.createElement("button");
-                    btn.className = `btn btn-sm ${i === currentPage ? 'btn-dark' : 'btn-outline-secondary'}`;
+                    btn.className = "page-link";
                     btn.textContent = i;
-                    btn.addEventListener("click", () => renderPaginatedKuriniai(allKuriniaiCache, container, i, perPage));
-                    paginationEl.appendChild(btn);
+                    btn.addEventListener("click", () => onPageChange(i));
+
+                    li.appendChild(btn);
+                    ul.appendChild(li);
                 }
+
+                nav.appendChild(ul);
+                pagination.appendChild(nav);
             }
+
 
             function renderKurinys(k, container, isSelected) {
                 const wrapper = document.createElement("div");

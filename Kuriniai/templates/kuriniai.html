@@ -90,11 +90,7 @@
                                 <tr>
                                     <th class="text-end">#</th>
                                     <th class="text-start">
-                                        <a href="?
-
-
-
-                                                {% for k,v in request.GET.items %}{% if k != 'sort' and k != 'page' %}{{ k }}={{ v|urlencode }}&{% endif %}{% endfor %}sort={% if sort_param == 'pavadinimas' %}-pavadinimas{% else %}pavadinimas{% endif %}"
+                                        <a href="?{% for k,v in request.GET.items %}{% if k != 'sort' and k != 'page' %}{{ k }}={{ v|urlencode }}&{% endif %}{% endfor %}sort={% if sort_param == 'pavadinimas' %}-pavadinimas{% else %}pavadinimas{% endif %}"
                                            class="text-decoration-none text-dark d-flex align-items-center gap-1">
                                             Pavadinimas
                                             {% if sort_param == 'pavadinimas' %}
@@ -103,17 +99,11 @@
                                                 <span class="material-symbols-outlined">arrow_drop_down</span>
                                             {% endif %}
                                         </a>
-
-
                                     </th>
 
                                     <th class="text-center">Tipas</th>
                                     <th class="text-center">
-                                        <a href="?
-
-
-
-                                                {% for k,v in request.GET.items %}{% if k != 'sort' and k != 'page' %}{{ k }}={{ v|urlencode }}&{% endif %}{% endfor %}sort={% if sort_param == 'trukme' %}-trukme{% else %}trukme{% endif %}"
+                                        <a href="?{% for k,v in request.GET.items %}{% if k != 'sort' and k != 'page' %}{{ k }}={{ v|urlencode }}&{% endif %}{% endfor %}sort={% if sort_param == 'trukme' %}-trukme{% else %}trukme{% endif %}"
                                            class="text-decoration-none text-dark d-flex justify-content-center align-items-center gap-1">
                                             Trukmė
                                             {% if sort_param == 'trukme' %}
@@ -141,7 +131,10 @@
                                 <tbody id="table-body">
                                 {% for kurinys in kuriniai %}
                                     <tr data-video="{{ kurinys.youtube_url }}">
-                                        <td class="align-middle text-end">{{ forloop.counter }}</td>
+                                        <td class="align-middle text-end">
+                                            {{ forloop.counter }}
+                                        </td>
+
                                         <td class="align-middle text-start fw-bold kurinys-name">{{ kurinys.pavadinimas }}</td>
                                         <td class="align-middle text-center">{{ kurinys.tipas }}</td>
                                         <td class="align-middle text-center">
@@ -273,68 +266,11 @@
                                 {% endfor %}
                                 </tbody>
                             </table>
-                            {% if page_obj.has_other_pages %}
-                                <div class="d-flex justify-content-center mt-3">
-                                    <nav>
-                                        <ul class="pagination">
-                                            {% if page_obj.has_previous %}
-                                                <li class="page-item">
-                                                    <a class="page-link" href="?
-
-
-
-
-
-
-
-
-                                                            {% for key, val in request.GET.items %}{% if key != 'page' %}{{ key }}={{ val|urlencode }}&{% endif %}{% endfor %}page={{ page_obj.previous_page_number }}">«</a>
-                                                </li>
-                                            {% else %}
-                                                <li class="page-item disabled"><span class="page-link">«</span></li>
-                                            {% endif %}
-
-                                            {% for num in page_obj.paginator.page_range %}
-                                                {% if page_obj.number == num %}
-                                                    <li class="page-item active"><span
-                                                            class="page-link">{{ num }}</span></li>
-                                                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-                                                    <li class="page-item">
-                                                        <a class="page-link" href="?
-
-
-
-
-
-
-
-
-                                                                {% for key, val in request.GET.items %}{% if key != 'page' %}{{ key }}={{ val|urlencode }}&{% endif %}{% endfor %}page={{ num }}">{{ num }}</a>
-                                                    </li>
-                                                {% endif %}
-                                            {% endfor %}
-
-                                            {% if page_obj.has_next %}
-                                                <li class="page-item">
-                                                    <a class="page-link" href="?
-
-
-
-
-
-
-
-
-                                                            {% for key, val in request.GET.items %}{% if key != 'page' %}{{ key }}={{ val|urlencode }}&{% endif %}{% endfor %}page={{ page_obj.next_page_number }}">»</a>
-                                                </li>
-                                            {% else %}
-                                                <li class="page-item disabled"><span class="page-link">»</span></li>
-                                            {% endif %}
-                                        </ul>
-                                    </nav>
-                                </div>
-                            {% endif %}
-
+                            <div class="d-flex justify-content-center mt-3">
+                                <nav>
+                                    <ul class="pagination"></ul>
+                                </nav>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -357,7 +293,7 @@
                             <!-- Modal Body -->
                             <div class="modal-body bg-light p-2 d-flex justify-content-center align-items-center">
                                 <img id="imageViewer" src="" class="rounded shadow"
-                                     style="display: block; max-width: 70vw; max-height: 75vh; object-fit: contain;">
+                                     style="display: block; max-width: 70vw; max-height: 75vh; object-fit: contain;" alt="">
                             </div>
 
                             <!-- Modal Footer -->
@@ -514,75 +450,153 @@
     </div>
 
     <script>
-        // Search filtering
-        document.getElementById("searchInput").addEventListener("keyup", function () {
-            let value = this.value.toLowerCase();
-            document.querySelectorAll("#table-body tr").forEach(row => {
-                let name = row.querySelector(".kurinys-name").textContent.toLowerCase();
-                row.style.display = name.includes(value) ? "" : "none";
-            });
+    // Modal handling
+    function setDeleteUrl(id, name) {
+        document.getElementById("kurinysName").innerText = name;
+        document.getElementById("deleteForm").action = `/kuriniai/${id}/delete/`;
+    }
+
+    function showLyrics(title, text) {
+        document.getElementById("lyricsTitle").innerText = title;
+        document.getElementById("lyricsText").innerText = text || "Žodžių nėra.";
+        new bootstrap.Modal(document.getElementById("lyricsModal")).show();
+    }
+
+    function showDescription(title, text) {
+        document.getElementById("descriptionTitle").innerText = title;
+        document.getElementById("descriptionText").innerText = text || "Aprašymo nėra.";
+        new bootstrap.Modal(document.getElementById("descriptionModal")).show();
+    }
+
+    function showPDF(title, pdfUrl) {
+        document.getElementById("pdfModalTitle").innerText = title;
+        document.getElementById("pdfViewer").src = pdfUrl;
+        new bootstrap.Modal(document.getElementById("pdfModal")).show();
+    }
+
+    // Delete submission
+    async function delete_kurinys(event) {
+        event.preventDefault();
+        const form = document.getElementById("deleteForm");
+        const res = await fetch(form.action, {
+            method: "POST",
+            headers: { "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value },
         });
-
-        // Modal handling
-        function setDeleteUrl(id, name) {
-            document.getElementById("kurinysName").innerText = name;
-            document.getElementById("deleteForm").action = `/kuriniai/${id}/delete/`;
+        if (res.ok) {
+            bootstrap.Modal.getInstance(document.getElementById("deleteModal")).hide();
+            setTimeout(() => location.reload(), 500);
+        } else {
+            alert("Klaida: Nepavyko ištrinti kūrinio!");
         }
+    }
 
-        function showLyrics(title, text) {
-            document.getElementById("lyricsTitle").innerText = title;
-            document.getElementById("lyricsText").innerText = text || "Žodžių nėra.";
-            new bootstrap.Modal(document.getElementById("lyricsModal")).show();
-        }
+    function paginateTable(rows, perPage = 15) {
+        const tableBody = document.querySelector("#table-body");
+        const pagination = document.querySelector(".pagination");
+        const total = rows.length;
+        const pages = Math.ceil(total / perPage);
 
-        function showDescription(title, text) {
-            document.getElementById("descriptionTitle").innerText = title;
-            document.getElementById("descriptionText").innerText = text || "Aprašymo nėra.";
-            new bootstrap.Modal(document.getElementById("descriptionModal")).show();
-        }
+        // Clear existing
+        tableBody.innerHTML = "";
+        pagination.innerHTML = "";
 
-        function showPDF(title, pdfUrl) {
-            document.getElementById("pdfModalTitle").innerText = title;
-            document.getElementById("pdfViewer").src = pdfUrl;
-            new bootstrap.Modal(document.getElementById("pdfModal")).show();
-        }
-
-
-        // Delete submission
-        async function delete_kurinys(event) {
-            event.preventDefault();
-            const form = document.getElementById("deleteForm");
-            const res = await fetch(form.action, {
-                method: "POST",
-                headers: {"X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value}
+        function renderPage(page) {
+            tableBody.innerHTML = "";
+            const start = (page - 1) * perPage;
+            const end = start + perPage;
+            rows.slice(start, end).forEach((row, index) => {
+                row.querySelector("td.text-end").innerText = start + index + 1;
+                tableBody.appendChild(row);
             });
-            if (res.ok) {
-                bootstrap.Modal.getInstance(document.getElementById("deleteModal")).hide();
-                setTimeout(() => location.reload(), 500);
-            } else {
-                alert("Klaida: Nepavyko ištrinti kūrinio!");
+
+            // update pagination UI
+            pagination.innerHTML = "";
+            for (let i = 1; i <= pages; i++) {
+                const li = document.createElement("li");
+                li.className = "page-item" + (i === page ? " active" : "");
+                li.innerHTML = `<a class="page-link" href="#">${i}</a>`;
+                li.onclick = () => renderPage(i);
+                pagination.appendChild(li);
             }
         }
 
-        // Show toast if redirected with success param
-        document.addEventListener("DOMContentLoaded", function () {
-            if (new URLSearchParams(window.location.search).get("success") === "true") {
-                new bootstrap.Toast(document.getElementById("toastSuccess")).show();
-            }
+        renderPage(1);
+    }
+
+    // Show toast if redirected with success param
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const url = new URL(window.location.href);
+        history.replaceState(null, "", url.toString());
+
+    const searchInput = document.getElementById("searchInput");
+    const tableBody = document.getElementById("table-body");
+    const pagination = document.querySelector(".pagination");
+
+    const allRows = Array.from(tableBody.querySelectorAll("tr"));
+    const perPage = 15;
+    let filteredRows = [...allRows];
+
+    function renderPage(page) {
+        tableBody.innerHTML = "";
+        const start = (page - 1) * perPage;
+        const end = start + perPage;
+        const rowsToShow = filteredRows.slice(start, end);
+
+        rowsToShow.forEach((row, index) => {
+            row.querySelector("td.text-end").innerText = start + index + 1;
+            tableBody.appendChild(row);
         });
 
-        function showImage(title, imageUrl) {
-            document.getElementById("imageModalTitle").innerText = title;
-            document.getElementById("imageViewer").src = imageUrl;
-
-            // Set download button
-            const downloadBtn = document.getElementById("downloadImageBtn");
-            downloadBtn.href = imageUrl;
-            downloadBtn.setAttribute("download", title + ".jpg");
-
-            new bootstrap.Modal(document.getElementById("imageModal")).show();
+        pagination.innerHTML = "";
+        if (filteredRows.length <= perPage) {
+            pagination.classList.add("d-none");
+            return;
         }
 
+        pagination.classList.remove("d-none");
+        const totalPages = Math.ceil(filteredRows.length / perPage);
+        for (let i = 1; i <= totalPages; i++) {
+            const li = document.createElement("li");
+            li.className = "page-item" + (i === page ? " active" : "");
+            li.innerHTML = `<a class="page-link" href="#">${i}</a>`;
+            li.addEventListener("click", function (e) {
+                e.preventDefault();
+                renderPage(i);
+            });
+            pagination.appendChild(li);
+        }
+    }
 
-    </script>
+    function applySearch() {
+        const query = searchInput.value.toLowerCase().trim();
+        if (query === "") {
+    filteredRows = [...allRows]; // Reset to all rows
+} else {
+    filteredRows = allRows.filter(row => {
+        const name = row.querySelector(".kurinys-name")?.textContent.toLowerCase() || "";
+        return name.includes(query);
+    });
+}
+
+        renderPage(1);
+    }
+
+    searchInput.addEventListener("input", applySearch);
+    renderPage(1); // Initial render
+});
+
+    function showImage(title, imageUrl) {
+        document.getElementById("imageModalTitle").innerText = title;
+        document.getElementById("imageViewer").src = imageUrl;
+
+        // Set download button
+        const downloadBtn = document.getElementById("downloadImageBtn");
+        downloadBtn.href = imageUrl;
+        downloadBtn.setAttribute("download", title + ".jpg");
+
+        new bootstrap.Modal(document.getElementById("imageModal")).show();
+    }
+</script>
+
 {% endblock content %}

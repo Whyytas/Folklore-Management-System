@@ -26,18 +26,11 @@ YOUTUBE_API_KEY = settings.YOUTUBE_API_KEY  # ⚠️ Replace with your actual AP
 
 def kuriniai_list(request):
     selected_ansamblis_id = request.session.get("selected_ansamblis_id")
-    kuriniai = Kurinys.objects.all().order_by("-created_at", "-id")
     sort_param = request.GET.get("sort", "pavadinimas")
 
     valid_sorts = ["pavadinimas", "-pavadinimas", "trukme", "-trukme"]
     if sort_param not in valid_sorts:
         sort_param = "pavadinimas"
-
-
-    if selected_ansamblis_id:
-        kuriniai = kuriniai.filter(ansambliai__id=selected_ansamblis_id)
-
-    kuriniai = kuriniai.order_by(sort_param)
 
     filters = {
         'tipas': request.GET.get('tipas'),
@@ -46,6 +39,11 @@ def kuriniai_list(request):
         'paruosimas': request.GET.get('paruosimas'),
         'pozymiai': request.GET.get('pozymiai'),
     }
+
+    kuriniai = Kurinys.objects.all()
+
+    if selected_ansamblis_id:
+        kuriniai = kuriniai.filter(ansambliai__id=selected_ansamblis_id)
 
     if filters['tipas']:
         kuriniai = kuriniai.filter(tipas=filters['tipas'])
@@ -58,14 +56,11 @@ def kuriniai_list(request):
     if filters['pozymiai']:
         kuriniai = kuriniai.filter(pozymiai__id=filters['pozymiai'])
 
-    # PAGINATION
-    paginator = Paginator(kuriniai, 15)
-    page_number = request.GET.get("page")
-    page_obj = paginator.get_page(page_number)
+    kuriniai = kuriniai.order_by(sort_param)
 
     return render(request, "kuriniai.html", {
-        "page_obj": page_obj,
-        "kuriniai": page_obj.object_list,
+        "page_obj": None,
+        "kuriniai": kuriniai,  # send all to frontend
         "all_ansambliai": Ansamblis.objects.all(),
         "all_pozymiai": Pozymis.objects.all(),
         "filters": filters,
@@ -75,7 +70,6 @@ def kuriniai_list(request):
         "regionas_choices": Kurinys._meta.get_field("regionas").choices,
         "sort_param": sort_param,
     })
-
 def kuriniai_add(request):
     if request.user.role == "narys":
         return HttpResponseForbidden("Jūs neturite teisės pridėti kūrinių.")
