@@ -140,26 +140,32 @@ def kuriniai_edit(request, kurinys_id):
                     if new_trukme:
                         kurinys.trukme = new_trukme
 
+            # Handle new PDF upload
+            if 'natos' in request.FILES:
+                if kurinys.natos:
+                    kurinys.natos.delete(save=False)
+                if kurinys.natos_image:
+                    kurinys.natos_image.delete(save=False)
+
+                kurinys.natos = request.FILES['natos']
+                handle_pdf_conversion(kurinys)
+
             kurinys.save()
             kurinys.ansambliai.set(request.POST.getlist("ansambliai"))
             kurinys.pozymiai.set(request.POST.getlist("pozymiai"))
-
-            if 'natos' in request.FILES:
-                handle_pdf_conversion(kurinys)
-                kurinys.save()
 
             return JsonResponse({"success": True})
 
         return JsonResponse({"success": False, "error": "Invalid form data"}, status=400)
 
     form = KurinysForm(instance=kurinys)
-    pozymiai = Pozymis.objects.all()  # ✅ Add this line
+    pozymiai = Pozymis.objects.all()
 
     return render(request, "kuriniaiEdit.html", {
         "kurinys": kurinys,
         "form": form,
         "ansambliai": user_ansambliai,
-        "pozymiai": pozymiai,  # ✅ Pass to template
+        "pozymiai": pozymiai,
     })
 
 def delete_kurinys(request, kurinys_id):
@@ -168,6 +174,14 @@ def delete_kurinys(request, kurinys_id):
 
     if request.method == "POST":
         kurinys = get_object_or_404(Kurinys, id=kurinys_id)
+
+        # Delete files from storage if they exist
+        if kurinys.natos:
+            kurinys.natos.delete(save=False)
+
+        if kurinys.natos_image:
+            kurinys.natos_image.delete(save=False)
+
         kurinys.delete()
         return JsonResponse({"success": True})
 

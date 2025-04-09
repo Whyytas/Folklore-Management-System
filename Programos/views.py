@@ -13,8 +13,8 @@ import json
 from django.http import JsonResponse, HttpResponseForbidden
 import random
 
-
 from django.core.paginator import Paginator
+
 
 def programos_page(request):
     selected_ansamblis_id = request.session.get("selected_ansamblis_id")
@@ -43,6 +43,7 @@ def programos_page(request):
         'tipas_filter': tipas_filter,
         'tipai': Programa.PROGRAM_TIPAS,
     })
+
 
 def program_generate(request):
     if request.user.role == "narys":
@@ -222,6 +223,8 @@ def program_edit(request, pk):
         "ansambliai": Ansamblis.objects.all(),
     }
     return render(request, "programEdit.html", context)
+
+
 def istrinti_programa(request, pk):
     if request.user.role == "narys":
         return HttpResponseForbidden("Jūs neturite teisės ištrinti programų.")
@@ -247,8 +250,6 @@ def programos_kuriniai_view(request, pk):
     })
 
 
-@csrf_exempt
-@require_POST
 def generate_kuriniai(request):
     try:
         data = json.loads(request.body)
@@ -304,10 +305,7 @@ def generate_kuriniai(request):
 
             return JsonResponse(_kuriniai_to_json(result), safe=False)
 
-
-
         else:
-            response = []
             used_pradzia_id = _recent_programa_pradzia_kurinys()
             pradzia_pozymis = Pozymis.objects.filter(pavadinimas__iexact="Pradžia").first()
             pradzia_candidates = all_kuriniai.exclude(paruosimas__in=["Archyvas", "Naujas"])
@@ -318,80 +316,102 @@ def generate_kuriniai(request):
             if used_pradzia_id:
                 pradzia_candidates = pradzia_candidates.exclude(id=used_pradzia_id)
 
-            pradzia_kurinys = None
+            pradzia_kurinys = next(
+                (k for k in pradzia_candidates if k.trukme and ":" in k.trukme),
+                None
+            )
 
-            for k in pradzia_candidates:
-                if k.trukme and ":" in k.trukme:
-                    pradzia_kurinys = k
-                    break
+            # 👇 fallback if santykis is missing or invalid
+            if not santykis or ":" not in santykis:
+                return JsonResponse(_kuriniai_to_json([pradzia_kurinys] if pradzia_kurinys else []), safe=False)
+
+            try:
+                d, s_, k = map(int, santykis.split(":"))
+            except Exception:
+                return JsonResponse({
+                    "error": "Neteisingas santykio formatas. Pvz: 3:2:1"
+                }, status=400)
+
+            available = all_kuriniai.filter(
+                pozymiai__pavadinimas__iexact=tipas,
+                trukme__contains=":"
+            ).exclude(paruosimas__in=["Archyvas", "Naujas"]).distinct()
 
             if pradzia_kurinys:
-                response.append(pradzia_kurinys)
+                available = available.exclude(id=pradzia_kurinys.id)
 
-            if santykis and ":" in santykis:
-                try:
-                    d, s_, k = map(int, santykis.split(":"))
+            groups = {"Daina": [], "Šokis": [], "Kapela": []}
+            for kur in available:
+                if kur.tipas in groups and ":" in kur.trukme:
+                    groups[kur.tipas].append(kur)
 
-                except Exception:
-                    return JsonResponse({
-                        "error": "Neteisingas santykio formatas. Pvz: 3:2:1"
-                    }, status=400)
+            for g in groups:
+                random.shuffle(groups[g])
 
-                available = all_kuriniai.filter(
-                    pozymiai__pavadinimas__iexact=tipas,
-                    trukme__contains=":"
-                ).exclude(paruosimas__in=["Archyvas", "Naujas"]).distinct()
+            cycle = ["Daina"] * d + ["Šokis"] * s_ + ["Kapela"] * k
+            total_result = []
+            total_time = 0
 
-                if pradzia_kurinys:
-                    available = available.exclude(id=pradzia_kurinys.id)
+            # Sort each group by shortest duration first
+            for group_name in groups:
+                groups[group_name].sort(
+                    key=lambda k: sum(int(x) * 60 ** i for i, x in enumerate(reversed(k.trukme.split(":")))))
 
-                groups = {"Daina": [], "Šokis": [], "Kapela": []}
+            first_group_added = False
 
-                for kur in available:
-                    if kur.tipas in groups and ":" in kur.trukme:
-                        groups[kur.tipas].append(kur)
+            while True:
+                group = []
+                group_time = 0
+                for group_name in cycle:
+                    if not groups[group_name]:
+                        group = []
+                        break
 
-                for g in groups:
-                    random.shuffle(groups[g])
+                    kur = groups[group_name].pop(0)
+                    m, s = map(int, kur.trukme.split(":"))
+                    dur = m * 60 + s
+                    group.append((kur, dur))
+                    group_time += dur
 
-                # Convert ratio into cycle
-                cycle = ["Daina"] * d + ["Šokis"] * s_ + ["Kapela"] * k
-                total_result = []
-                total_time = 0
+                if not group:
+                    break
 
-                while True:
-                    group = []
-                    group_time = 0
-                    for group_name in cycle:
-                        if not groups[group_name]:
-                            group = []
-                            break
-
-                        kur = groups[group_name].pop(0)
-                        m, s = map(int, kur.trukme.split(":"))
-                        dur = m * 60 + s
-                        group.append((kur, dur))
-                        group_time += dur
-
-                    if not group:
-                        break  # couldn't form full group
-
+                if not first_group_added:
                     total_result.extend([k for k, _ in group])
                     total_time += group_time
+                    first_group_added = True
+                    continue
 
-                # Sort the group result (Pradzia already added)
-                sort_order = {"Daina": 1, "Kapela": 2, "Šokis": 3}
-                sorted_result = sorted(total_result, key=lambda x: sort_order.get(x.tipas, 99))
-                if pradzia_kurinys:
-                    final_result = [pradzia_kurinys] + sorted_result
-                else:
-                    final_result = sorted_result
+                if total_time + group_time > target_seconds:
+                    # Try to build shortest possible group
+                    short_group = []
+                    short_time = 0
+                    for group_name in cycle:
+                        for candidate in groups[group_name]:
+                            if ":" not in candidate.trukme:
+                                continue
+                            m, s = map(int, candidate.trukme.split(":"))
+                            dur = m * 60 + s
+                            short_group.append((candidate, dur))
+                            short_time += dur
+                            break
 
-                return JsonResponse(_kuriniai_to_json(final_result), safe=False)
+                    if short_group and total_time + short_time <= target_seconds:
+                        total_result.extend([k for k, _ in short_group])
+                    break
 
-            return JsonResponse(_kuriniai_to_json(response), safe=False)
+                total_result.extend([k for k, _ in group])
+                total_time += group_time
 
+            sort_order = {"Daina": 1, "Kapela": 2, "Šokis": 3}
+            sorted_result = sorted(total_result, key=lambda x: sort_order.get(x.tipas, 99))
 
+            final_result = []
+            if pradzia_kurinys:
+                final_result.append(pradzia_kurinys)
+            final_result.extend(sorted_result)
+
+            return JsonResponse(_kuriniai_to_json(final_result), safe=False)
 
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=400)
