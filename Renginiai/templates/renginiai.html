@@ -94,10 +94,17 @@
                                         <td class="align-middle text-start fw-bold">{{ renginys.pavadinimas }}</td>
                                         <td class="align-middle text-start">{{ renginys.adresas }}</td>
                                         <td class="align-middle text-center">
-                                            {% if renginys.programa %} {{ renginys.programa.pavadinimas }} {% else %}
+                                            {% if renginys.programa %}
+                                                <a href="{% url 'programos_kuriniai' renginys.programa.id %}"
+                                                   class="text-decoration-none">
+                                                    <span class="badge-ansamblis p-1">{{ renginys.programa.pavadinimas }}</span>
+                                                </a>
+                                            {% else %}
                                                 <span class="text-muted">Nėra programos</span>
                                             {% endif %}
                                         </td>
+
+
                                         <td class="align-middle text-center">
                                             {{ renginys.data_laikas|date:"Y-m-d H:i" }}
                                         </td>
@@ -155,6 +162,8 @@
                                                     class="page-link"
                                                     href="?page={{ num }}&sort={{ sort_field }}&dir=
 
+
+
                                                             {{ sort_dir }}{% if programa_id %}&programa_id={{ programa_id }}{% endif %}{% if search %}&search={{ search }}{% endif %}"
                                             >
                                                 «
@@ -171,6 +180,8 @@
                                                     class="page-link"
                                                     href="?page={{ num }}&sort={{ sort_field }}&dir=
 
+
+
                                                             {{ sort_dir }}{% if programa_id %}&programa_id={{ programa_id }}{% endif %}{% if search %}&search={{ search }}{% endif %}"
                                             >
                                                 {{ num }}
@@ -181,6 +192,8 @@
                                         <a
                                                 class="page-link"
                                                 href="?page={{ num }}&sort={{ sort_field }}&dir=
+
+
 
                                                         {{ sort_dir }}{% if programa_id %}&programa_id={{ programa_id }}{% endif %}{% if search %}&search={{ search }}{% endif %}"
                                         >
