@@ -52,6 +52,8 @@
                                     <th class="text-end">#</th>
                                     <th class="text-start">
                                         <a href="?
+
+
                                                 {% for k,v in request.GET.items %}{% if k != 'sort' and k != 'page' %}{{ k }}={{ v|urlencode }}&{% endif %}{% endfor %}
     sort={% if sort_param == 'pavadinimas' %}-pavadinimas{% else %}pavadinimas{% endif %}"
                                            class="text-decoration-none text-dark d-flex align-items-center gap-1">
@@ -64,6 +66,7 @@
                                         </a>
                                     </th>
                                     <th class="text-center">Miestas</th>
+                                    <th class="text-center">Padalinys</th>
                                     <th class="text-center">Valdyti</th>
                                 </tr>
                                 </thead>
@@ -73,6 +76,9 @@
                                         <td class="align-middle text-end">{{ forloop.counter }}</td>
                                         <td class="align-middle text-start fw-bold">{{ ansamblis.pavadinimas }}</td>
                                         <td class="align-middle text-center">{{ ansamblis.miestas }}</td>
+                                        <td class="align-middle text-center">
+                                            {{ ansamblis.padalinys.pavadinimas|default:"-" }}
+                                        </td>
                                         <td class="align-middle text-center">
                                             <div class="dropdown d-inline-block">
                                                 <button class="btn btn-sm badge-ansamblis dropdown-toggle d-flex align-items-center justify-content-center px-3"
@@ -118,6 +124,8 @@
                                             {% if page_obj.has_previous %}
                                                 <li class="page-item">
                                                     <a class="page-link" href="?
+
+
                                                             {% for k,v in request.GET.items %}{% if k != 'page' %}{{ k }}={{ v|urlencode }}&{% endif %}{% endfor %}page={{ page_obj.previous_page_number }}">«</a>
                                                 </li>
                                             {% endif %}
@@ -127,6 +135,8 @@
                                                     </li>
                                                 {% elif i >= page_obj.number|add:'-2' and i <= page_obj.number|add:'2' %}
                                                     <li class="page-item"><a class="page-link" href="?
+
+
                                                             {% for k,v in request.GET.items %}{% if k != 'page' %}{{ k }}={{ v|urlencode }}&{% endif %}{% endfor %}page={{ i }}">{{ i }}</a>
                                                     </li>
                                                 {% endif %}
@@ -134,6 +144,8 @@
                                             {% if page_obj.has_next %}
                                                 <li class="page-item">
                                                     <a class="page-link" href="?
+
+
                                                             {% for k,v in request.GET.items %}{% if k != 'page' %}{{ k }}={{ v|urlencode }}&{% endif %}{% endfor %}page={{ page_obj.next_page_number }}">»</a>
                                                 </li>
                                             {% endif %}

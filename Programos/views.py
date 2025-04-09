@@ -120,6 +120,8 @@ def program_create(request):
             data = json.loads(request.body)
             pavadinimas = data.get("pavadinimas")
             tipas = data.get("tipas")
+            aprasymas = data.get("aprasymas", "")
+            ansamblis_id = data.get("ansamblis")
             kuriniai_data = data.get("kuriniai", [])
 
             if not pavadinimas or not tipas or not kuriniai_data:
@@ -127,7 +129,9 @@ def program_create(request):
 
             programa = Programa.objects.create(
                 pavadinimas=pavadinimas,
-                tipas=tipas
+                tipas=tipas,
+                aprasymas=aprasymas,
+                ansamblis_id=ansamblis_id or None
             )
 
             kurinys_ids = [item["id"] for item in kuriniai_data]
@@ -150,7 +154,6 @@ def program_create(request):
                             eile=eile
                         )
                     )
-                    # Calculate total trukme
                     if kurinys.trukme and ":" in kurinys.trukme:
                         m, s = map(int, kurinys.trukme.split(":"))
                         total_seconds += m * 60 + s
@@ -184,43 +187,41 @@ def program_edit(request, pk):
     if request.method == "POST":
         try:
             data = json.loads(request.body)
-            programa.pavadinimas = data.get("pavadinimas")
-            programa.tipas = data.get("tipas")
-            programa.aprasymas = data.get("aprasymas", "")
-            programa.trukme = data.get("trukme")
 
+            programa.pavadinimas = data["pavadinimas"]
+            programa.tipas = data["tipas"]
+            programa.aprasymas = data.get("aprasymas", "")
+            programa.trukme = data["trukme"]
             ansamblis_id = data.get("ansamblis")
             programa.ansamblis_id = ansamblis_id if ansamblis_id else None
-
-            # Calculate total trukme from kūriniai
             kuriniai_data = data.get("kuriniai", [])
 
             programa.save()
 
             ProgramosKurinys.objects.filter(programa=programa).delete()
-            for index, k_data in enumerate(kuriniai_data, start=1):
+            for k_data in kuriniai_data:
                 kurinys = Kurinys.objects.get(id=k_data["id"])
-                ProgramosKurinys.objects.create(programa=programa, kurinys=kurinys, eile=index)
+                eile = k_data.get("eile")
+                ProgramosKurinys.objects.create(
+                    programa=programa,
+                    kurinys=kurinys,
+                    eile=eile
+                )
 
-            return JsonResponse({"redirect": "/programos"}, status=200)
+            return JsonResponse({"redirect": "/programos"})
 
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=400)
 
-    kuriniai = Kurinys.objects.all()
     selected_kuriniai = ProgramosKurinys.objects.filter(programa=programa).order_by("eile")
-
     context = {
         "programa": programa,
-        "kuriniai": kuriniai,
         "selected_kuriniai": selected_kuriniai,
         "selected_kuriniai_ids": [pk.kurinys.id for pk in selected_kuriniai],
         "tipai": Programa.PROGRAM_TIPAS,
         "ansambliai": Ansamblis.objects.all(),
     }
     return render(request, "programEdit.html", context)
-
-
 def istrinti_programa(request, pk):
     if request.user.role == "narys":
         return HttpResponseForbidden("Jūs neturite teisės ištrinti programų.")

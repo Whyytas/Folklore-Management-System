@@ -8,9 +8,9 @@
             <div class="col-md-8">
                 <div class="card shadow">
                     <div class="card-header d-flex align-items-center gap-2 py-3 table-header-custom">
-    <span class="material-symbols-outlined">edit</span>
-    <h4 class="mb-0">Redaguoti Ansamblį</h4>
-</div>
+                        <span class="material-symbols-outlined">edit</span>
+                        <h4 class="mb-0">Redaguoti Ansamblį</h4>
+                    </div>
 
                     <div class="card-body">
                         <form method="post" id="editAnsamblisForm">
@@ -34,9 +34,27 @@
                                        value="{{ form.miestas.value|default_if_none:'' }}" required>
                             </div>
 
+                            <!-- ✅ Padalinys Dropdown -->
+                            <div class="mb-4">
+                                <label for="padalinys" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">apartment</span> Padalinys
+                                </label>
+                                <select id="padalinys" name="padalinys" class="form-select">
+                                    <option value="">Pasirinkite padalinį</option>
+                                    {% for p in padaliniai %}
+                                        <option value="{{ p.id }}"
+                                                {% if form.padalinys.value|stringformat:"s" == p.id|stringformat:"s" %}selected{% endif %}>
+                                            {{ p.pavadinimas }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+
                             <!-- ✅ Buttons -->
                             <div class="d-flex justify-content-between mt-4">
-                                <a href="{% url 'ansambliai_list' %}" class="btn btn-outline-secondary d-flex align-items-center">
+                                <a href="{% url 'ansambliai_list' %}"
+                                   class="btn btn-outline-secondary d-flex align-items-center">
                                     <span class="material-symbols-outlined me-1">arrow_back</span> Atšaukti
                                 </a>
                                 <button type="submit" class="btn primary-background d-flex align-items-center">

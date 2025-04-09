@@ -46,6 +46,7 @@
                                     </th>
                                     <th class="text-start">Adresas</th>
                                     <th class="text-center">Tel. nr.</th>
+                                    <th class="text-start">Ansambliai</th>
                                     <th class="text-center">Valdyti</th>
                                 </tr>
                                 </thead>
@@ -57,6 +58,15 @@
                                         <td class="align-middle text-start fw-bold">{{ padalinys.pavadinimas }}</td>
                                         <td class="align-middle text-start">{{ padalinys.adresas }}</td>
                                         <td class="align-middle text-center">{{ padalinys.tel_nr }}</td>
+                                        <td class="align-middle text-start">
+                                            {% if padalinys.ansambliai.exists %}
+                                                {% for ansamblis in padalinys.ansambliai.all %}
+                                                    <span class = "badge badge-ansamblis">{{ ansamblis.pavadinimas }}</span>
+                                                {% endfor %}
+                                            {% else %}
+                                                <span class="text-muted">—</span>
+                                            {% endif %}
+                                        </td>
 
                                         <td class="align-middle text-center">
                                             <div class="dropdown d-inline-block">

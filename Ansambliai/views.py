@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.views.decorators.http import require_GET
 
 from Kuriniai.models import Kurinys
+from Padaliniai.models import Padalinys
 from .models import Ansamblis
 from .forms import AnsamblisForm
 
@@ -54,7 +55,8 @@ def ansamblis_add(request):
             return redirect('ansambliai_list')
     else:
         form = AnsamblisForm()
-    return render(request, 'ansamblis_add.html', {'form': form})
+    padaliniai = Padalinys.objects.all()
+    return render(request, 'ansamblis_add.html', {'form': form, 'padaliniai': padaliniai})
 
 
 @login_required
@@ -70,8 +72,11 @@ def ansamblis_edit(request, pk):
             return redirect('ansambliai_list')
     else:
         form = AnsamblisForm(instance=ansamblis)
-
-    return render(request, 'ansamblis_edit.html', {'form': form})
+    padaliniai = Padalinys.objects.all()
+    return render(request, 'ansamblis_edit.html', {
+        'form': form,
+        'padaliniai': padaliniai
+    })
 
 
 @login_required

@@ -7,10 +7,16 @@
         <div class="row justify-content-center">
             <div class="col-lg-8">
                 <div class="card shadow">
-                    <div class="card-header bg-primary text-white text-center">
-                        <h4>{{ programa.pavadinimas }}</h4>
-                        <p class="mb-0">Programa Tipas: {{ programa.get_tipas_display }}</p>
+                    <div class="card-header table-header-custom py-3">
+                        <div class="d-flex flex-column">
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="material-symbols-outlined">schedule</span>
+                                <h4 class="mb-0">{{ programa.pavadinimas }}</h4>
+                            </div>
+                            <small class="text-white ms-4">Programos tipas: {{ programa.get_tipas_display }}</small>
+                        </div>
                     </div>
+
                     <div class="card-body">
                         <h5 class="mb-3">Kūriniai</h5>
                         <div class="table-responsive">
@@ -37,7 +43,7 @@
                                             <!-- ✅ Centered "Peržiūrėti" Button -->
                                             <td class="align-middle text-center">
                                                 <div class="dropdown d-flex justify-content-center">
-                                                    <button class="btn btn-outline-primary d-flex justify-content-center align-items-center px-3 py-2 text-center"
+                                                    <button class="btn badge-ansamblis d-flex justify-content-center align-items-center px-3 py-2 text-center"
                                                             type="button" id="perziuraBtn{{ pk.kurinys.id }}"
                                                             data-bs-toggle="dropdown" aria-expanded="false"
                                                             style="min-width: 150px;">
@@ -115,10 +121,21 @@
                             <p class="fw-bold text-secondary">
                                 Įrašų trukmė: <span id="recorded-time">00:00</span>
                             </p>
-                            <p class="fw-bold text-primary">
+                            <p class="fw-bold primary">
                                 Bendra trukmė: <span id="total-time">{{ programa.trukme|default:"00:00" }}</span>
                             </p>
                         </div>
+                        {% if programa.aprasymas %}
+                            <div class="mt-4">
+                                <h5 class="d-flex align-items-center gap-2 mb-2 text-secondary">
+                                    <span class="material-symbols-outlined">subject</span>
+                                    Aprašymas
+                                </h5>
+                                <div class="border rounded p-3 bg-light text-dark"">
+                                    {{ programa.aprasymas }}
+                                </div>
+                            </div>
+                        {% endif %}
 
 
                         <!-- ✅ Back Button -->

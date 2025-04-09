@@ -54,15 +54,18 @@
                                 <span class="material-symbols-outlined primary me-2">groups</span>
                                 <strong>Ansambliai:</strong>
                                 <div class="ms-2">
-                                    {% if user.ansambliai.all %}
+                                    {% if user.role == "administratorius" %}
+                                        <span class="badge badge-ansamblis text-dark fs-6 p-2 rounded-pill">Visi</span>
+                                    {% elif user.ansambliai.all %}
                                         {% for ansamblis in user.ansambliai.all %}
-                                            <span class="badge bg-info text-dark fs-6 p-2 rounded-pill">
+                                            <span class="badge badge-ansamblis fs-6 p-2 rounded-pill">
                                                 {{ ansamblis.pavadinimas }}
                                             </span>
                                         {% endfor %}
                                     {% else %}
                                         <span class="text-muted">Nėra priskirtų ansamblių</span>
                                     {% endif %}
+
                                 </div>
                             </li>
                         </ul>
@@ -73,7 +76,8 @@
                         <a href="{% url 'nariai' %}" class="btn btn-outline-secondary d-flex align-items-center">
                             <span class="material-symbols-outlined me-1">arrow_back</span> Grįžti
                         </a>
-                        <a href="{% url 'nariai_edit' user.id %}" class="btn primary-background d-flex align-items-center">
+                        <a href="{% url 'nariai_edit' user.id %}"
+                           class="btn primary-background d-flex align-items-center">
                             <span class="material-symbols-outlined me-1">edit</span> Redaguoti
                         </a>
                     </div>

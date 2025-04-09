@@ -49,7 +49,7 @@
                                                    placeholder="Ieškoti kūrinio...">
                                         </div>
                                         <div id="kuriniai-loading" class="text-center my-3 d-none">
-                                            <div class="spinner-border text-primary" role="status">
+                                            <div class="spinner-border text-primary primary" role="status">
                                                 <span class="visually-hidden">Kraunama...</span>
                                             </div>
                                         </div>
@@ -277,15 +277,6 @@
     <!-- JS -->
     <script>
         // Real-time search filtering
-        document.getElementById("searchKuriniai").addEventListener("input", function () {
-            const query = this.value.toLowerCase();
-            const items = document.querySelectorAll("#all-kuriniai .kuriniai-item");
-
-            items.forEach(item => {
-                const title = item.querySelector(".fw-bold").innerText.toLowerCase();
-                item.style.display = title.includes(query) ? "block" : "none";
-            });
-        });
 
 
         function showLyrics(title, lyrics) {
@@ -319,6 +310,8 @@
             const form = document.getElementById("repeticija-form");
             const csrfToken = document.querySelector("[name=csrfmiddlewaretoken]").value;
             const totalTrukmeEl = document.getElementById("total-trukme");
+            let allKuriniaiCache = [];
+
 
             const initialAnsamblisId = ansamblisSelect.value;
             if (initialAnsamblisId) {
@@ -334,6 +327,12 @@
             Sortable.create(selectedKuriniaiEl, {
                 animation: 150,
                 ghostClass: 'sortable-ghost'
+            });
+
+            document.getElementById("searchKuriniai").addEventListener("input", function () {
+                const query = this.value.toLowerCase().trim();
+                const filtered = allKuriniaiCache.filter(k => k.pavadinimas.toLowerCase().includes(query));
+                paginateKuriniai(filtered, document.getElementById("all-kuriniai"), 10, 1);
             });
 
             function paginateKuriniai(items, containerEl, perPage = 10, page = 1) {
@@ -398,10 +397,10 @@
                 fetch(`/ansambliai/${ansamblisId}/kuriniai/`)
                     .then(res => res.ok ? res.json() : Promise.reject("Nepavyko gauti kūrinių sąrašo."))
                     .then(kuriniai => {
+                        allKuriniaiCache = kuriniai;
                         const selectedIds = Array.from(selectedKuriniaiEl.querySelectorAll(".kuriniai-item")).map(
                             item => parseInt(item.dataset.id)
                         );
-
                         const filtered = kuriniai.filter(k => !selectedIds.includes(k.id));
                         paginateKuriniai(filtered, allKuriniaiEl, 10, 1);
                     })

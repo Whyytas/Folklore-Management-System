@@ -4,4 +4,4 @@ from .models import Ansamblis
 class AnsamblisForm(forms.ModelForm):
     class Meta:
         model = Ansamblis
-        fields = ['pavadinimas', 'miestas']
+        fields = ['pavadinimas', 'miestas', 'padalinys']  # include padalinys

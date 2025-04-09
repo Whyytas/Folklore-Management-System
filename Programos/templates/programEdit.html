@@ -43,7 +43,8 @@
                             <div class="mb-3">
                                 <label for="ansamblis" class="form-label">Ansamblis</label>
                                 <select class="form-select" id="ansamblis" name="ansamblis" required>
-                                    <option value="" {% if not programa.ansamblis %}selected{% endif %}>Nepasirinktas</option>
+                                    <option value="" {% if not programa.ansamblis %}selected{% endif %}>Nepasirinktas
+                                    </option>
                                     {% for ansamblis in ansambliai %}
                                         <option value="{{ ansamblis.id }}"
                                                 {% if programa.ansamblis.id == ansamblis.id %}selected{% endif %}>{{ ansamblis.pavadinimas }}</option>
@@ -61,8 +62,17 @@
                                             <input type="text" id="searchKuriniai"
                                                    class="form-control form-control-sm mt-2" placeholder="Ieškoti...">
                                         </div>
+                                        <div class="text-center my-3" id="kuriniai-loading" style="display: none;">
+                                            <div class="spinner-border text-primary" role="status">
+                                                <span class="visually-hidden">Kraunama...</span>
+                                            </div>
+                                        </div>
+
                                         <div class="card-body" id="all-kuriniai"></div>
+
                                     </div>
+                                    <div id="kuriniai-pagination"
+                                         class="d-flex justify-content-center gap-2 mt-3 px-2 pb-2"></div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="card">
@@ -79,9 +89,16 @@
                             </div>
 
                             <div class="d-flex justify-content-between mt-4">
-                                <a href="{% url 'programos' %}" class="btn btn-outline-secondary">Atšaukti</a>
-                                <button type="submit" class="btn primary-background">Išsaugoti</button>
+                                <a href="{% url 'programos' %}"
+                                   class="btn btn-outline-secondary d-flex align-items-center justify-content-center">
+                                    Atšaukti
+                                </a>
+                                <button type="submit"
+                                        class="btn primary-background d-flex align-items-center justify-content-center">
+                                    <span class="material-symbols-outlined me-1">save</span> Išsaugoti programą
+                                </button>
                             </div>
+
                         </form>
                     </div>
                 </div>
@@ -175,7 +192,7 @@
                 </div>
                 <div class="modal-body bg-light p-2 d-flex justify-content-center align-items-center">
                     <img id="imageViewer" src="" class="rounded shadow"
-                         style="display: block; max-width: 70vw; max-height: 75vh; object-fit: contain;">
+                         style="display: block; max-width: 70vw; max-height: 75vh; object-fit: contain;" alt="">
                 </div>
                 <div class="modal-footer bg-light border-0 d-flex justify-content-center py-2">
                     <button type="button" class="btn btn-outline-dark d-flex align-items-center px-3 py-1"
@@ -192,16 +209,10 @@
 
     <!-- Reuse existing JS: fetching kūriniai, move/add/remove logic, modals, submit form -->
     <script>
-        // Real-time search filtering
-        document.getElementById("searchKuriniai").addEventListener("input", function () {
-            const query = this.value.toLowerCase();
-            const items = document.querySelectorAll("#all-kuriniai .kuriniai-item");
 
-            items.forEach(item => {
-                const title = item.querySelector(".fw-bold").innerText.toLowerCase();
-                item.style.display = title.includes(query) ? "block" : "none";
-            });
-        });
+
+        // Real-time search filtering
+
 
         document.addEventListener("DOMContentLoaded", function () {
             // Initialize date picker
@@ -220,74 +231,92 @@
             const allKuriniaiEl = document.getElementById("all-kuriniai");
             const selectedKuriniaiEl = document.getElementById("selected-kuriniai");
             const totalTrukmeEl = document.getElementById("total-trukme");
+            let allKuriniaiCache = [];
+            let currentSearch = "";
+            const preselectedKuriniaiIds = {{ selected_kuriniai_ids|default:"[]"|safe }};
 
-            Sortable.create(selectedKuriniaiEl, {
-                animation: 150,
-                ghostClass: 'sortable-ghost'
+
+
+            function generateKurinysCardHTML(k) {
+                return `
+    <div class="kuriniai-item card mb-2" id="kurinys-${k.id}" data-id="${k.id}" data-trukme="${k.trukme || "00:00"}">
+        <div class="card-body d-flex justify-content-between align-items-center">
+            <div>
+                <div class="fw-bold">${k.pavadinimas}</div>
+                <small class="text-muted">
+                    <span class="badge bg-secondary me-1">${k.tipas}</span>
+                    <span class="badge bg-info text-dark">${k.regionas}</span>
+                </small>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+                <div class="dropdown">
+                    <button class="btn btn-outline-secondary btn-sm d-flex align-items-center justify-content-center"
+                            type="button" title="Peržiūra"
+                            id="perziuraBtn${k.id}" data-bs-toggle="dropdown" aria-expanded="false">
+                        <span class="material-symbols-outlined">visibility</span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="perziuraBtn${k.id}">
+                        ${k.youtube_url ? `
+                        <li><a class="dropdown-item" href="${k.youtube_url}" target="_blank">
+                            <span class="material-symbols-outlined me-1">ondemand_video</span> Video</a></li>` : ''}
+                        ${k.tipas === "Daina" && k.lyrics ? `
+                        <li><button class="dropdown-item" onclick="showLyrics('${k.pavadinimas}', \`${k.lyrics}\`)">
+                            <span class="material-symbols-outlined me-1">library_books</span> Žodžiai</button></li>` : ''}
+                        ${k.aprasymas ? `
+                        <li><button class="dropdown-item" onclick="showDescription('${k.pavadinimas}', \`${k.aprasymas}\`)">
+                            <span class="material-symbols-outlined me-1">description</span> Aprašymas</button></li>` : ''}
+                        ${k.natos ? `
+                        <li><button class="dropdown-item" onclick="showPDF('${k.pavadinimas}', '${k.natos}')">
+                            <span class="material-symbols-outlined me-1">picture_as_pdf</span> PDF</button></li>` : ''}
+                        ${k.natos_image ? `
+                        <li><button class="dropdown-item" onclick="showImage('${k.pavadinimas}', '${k.natos_image}')">
+                            <span class="material-symbols-outlined me-1">image</span> Paveikslėlis</button></li>` : ''}
+                    </ul>
+                </div>
+                <button class="btn btn-outline-primary btn-sm d-flex align-items-center justify-content-center"
+                        onclick="moveKurinys(${k.id}, \`${k.pavadinimas}\`, '${k.trukme}', '${k.tipas}', '${k.regionas}', \`${k.lyrics || ''}\`, \`${k.aprasymas || ''}\`, '${k.youtube_url || ''}', '${k.natos || ''}', '${k.natos_image || ''}')">
+                    <span class="material-symbols-outlined me-1">add_circle</span>${k.trukme || "00:00"}
+                </button>
+            </div>
+        </div>
+    </div>`;
+            }
+
+            form.addEventListener("submit", function (e) {
+                e.preventDefault();
+
+                const payload = {
+                    pavadinimas: document.getElementById("pavadinimas").value.trim(),
+                    tipas: document.getElementById("tipas").value.trim(),
+                    trukme: document.getElementById("trukme").value.trim(),
+                    aprasymas: document.getElementById("aprasymas").value.trim(),
+                    ansamblis: parseInt(ansamblisSelect.value) || null,
+                    kuriniai: Array.from(selectedKuriniaiEl.querySelectorAll(".kuriniai-item")).map((item, index) => ({
+                        id: parseInt(item.dataset.id),
+                        eile: index  // 🔁 Order is now included
+                    }))
+                };
+
+                fetch(window.location.href, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": csrfToken
+                    },
+                    body: JSON.stringify(payload)
+                }).then(async res => {
+                    const result = await res.json();
+                    if (res.ok && result.redirect) {
+                        window.location.href = result.redirect;
+                    } else {
+                        alert(result.error || "Nepavyko išsaugoti programos.");
+                    }
+                }).catch(() => {
+                    alert("Įvyko klaida siunčiant duomenis.");
+                });
             });
 
-
-            ansamblisSelect.addEventListener("change", function () {
-                const ansamblisId = this.value;
-
-                if (!ansamblisId) {
-                    kuriniaiContainer.style.display = "none";
-                    allKuriniaiEl.innerHTML = "";
-                    selectedKuriniaiEl.innerHTML = '<p id="empty-message" class="text-muted text-center">Nėra pasirinktų kūrinių</p>';
-                    return;
-                }
-
-                fetch(`/ansambliai/${ansamblisId}/kuriniai/`)
-                    .then(res => res.ok ? res.json() : Promise.reject())
-                    .then(kuriniai => {
-                        allKuriniaiEl.innerHTML = "";
-                        selectedKuriniaiEl.innerHTML = '<p id="empty-message" class="text-muted text-center">Nėra pasirinktų kūrinių</p>';
-
-                        kuriniai.forEach(k => {
-                            const html = `
-   <div class="kuriniai-item card mb-2" id="kurinys-${k.id}" data-id="${k.id}" data-trukme="${k.trukme}">
-       <div class="card-body">
-           <div class="d-flex justify-content-between align-items-center">
-               <div>
-                   <div class="fw-bold">${k.pavadinimas}</div>
-                   <small class="text-muted">
-                       <span class="badge bg-secondary me-1">${k.tipas}</span>
-                       <span class="badge bg-info text-dark">${k.regionas}</span>
-                   </small>
-               </div>
-               <div class="d-flex align-items-center gap-2">
-                   <button type="button" class="btn btn-outline-primary btn-sm d-flex align-items-center justify-content-center"
-                           onclick="moveKurinys(${k.id}, \`${k.pavadinimas}\`, '${k.trukme}', '${k.tipas}', '${k.regionas}', \`${k.lyrics || ''}\`, \`${k.aprašymas || ''}\`, '${k.youtube_url || ''}', '${k.natos || ''}', '${k.natos_image || ''}')">
-                       <span class="material-symbols-outlined me-1">add_circle</span>${k.trukme}
-                   </button>
-               </div>
-           </div>
-       </div>
-   </div>`;
-                            allKuriniaiEl.insertAdjacentHTML('beforeend', html);
-                        });
-
-                        kuriniaiContainer.style.display = "flex";
-
-                        // Move preselected kūriniai
-                        const preselectedKuriniaiIds = {{ selected_kuriniai_ids|safe }};
-                        preselectedKuriniaiIds.forEach(id => {
-                            const el = document.getElementById(`kurinys-${id}`);
-                            if (el) {
-                                const name = el.querySelector('.fw-bold').innerText;
-                                const trukme = el.dataset.trukme;
-                                const tipas = el.querySelector('.badge.bg-secondary').innerText;
-                                const regionas = el.querySelector('.badge.bg-info').innerText;
-                                moveKurinys(id, name, trukme, tipas, regionas, '', '', '', '', '');
-                            }
-                        });
-                    })
-                    .catch(() => alert("Nepavyko gauti kūrinių sąrašo."));
-            });
-
-
-            // Move kūrinys to selected list
-            window.moveKurinys = function (id, name, trukme, tipas, regionas, lyrics, aprašymas, youtube_url, natos, natos_image) {
+            window.moveKurinys = function (id, name, trukme, tipas, regionas, lyrics, aprasymas, youtube_url, natos, natos_image) {
                 if (document.getElementById(`selected-${id}`)) return;
 
                 const html = `
@@ -318,8 +347,8 @@
                    <li><button class="dropdown-item" onclick="showLyrics('${name}', \`${lyrics}\`)">
                        <span class="material-symbols-outlined me-1">library_books</span> Žodžiai
                    </button></li>` : ''}
-                   ${aprašymas ? `
-                   <li><button class="dropdown-item" onclick="showDescription('${name}', \`${aprašymas}\`)">
+                   ${aprasymas ? `
+                   <li><button class="dropdown-item" onclick="showDescription('${name}', \`${aprasymas}\`)">
                        <span class="material-symbols-outlined me-1">description</span> Aprašymas
                    </button></li>` : ''}
                    ${natos ? `
@@ -335,7 +364,7 @@
 
            <!-- Remove Button -->
            <button type="button" class="btn btn-outline-danger btn-sm d-flex align-items-center justify-content-center"
-                   onclick="removeKurinys(${id}, '${name}', '${trukme}', '${tipas}', '${regionas}', \`${lyrics}\`, \`${aprašymas}\`, '${youtube_url}', '${natos}', '${natos_image}')">
+                   onclick="removeKurinys(${id}, '${name}', '${trukme}', '${tipas}', '${regionas}', \`${lyrics}\`, \`${aprasymas}\`, '${youtube_url}', '${natos}', '${natos_image}')">
                <span class="material-symbols-outlined me-1">remove_circle</span>${trukme}
            </button>
        </div>
@@ -344,14 +373,15 @@
    </div>`;
 
                 selectedKuriniaiEl.insertAdjacentHTML('beforeend', html);
-                document.getElementById(`kurinys-${id}`).remove();
+                const availableEl = document.getElementById(`kurinys-${id}`);
+                if (availableEl) availableEl.remove();
                 updateEmptyMessage();
                 updateTotalTrukme();
             };
 
 
             // Move kūrinys back to available list
-            window.removeKurinys = function (id, name, trukme, tipas, regionas, lyrics, aprašymas, youtube_url, natos, natos_image) {
+            window.removeKurinys = function (id, name, trukme, tipas, regionas, lyrics, aprasymas, youtube_url, natos, natos_image) {
                 const html = `
    <div class="kuriniai-item card mb-2" id="kurinys-${id}" data-id="${id}" data-trukme="${trukme}">
    <div class="card-body">
@@ -379,8 +409,8 @@
                    <li><button class="dropdown-item" onclick="showLyrics('${name}', \`${lyrics}\`)">
                        <span class="material-symbols-outlined me-1">library_books</span> Žodžiai
                    </button></li>` : ''}
-                   ${aprašymas ? `
-                   <li><button class="dropdown-item" onclick="showDescription('${name}', \`${aprašymas}\`)">
+                   ${aprasymas ? `
+                   <li><button class="dropdown-item" onclick="showDescription('${name}', \`${aprasymas}\`)">
                        <span class="material-symbols-outlined me-1">description</span> Aprašymas
                    </button></li>` : ''}
                    ${natos ? `
@@ -402,7 +432,7 @@
                        '${tipas}',
                        '${regionas}',
                        \`${lyrics}\`,
-                       \`${aprašymas}\`,
+                       \`${aprasymas}\`,
                        '${youtube_url}',
                        '${natos}',
                        '${natos_image}'
@@ -420,6 +450,19 @@
                 updateTotalTrukme();
             };
 
+            requestAnimationFrame(() => {
+    if (ansamblisSelect.value) {
+        ansamblisSelect.dispatchEvent(new Event('change'));
+    }
+});
+
+
+
+            document.getElementById("searchKuriniai").addEventListener("input", function () {
+                currentSearch = this.value.toLowerCase().trim();
+                const filtered = allKuriniaiCache.filter(k => k.pavadinimas.toLowerCase().includes(currentSearch));
+                paginateKuriniai(filtered, allKuriniaiEl, 10, 1);
+            });
 
             function updateEmptyMessage() {
                 const msg = document.getElementById("empty-message");
@@ -438,73 +481,142 @@
                 totalTrukmeEl.textContent = `${mins}:${secs}`;
             }
 
-            // Submit form
-            form.addEventListener("submit", function (e) {
-                e.preventDefault();
-                const payload = {
-                    pavadinimas: document.getElementById("pavadinimas").value.trim(),
-                    tipas: document.getElementById("tipas").value.trim(),
-                    trukme: document.getElementById("trukme").value.trim(),
-                    ansamblis: parseInt(ansamblisSelect.value),
-                    aprasymas: document.getElementById("aprasymas").value.trim(),
-                    kuriniai: Array.from(selectedKuriniaiEl.querySelectorAll(".kuriniai-item")).map((item, index) => ({
-                        id: parseInt(item.dataset.id),
-                        eile: index
-                    }))
-                };
+            function paginateKuriniai(items, containerEl, perPage = 10, page = 1) {
+                const totalPages = Math.ceil(items.length / perPage);
+                const start = (page - 1) * perPage;
+                const end = start + perPage;
+                const paginatedItems = items.slice(start, end);
 
-                if (!payload.pavadinimas || !payload.tipas || !payload.ansamblis || !payload.kuriniai.length) {
-                    alert("Užpildykite visus laukus ir pasirinkite bent vieną kūrinį!");
-                    return;
+                containerEl.innerHTML = "";
+                paginatedItems.forEach(k => {
+                    const html = generateKurinysCardHTML(k);
+                    containerEl.insertAdjacentHTML('beforeend', html);
+                });
+
+                renderPaginationControls(totalPages, page, (newPage) => {
+                    const filtered = allKuriniaiCache.filter(k =>
+                        k.pavadinimas.toLowerCase().includes(currentSearch)
+                    );
+                    paginateKuriniai(filtered, containerEl, perPage, newPage);
+                });
+            }
+
+            function renderPaginationControls(totalPages, currentPage, onPageChange) {
+                const pagination = document.getElementById("kuriniai-pagination");
+                if (!pagination) return; // 🚫 Skip if not found
+
+                pagination.innerHTML = "";
+                const nav = document.createElement("nav");
+                nav.setAttribute("aria-label", "Puslapiai");
+
+                const ul = document.createElement("ul");
+                ul.className = "pagination";
+
+                for (let i = 1; i <= totalPages; i++) {
+                    const li = document.createElement("li");
+                    li.className = `page-item ${i === currentPage ? "active" : ""}`;
+
+                    const btn = document.createElement("button");
+                    btn.className = "page-link";
+                    btn.textContent = i;
+                    btn.addEventListener("click", () => {
+                        if (i !== currentPage) {
+                            onPageChange(i);
+                        }
+                    });
+
+                    li.appendChild(btn);
+                    ul.appendChild(li);
                 }
 
-                fetch("{% url 'program_edit' programa.id %}", {
-                    method: "POST",
-                    headers: {"Content-Type": "application/json", "X-CSRFToken": csrfToken},
-                    body: JSON.stringify(payload)
-                }).then(async res => {
-                    const result = await res.json();
-                    if (res.ok && result.redirect) {
-                        window.location.href = result.redirect;
-                    } else {
-                        alert(result.error || "Nepavyko išsaugoti programos.");
-                    }
-                }).catch(() => alert("Įvyko klaida siunčiant duomenis."));
-            });
-// Trigger ansamblis change if preselected
-            if (ansamblisSelect.value) {
-                ansamblisSelect.dispatchEvent(new Event('change'));
+                nav.appendChild(ul);
+                pagination.appendChild(nav);
             }
 
 
+            Sortable.create(selectedKuriniaiEl, {
+                animation: 150,
+                ghostClass: 'sortable-ghost'
+            });
+
+
+            ansamblisSelect.addEventListener("change", function () {
+                const ansamblisId = this.value;
+
+                if (!ansamblisId) {
+                    kuriniaiContainer.style.display = "none";
+                    allKuriniaiEl.innerHTML = "";
+                    selectedKuriniaiEl.innerHTML = '<p id="empty-message" class="text-muted text-center">Nėra pasirinktų kūrinių</p>';
+                    return;
+                }
+
+                kuriniaiContainer.style.display = "flex";
+                document.getElementById("kuriniai-loading").style.display = "block";
+                allKuriniaiEl.innerHTML = ""; // Clear before loading
+
+                fetch(`/ansambliai/${ansamblisId}/kuriniai/`)
+                    .then(res => res.ok ? res.json() : Promise.reject())
+                    .then(kuriniai => {
+                        document.getElementById("kuriniai-loading").style.display = "none";
+
+                        allKuriniaiCache = kuriniai;
+                        currentSearch = "";
+
+                        const selectedIds = new Set(preselectedKuriniaiIds);
+                        const selectedKuriniai = [...selectedIds]
+                            .map(id => kuriniai.find(k => k.id === id))
+                            .filter(Boolean);
+
+                        const unselectedKuriniai = kuriniai.filter(k => !selectedIds.has(k.id));
+                        const alreadyMovedIds = new Set();
+
+                        selectedKuriniai.forEach(k => {
+                            alreadyMovedIds.add(k.id);
+                            moveKurinys(k.id, k.pavadinimas, k.trukme, k.tipas, k.regionas,
+                                k.lyrics || "", k.aprasymas || "", k.youtube_url || "", k.natos || "", k.natos_image || "");
+                        });
+
+                        paginateKuriniai(
+                            kuriniai.filter(k => !alreadyMovedIds.has(k.id)),
+                            allKuriniaiEl,
+                            10,
+                            1
+                        );
+                    })
+                    .catch(err => {
+                        document.getElementById("kuriniai-loading").style.display = "none";
+                        alert("Nepavyko gauti kūrinių sąrašo: " + err.message);
+                    });
+            });
+
+
+            function showLyrics(title, text) {
+                document.getElementById("lyricsTitle").innerText = title;
+                document.getElementById("lyricsText").innerText = text || "Žodžių nėra.";
+                new bootstrap.Modal(document.getElementById("lyricsModal")).show();
+            }
+
+            function showDescription(title, text) {
+                document.getElementById("descriptionTitle").innerText = title;
+                document.getElementById("descriptionText").innerText = text || "Aprašymo nėra.";
+                new bootstrap.Modal(document.getElementById("descriptionModal")).show();
+            }
+
+            function showPDF(title, url) {
+                document.getElementById("pdfViewer").src = url;
+                new bootstrap.Modal(document.getElementById("pdfModal")).show();
+            }
+
+            function showImage(title, url) {
+                document.getElementById("imageViewer").src = url;
+                new bootstrap.Modal(document.getElementById("imageModal")).show();
+            }
+
+            window.showLyrics = showLyrics;
+            window.showDescription = showDescription;
+            window.showPDF = showPDF;
+            window.showImage = showImage;
         });
-
-        function showLyrics(title, text) {
-            document.getElementById("lyricsTitle").innerText = title;
-            document.getElementById("lyricsText").innerText = text || "Žodžių nėra.";
-            new bootstrap.Modal(document.getElementById("lyricsModal")).show();
-        }
-
-        function showDescription(title, text) {
-            document.getElementById("descriptionTitle").innerText = title;
-            document.getElementById("descriptionText").innerText = text || "Aprašymo nėra.";
-            new bootstrap.Modal(document.getElementById("descriptionModal")).show();
-        }
-
-        function showPDF(title, url) {
-            document.getElementById("pdfViewer").src = url;
-            new bootstrap.Modal(document.getElementById("pdfModal")).show();
-        }
-
-        function showImage(title, url) {
-            document.getElementById("imageViewer").src = url;
-            new bootstrap.Modal(document.getElementById("imageModal")).show();
-        }
-
-        window.showLyrics = showLyrics;
-        window.showDescription = showDescription;
-        window.showPDF = showPDF;
-        window.showImage = showImage;
 
     </script>
 {% endblock %}

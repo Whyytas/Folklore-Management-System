@@ -29,6 +29,18 @@
                                 <input type="text" class="form-control" id="miestas" name="miestas"
                                        placeholder="Įveskite miestą" required autocomplete="off" spellcheck="false">
                             </div>
+                            <div class="mb-4">
+                                <label for="padalinys" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">apartment</span> Padalinys
+                                </label>
+                                <select id="padalinys" name="padalinys" class="form-select">
+                                    <option value="" selected disabled>Pasirinkite padalinį</option>
+                                    {% for padalinys in padaliniai %}
+                                        <option value="{{ padalinys.id }}">{{ padalinys.pavadinimas }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
                             <div class="d-flex justify-content-between mt-4">
                                 <a href="{% url 'ansambliai_list' %}"
                                    class="btn btn-outline-secondary d-flex align-items-center">
