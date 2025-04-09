@@ -34,10 +34,17 @@
                             </div>
 
                             <div class="mb-3">
-                                <label for="trukme" class="form-label">Trukmė (MM:SS)</label>
-                                <input type="text" class="form-control" id="trukme" name="trukme"
-                                       pattern="^\d{1,2}:\d{2}$" placeholder="Pvz: 05:30">
-                            </div>
+    <label class="form-label d-flex align-items-center">
+        <span class="material-symbols-outlined me-2">schedule</span> Bendra trukmė
+    </label>
+    <div class="input-group" style="max-width: 200px;">
+        <input type="number" id="minutes" class="form-control text-center" placeholder="mm" min="0" step="1">
+        <span class="input-group-text px-2">:</span>
+        <input type="number" id="seconds" class="form-control text-center" placeholder="ss" min="0" max="59" step="1">
+    </div>
+    <input type="hidden" name="trukme" id="trukme">
+</div>
+
 
                             <div class="mb-3">
                                 <label for="aprasymas" class="form-label">Aprašymas</label>
@@ -235,6 +242,20 @@
             const loader = document.getElementById("kuriniai-loading");
             const santykisWrapper = document.getElementById("santykis-wrapper");
             const santykisInput = document.getElementById("santykis");
+
+            const minutesInput = document.getElementById("minutes");
+const secondsInput = document.getElementById("seconds");
+const trukmeHidden = document.getElementById("trukme");
+
+function syncTrukmeHidden() {
+    const mm = String(minutesInput.value).padStart(2, '0') || "00";
+    let ss = String(secondsInput.value).padStart(2, '0') || "00";
+    if (parseInt(ss) > 59) ss = "59";
+    trukmeHidden.value = `${mm}:${ss}`;
+}
+
+minutesInput.addEventListener("input", syncTrukmeHidden);
+secondsInput.addEventListener("input", syncTrukmeHidden);
 
             santykisInput.addEventListener("input", function () {
                 let digits = this.value.replace(/[^0-9]/g, "").slice(0, 3); // Only 3 digits max
@@ -455,7 +476,7 @@
 
             document.getElementById("programa-form").addEventListener("submit", function (e) {
                 e.preventDefault();
-
+                syncTrukmeHidden();
                 const tipas = tipasSelect.value;
                 const pavadinimas = document.getElementById("pavadinimas").value.trim();
                 const aprasymas = document.getElementById("aprasymas").value.trim();

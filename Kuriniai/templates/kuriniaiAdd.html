@@ -111,14 +111,22 @@
                                        spellcheck="false">
                             </div>
 
-                            <!-- Trukmė -->
-                            <div class="mb-4">
-                                <label for="trukme" class="form-label d-flex align-items-center">
-                                    <span class="material-symbols-outlined me-2">schedule</span> Trukmė
-                                </label>
-                                <input type="text" class="form-control" id="trukme" name="trukme"
-                                       placeholder="Pvz.: 02:45 ar 1:05:00" autocomplete="off">
-                            </div>
+                            <!-- Trukmė (Duration MM:SS) -->
+<div class="mb-4">
+    <label class="form-label d-flex align-items-center">
+        <span class="material-symbols-outlined me-2">schedule</span> Trukmė
+    </label>
+    <div class="input-group">
+        <input type="number" id="minutes" class="form-control text-center" placeholder="mm" min="0" step="1"
+               style="max-width: 100px;">
+        <span class="input-group-text px-2">:</span>
+        <input type="number" id="seconds" class="form-control text-center" placeholder="ss" min="0" max="59" step="1"
+               style="max-width: 100px;">
+    </div>
+    <input type="hidden" name="trukme" id="trukme">
+</div>
+
+
 
 
                             <!-- Upload PDF Natos -->
@@ -233,6 +241,21 @@
         }
 
         document.addEventListener("DOMContentLoaded", function () {
+
+            const minutesInput = document.getElementById("minutes");
+    const secondsInput = document.getElementById("seconds");
+    const hiddenTrukme = document.getElementById("trukme");
+
+    function updateTrukme() {
+        const mm = minutesInput.value.padStart(2, '0') || "00";
+        let ss = secondsInput.value.padStart(2, '0') || "00";
+        if (parseInt(ss) > 59) ss = "59";
+        hiddenTrukme.value = `${mm}:${ss}`;
+    }
+
+    minutesInput.addEventListener("input", updateTrukme);
+    secondsInput.addEventListener("input", updateTrukme);
+
             document.querySelectorAll(".btn-check").forEach(button => {
                 const label = document.querySelector(`label[for="${button.id}"]`);
                 button.addEventListener("change", function () {

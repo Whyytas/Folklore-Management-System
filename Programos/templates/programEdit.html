@@ -29,10 +29,17 @@
                                 </select>
                             </div>
                             <div class="mb-3">
-                                <label for="trukme" class="form-label">Trukmė (MM:SS)</label>
-                                <input type="text" class="form-control" id="trukme" name="trukme"
-                                       value="{{ programa.trukme }}" pattern="^\d{1,2}:\d{2}$" required>
-                            </div>
+    <label class="form-label d-flex align-items-center">
+        <span class="material-symbols-outlined me-2">schedule</span> Bendra trukmė
+    </label>
+    <div class="input-group" style="max-width: 200px;">
+        <input type="number" id="minutes" class="form-control text-center" placeholder="mm" min="0" step="1">
+        <span class="input-group-text px-2">:</span>
+        <input type="number" id="seconds" class="form-control text-center" placeholder="ss" min="0" max="59" step="1">
+    </div>
+    <input type="hidden" name="trukme" id="trukme">
+</div>
+
 
                             <div class="mb-3">
                                 <label for="aprasymas" class="form-label">Aprašymas</label>
@@ -235,6 +242,29 @@
             let currentSearch = "";
             const preselectedKuriniaiIds = {{ selected_kuriniai_ids|default:"[]"|safe }};
 
+
+            const minutesInput = document.getElementById("minutes");
+        const secondsInput = document.getElementById("seconds");
+        const trukmeInput = document.getElementById("trukme");
+
+        // Initialize values from backend
+        const initial = "{{ programa.trukme }}".split(":");
+        if (initial.length === 2) {
+            minutesInput.value = parseInt(initial[0]) || 0;
+            secondsInput.value = parseInt(initial[1]) || 0;
+        }
+
+        function syncTrukmeHidden() {
+            const mm = String(minutesInput.value).padStart(2, '0') || "00";
+            let ss = String(secondsInput.value).padStart(2, '0') || "00";
+            if (parseInt(ss) > 59) ss = "59";
+            trukmeInput.value = `${mm}:${ss}`;
+        }
+
+        minutesInput.addEventListener("input", syncTrukmeHidden);
+        secondsInput.addEventListener("input", syncTrukmeHidden);
+
+        syncTrukmeHidden(); // set initial
 
 
             function generateKurinysCardHTML(k) {

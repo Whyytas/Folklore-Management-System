@@ -26,6 +26,19 @@
                                     {% endfor %}
                                 </select>
                             </div>
+                        <!-- Trukmė (Programos) -->
+<div class="mb-3">
+    <label class="form-label d-flex align-items-center">
+        <span class="material-symbols-outlined me-2">schedule</span> Bendra trukmė
+    </label>
+    <div class="input-group" style="max-width: 200px;">
+        <input type="number" id="minutes" class="form-control text-center" placeholder="mm" min="0" step="1">
+        <span class="input-group-text px-2">:</span>
+        <input type="number" id="seconds" class="form-control text-center" placeholder="ss" min="0" max="59" step="1">
+    </div>
+    <input type="hidden" name="trukme" id="trukme">
+</div>
+
                             <div class="mb-3">
                                 <label for="aprasymas" class="form-label">Aprašymas</label>
                                 <textarea class="form-control" id="aprasymas" name="aprasymas" rows="3"></textarea>
@@ -201,6 +214,20 @@
                 minDate: "today",
                 locale: flatpickr.l10ns.lt,
             });
+
+            const minutesInput = document.getElementById("minutes");
+const secondsInput = document.getElementById("seconds");
+const trukmeInput = document.getElementById("trukme");
+
+function syncManualTrukme() {
+    const mm = String(minutesInput.value).padStart(2, '0') || "00";
+    let ss = String(secondsInput.value).padStart(2, '0') || "00";
+    if (parseInt(ss) > 59) ss = "59";
+    trukmeInput.value = `${mm}:${ss}`;
+}
+
+minutesInput.addEventListener("input", syncManualTrukme);
+secondsInput.addEventListener("input", syncManualTrukme);
 
             const csrfToken = document.querySelector("[name=csrfmiddlewaretoken]").value;
             const ansamblisSelect = document.getElementById("ansamblis");
@@ -483,6 +510,7 @@
                     pavadinimas: document.getElementById("pavadinimas").value.trim(),
                     tipas: document.getElementById("tipas").value.trim(),
                     ansamblis: parseInt(ansamblisSelect.value),
+                    trukme: document.getElementById("trukme").value.trim(),
                     aprasymas: document.getElementById("aprasymas").value.trim(),
                     kuriniai: Array.from(selectedKuriniaiEl.querySelectorAll(".kuriniai-item")).map((item, index) => ({
                         id: parseInt(item.dataset.id),

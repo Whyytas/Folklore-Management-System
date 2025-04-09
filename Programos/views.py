@@ -124,6 +124,7 @@ def program_create(request):
             aprasymas = data.get("aprasymas", "")
             ansamblis_id = data.get("ansamblis")
             kuriniai_data = data.get("kuriniai", [])
+            manual_trukme = data.get("trukme", "").strip()
 
             if not pavadinimas or not tipas or not kuriniai_data:
                 return JsonResponse({"error": "Trūksta reikiamų laukų arba kūrinių!"}, status=400)
@@ -156,13 +157,23 @@ def program_create(request):
                         )
                     )
                     if kurinys.trukme and ":" in kurinys.trukme:
-                        m, s = map(int, kurinys.trukme.split(":"))
-                        total_seconds += m * 60 + s
+                        try:
+                            minutes, seconds = map(int, kurinys.trukme.split(":"))
+                            total_seconds += minutes * 60 + seconds
+                        except ValueError:
+                            pass  # skip invalid trukme
 
-            Programa.objects.filter(id=programa.id).update(
-                trukme=f"{total_seconds // 60:02}:{total_seconds % 60:02}"
-            )
+            # Use manual trukme if provided and valid, else use calculated
+            if manual_trukme and ":" in manual_trukme:
+                try:
+                    m, s = map(int, manual_trukme.split(":"))
+                    programa.trukme = f"{m:02}:{s:02}"
+                except ValueError:
+                    programa.trukme = f"{total_seconds // 60:02}:{total_seconds % 60:02}"
+            else:
+                programa.trukme = f"{total_seconds // 60:02}:{total_seconds % 60:02}"
 
+            programa.save()
             ProgramosKurinys.objects.bulk_create(programos_kuriniai)
 
             return JsonResponse({"redirect": "/programos"}, status=201)
@@ -177,7 +188,6 @@ def program_create(request):
         "tipai": tipai,
         "ansambliai": ansambliai
     })
-
 
 def program_edit(request, pk):
     programa = get_object_or_404(Programa, pk=pk)
