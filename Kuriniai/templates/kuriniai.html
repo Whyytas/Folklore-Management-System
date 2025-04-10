@@ -2,6 +2,16 @@
 {% block title %} Kūriniai Sąrašas {% endblock %}
 
 {% block content %}
+    <style>
+.table-responsive {
+    overflow: visible !important;
+    position: relative;
+}
+
+.table-responsive .dropdown-menu {
+    z-index: 1060; /* Ensure it renders above other content */
+}
+</style>
     <div class="container-fluid mt-4">
         <div class="row justify-content-center">
             <div class="col-12" style="max-width: 100%;">
@@ -162,66 +172,23 @@
                                         </td>
 
 
-                                        <!-- Peržiūra Dropdown -->
                                         <td class="align-middle text-center">
-                                            <div class="dropdown d-inline-block">
-                                                <button class="btn btn-sm badge-ansamblis dropdown-toggle d-flex align-items-center justify-content-center px-3"
-                                                        type="button" id="perziuraDropdown_{{ kurinys.id }}"
-                                                        data-bs-toggle="dropdown" aria-expanded="false">
-                                                    <span class="material-symbols-outlined me-1">visibility</span>
-                                                    Peržiūra
-                                                </button>
-                                                <ul class="dropdown-menu dropdown-menu-end text-center"
-                                                    aria-labelledby="perziuraDropdown_{{ kurinys.id }}">
-                                                    {% if kurinys.youtube_url %}
-                                                        <li>
-                                                            <a class="dropdown-item d-flex align-items-center justify-content-center gap-2 py-2"
-                                                               href="{{ kurinys.youtube_url }}" target="_blank">
-                                                                <span class="material-symbols-outlined">ondemand_video</span>
-                                                                Video
-                                                            </a>
-                                                        </li>
-                                                    {% endif %}
-                                                    {% if kurinys.tipas == "Daina" and kurinys.lyrics %}
-                                                        <li>
-                                                            <button class="dropdown-item d-flex align-items-center justify-content-center gap-2 py-2"
-                                                                    onclick="showLyrics('{{ kurinys.pavadinimas }}', `{{ kurinys.lyrics|escapejs }}`)">
-                                                                <span class="material-symbols-outlined">library_books</span>
-                                                                Žodžiai
-                                                            </button>
-                                                        </li>
-                                                    {% endif %}
-                                                    {% if kurinys.aprašymas %}
-                                                        <li>
-                                                            <button class="dropdown-item d-flex align-items-center justify-content-center gap-2 py-2"
-                                                                    onclick="showDescription('{{ kurinys.pavadinimas }}', `{{ kurinys.aprašymas|escapejs }}`)">
-                                                                <span class="material-symbols-outlined">description</span>
-                                                                Aprašymas
-                                                            </button>
-                                                        </li>
-                                                    {% endif %}
-                                                    {% if kurinys.natos %}
-                                                        <li>
-                                                            <button class="dropdown-item d-flex align-items-center justify-content-center gap-2 py-2"
-                                                                    onclick="showPDF('{{ kurinys.pavadinimas }}', '{{ kurinys.natos.url }}')">
-                                                                <span class="material-symbols-outlined">picture_as_pdf</span>
-                                                                PDF
-                                                            </button>
-                                                        </li>
-                                                    {% endif %}
-                                                    {% if kurinys.natos_image %}
-                                                        <li>
-                                                            <button class="dropdown-item d-flex align-items-center justify-content-center gap-2 py-2"
-                                                                    onclick="showImage('{{ kurinys.pavadinimas }}', '{{ kurinys.natos_image.url }}')">
-                                                                <span class="material-symbols-outlined">image</span>
-                                                                Paveikslėlis
-                                                            </button>
-                                                        </li>
-                                                    {% endif %}
-                                                </ul>
+    <div class="dropdown d-inline-block">
+        <button class="btn btn-sm badge-ansamblis dropdown-toggle d-flex align-items-center justify-content-center px-3"
+                type="button" id="perziuraDropdown_{{ kurinys.id }}"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                data-id="{{ kurinys.id }}">
+            <span class="material-symbols-outlined me-1">visibility</span>
+            Peržiūra
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end text-center dynamic-details"
+            data-loaded="false" data-id="{{ kurinys.id }}" aria-labelledby="perziuraDropdown_{{ kurinys.id }}">
+            <li><span class="dropdown-item disabled text-muted">Kraunama...</span></li>
+        </ul>
+    </div>
+</td>
 
-                                            </div>
-                                        </td>
+
 
                                         <!-- Edit/Delete Actions -->
                                         <!-- Combined Dropdown -->
@@ -536,6 +503,84 @@
     const allRows = Array.from(tableBody.querySelectorAll("tr"));
     const perPage = 15;
     let filteredRows = [...allRows];
+
+    document.querySelectorAll(".dynamic-details").forEach(ul => {
+    const id = ul.dataset.id;
+    const button = document.querySelector(`#perziuraDropdown_${id}`);
+
+    button.addEventListener("click", async () => {
+        if (ul.dataset.loaded === "true") return;
+
+        ul.innerHTML = '<li><span class="dropdown-item disabled text-muted">Kraunama...</span></li>';
+
+        const res = await fetch(`/kuriniai/${id}/details/`);
+        if (!res.ok) {
+            ul.innerHTML = '<li><span class="dropdown-item text-danger">Klaida kraunant duomenis</span></li>';
+            return;
+        }
+
+        const data = await res.json();
+        ul.innerHTML = "";  // Clear
+
+        if (data.youtube_url) {
+            ul.innerHTML += `
+                <li>
+                    <a class="dropdown-item d-flex align-items-center justify-content-center gap-2 py-2"
+                       href="${data.youtube_url}" target="_blank">
+                        <span class="material-symbols-outlined">ondemand_video</span> Video
+                    </a>
+                </li>`;
+        }
+
+        if (data.tipas === "Daina" && data.lyrics) {
+            ul.innerHTML += `
+                <li>
+                    <button class="dropdown-item d-flex align-items-center justify-content-center gap-2 py-2"
+                            onclick="showLyrics('${data.pavadinimas}', \`${data.lyrics}\`)">
+                        <span class="material-symbols-outlined">library_books</span> Žodžiai
+                    </button>
+                </li>`;
+        }
+
+        if (data.description) {
+            ul.innerHTML += `
+                <li>
+                    <button class="dropdown-item d-flex align-items-center justify-content-center gap-2 py-2"
+                            onclick="showDescription('${data.pavadinimas}', \`${data.description}\`)">
+                        <span class="material-symbols-outlined">description</span> Aprašymas
+                    </button>
+                </li>`;
+        }
+
+        if (data.pdf_url) {
+            ul.innerHTML += `
+                <li>
+                    <button class="dropdown-item d-flex align-items-center justify-content-center gap-2 py-2"
+                            onclick="showPDF('${data.pavadinimas}', '${data.pdf_url}')">
+                        <span class="material-symbols-outlined">picture_as_pdf</span> PDF
+                    </button>
+                </li>`;
+        }
+
+        if (data.image_url) {
+            ul.innerHTML += `
+                <li>
+                    <button class="dropdown-item d-flex align-items-center justify-content-center gap-2 py-2"
+                            onclick="showImage('${data.pavadinimas}', '${data.image_url}')">
+                        <span class="material-symbols-outlined">image</span> Paveikslėlis
+                    </button>
+                </li>`;
+        }
+
+        if (!ul.innerHTML.trim()) {
+            ul.innerHTML = '<li><span class="dropdown-item disabled text-muted">Nėra turinio</span></li>';
+        }
+
+        ul.dataset.loaded = "true";
+    });
+});
+
+
 
     function renderPage(page) {
         tableBody.innerHTML = "";

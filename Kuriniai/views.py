@@ -181,6 +181,18 @@ def delete_kurinys(request, kurinys_id):
 
     return JsonResponse({"error": "Neteisingas užklausos metodas"}, status=400)
 
+def kurinys_details(request, kurinys_id):
+    kurinys = get_object_or_404(Kurinys.objects.prefetch_related("pozymiai"), id=kurinys_id)
+
+    return JsonResponse({
+        "lyrics": kurinys.lyrics or "",
+        "description": kurinys.aprasymas or "",
+        "youtube_url": kurinys.youtube_url,
+        "pdf_url": kurinys.natos.url if kurinys.natos else "",
+        "image_url": kurinys.natos_image.url if kurinys.natos_image else "",
+        "tipas": kurinys.tipas,
+        "pavadinimas": kurinys.pavadinimas,
+    })
 
 def extract_video_id(url):
     """ Extract video ID from YouTube URL """
