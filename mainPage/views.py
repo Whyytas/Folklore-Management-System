@@ -14,13 +14,12 @@ def main_page(request):
     ansamblis_id = request.GET.get('ansamblis_id') or request.session.get("selected_ansamblis_id")
     all_ansambliai = Ansamblis.objects.all()
 
-    renginiai_qs = Renginys.objects.filter(data_laikas__gte=now())
-    repeticijos_qs = Repeticija.objects.filter(data__gte=now())
-    instrumentai_qs = Instrumentas.objects.all()
-    kuriniai_qs = Kurinys.objects.all()
+    renginiai_qs = Renginys.objects.filter(data_laikas__gte=now()).select_related("ansamblis")
+    repeticijos_qs = Repeticija.objects.filter(data__gte=now()).select_related("ansamblis")
+    instrumentai_qs = Instrumentas.objects.all().select_related("ansamblis")
+    kuriniai_qs = Kurinys.objects.prefetch_related("ansambliai")
 
     if ansamblis_id:
-        # Ensure ansamblis_id is integer to avoid comparison issues
         try:
             ansamblis_id = int(ansamblis_id)
         except ValueError:
@@ -50,7 +49,6 @@ def main_page(request):
         'all_ansambliai': all_ansambliai,
     }
     return render(request, 'main.html', context)
-
 def set_selected_ansamblis(request):
     if request.method == "GET":
         ansamblis_id = request.GET.get("ansamblis_id")

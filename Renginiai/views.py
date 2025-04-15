@@ -19,7 +19,8 @@ def renginiai_list(request):
     search = request.GET.get("search", "").strip()
 
     sort_order = sort_field if sort_dir == "asc" else f"-{sort_field}"
-    renginiai = Renginys.objects.all().order_by(sort_order, "-id")
+
+    renginiai = Renginys.objects.select_related("ansamblis", "programa").all().order_by(sort_order, "-id")
 
     if selected_ansamblis_id:
         renginiai = renginiai.filter(ansamblis__id=selected_ansamblis_id)
@@ -41,6 +42,7 @@ def renginiai_list(request):
         'search': search,
         'programos': Programa.objects.all(),
     })
+
 def renginiai_add(request):
     if request.user.role == "narys":
         return HttpResponseForbidden("Jūs neturite teisės pridėti renginių.")

@@ -40,7 +40,8 @@ def kuriniai_list(request):
         'pozymiai': request.GET.get('pozymiai'),
     }
 
-    kuriniai = Kurinys.objects.all()
+    # ⚡ Optimized QuerySet with prefetch
+    kuriniai = Kurinys.objects.prefetch_related("ansambliai", "pozymiai")
 
     if selected_ansamblis_id:
         kuriniai = kuriniai.filter(ansambliai__id=selected_ansamblis_id)
@@ -60,7 +61,7 @@ def kuriniai_list(request):
 
     return render(request, "kuriniai.html", {
         "page_obj": None,
-        "kuriniai": kuriniai,  # send all to frontend
+        "kuriniai": kuriniai,
         "all_ansambliai": Ansamblis.objects.all(),
         "all_pozymiai": Pozymis.objects.all(),
         "filters": filters,
@@ -70,6 +71,7 @@ def kuriniai_list(request):
         "regionas_choices": Kurinys._meta.get_field("regionas").choices,
         "sort_param": sort_param,
     })
+
 def kuriniai_add(request):
     if request.user.role == "narys":
         return HttpResponseForbidden("Jūs neturite teisės pridėti kūrinių.")

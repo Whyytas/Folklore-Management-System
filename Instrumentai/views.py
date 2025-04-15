@@ -7,6 +7,9 @@ from .forms import InstrumentasForm
 from django.http import HttpResponseForbidden
 
 def instrumentai_list(request):
+    if request.user.role == "narys":
+        return HttpResponseForbidden("Jūs neturite teisės peržiūrėti instrumentų.")
+
     selected_ansamblis_id = request.session.get("selected_ansamblis_id")
     search = request.GET.get("search", "").strip()
     sort_param = request.GET.get("sort", "pavadinimas")

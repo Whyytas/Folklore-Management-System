@@ -34,8 +34,13 @@ if not SECRET_KEY:
     raise ValueError("Missing DJANGO_SECRET_KEY environment variable")
 
 # Debug mode (should be False in production)
-DEBUG = True
+DEBUG = False
 
+INTERNAL_IPS = [
+    # ...
+    "127.0.0.1",
+    # ...
+]
 # Allowed hosts
 ALLOWED_HOSTS = [
     "folklore.azurewebsites.net",
@@ -136,6 +141,7 @@ INSTALLED_APPS = [
     "Repeticijos",
     "Kalendorius",
     "mainPage",
+    "debug_toolbar",
 ]
 
 # Middleware
@@ -148,6 +154,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
+"debug_toolbar.middleware.DebugToolbarMiddleware",
 
     # Catch unhandled errors
     "FolkloreManagementSystem.middlewares.CatchAllExceptionsMiddleware",

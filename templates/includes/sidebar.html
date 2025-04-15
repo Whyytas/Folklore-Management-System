@@ -51,6 +51,7 @@
                 {% trans 'Kalendorius' %}
             </a>
         </li>
+    {% if request.user.role != "narys" %}
         <li class="nav-item">
             <a href="/instrumentai/"
                class="nav-link d-flex align-items-center mb-1 text-dark {% if request.path == '/instrumentai/' %}bg-secondary-subtle rounded-pill{% endif %}">
@@ -58,6 +59,7 @@
                 {% trans 'Instrumentai' %}
             </a>
         </li>
+    {% endif %}
         {% if request.user.role == "administratorius" %}
             <li class="nav-item">
                 <a href="/padaliniai/"
