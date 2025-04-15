@@ -8324,3 +8324,1119 @@ Traceback (most recent call last):
 TypeError: join() argument must be str, bytes, or os.PathLike object, not 'NoneType'
 "POST /forgot-password/ HTTP/1.1" 500 185351
 "POST /forgot-password/ HTTP/1.1" 500 150377
+Internal Server Error: /renginiai/renginiai/6/pdf/
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Renginiai\views.py", line 111, in renginys_pdf_view
+    html = render_to_string("renginys_pdf.html", {
+        "renginys": renginys,
+        "kuriniai": [pk.kurinys for pk in programos_kuriniai]
+    })
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\backends\django.py", line 61, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\test\utils.py", line 111, in instrumented_test_render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\base.py", line 1000, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\base.py", line 961, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\base.py", line 1059, in render
+    output = self.filter_expression.resolve(context)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\base.py", line 710, in resolve
+    obj = self.var.resolve(context)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\base.py", line 842, in resolve
+    value = self._resolve_lookup(context)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\base.py", line 909, in _resolve_lookup
+    current = current()
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Renginiai\models.py", line 18, in formatted_data_laikas
+    return localtime(self.data_laikas).strftime("%Y-%m-%d %H:%M")
+           ~~~~~~~~~^^^^^^^^^^^^^^^^^^
+TypeError: 'datetime.datetime' object cannot be interpreted as an integer
+"GET /renginiai/renginiai/6/pdf/ HTTP/1.1" 500 139031
+Internal Server Error: /renginiai/renginiai/6/pdf/
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Renginiai\views.py", line 113, in renginys_pdf_view
+    "formatted_data": renginys.formatted_data_laikas(),
+                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Renginiai\models.py", line 18, in formatted_data_laikas
+    return localtime(self.data_laikas).strftime("%Y-%m-%d %H:%M")
+           ~~~~~~~~~^^^^^^^^^^^^^^^^^^
+TypeError: 'datetime.datetime' object cannot be interpreted as an integer
+"GET /renginiai/renginiai/6/pdf/ HTTP/1.1" 500 90298
+Internal Server Error: /renginiai/renginiai/6/pdf/
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Renginiai\views.py", line 113, in renginys_pdf_view
+    "formatted_data": renginys.formatted_data_laikas(),
+                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Renginiai\models.py", line 18, in formatted_data_laikas
+    return localtime(self.data_laikas).strftime("%Y-%m-%d %H:%M")
+           ~~~~~~~~~^^^^^^^^^^^^^^^^^^
+TypeError: 'datetime.datetime' object cannot be interpreted as an integer
+"GET /renginiai/renginiai/6/pdf/ HTTP/1.1" 500 90298
+Internal Server Error: /renginiai/6/pdf/
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Renginiai\views.py", line 113, in renginys_pdf_view
+    "formatted_data": renginys.formatted_data_laikas(),
+                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Renginiai\models.py", line 18, in formatted_data_laikas
+    return localtime(self.data_laikas).strftime("%Y-%m-%d %H:%M")
+           ~~~~~~~~~^^^^^^^^^^^^^^^^^^
+TypeError: 'datetime.datetime' object cannot be interpreted as an integer
+"GET /renginiai/6/pdf/ HTTP/1.1" 500 90188
+Internal Server Error: /renginiai/6/pdf/
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Renginiai\views.py", line 113, in renginys_pdf_view
+    "formatted_data": renginys.formatted_data_laikas(),
+                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Renginiai\models.py", line 19, in formatted_data_laikas
+    return localtime(self.data_laikas).strftime("%Y-%m-%d %H:%M")
+           ~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\utils\timezone.py", line 183, in localtime
+    raise ValueError("localtime() cannot be applied to a naive datetime")
+ValueError: localtime() cannot be applied to a naive datetime
+"GET /renginiai/6/pdf/ HTTP/1.1" 500 94111
+Internal Server Error: /renginiai/6/pdf/
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\lib\utils.py", line 523, in open_for_read
+    return open_for_read_by_name(name,mode)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\lib\utils.py", line 463, in open_for_read_by_name
+    return open(name,mode)
+PermissionError: [Errno 13] Permission denied: 'C:\\Users\\Vitas\\AppData\\Local\\Temp\\tmpdncnb03v.ttf'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\lib\utils.py", line 530, in open_for_read
+    return BytesIO((datareader if name[:5].lower()=='data:' else rlUrlRead)(name))
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\lib\utils.py", line 476, in rlUrlRead
+    return urlopen(name).read()
+           ~~~~~~~^^^^^^
+  File "C:\Users\Vitas\AppData\Local\Programs\Python\Python313\Lib\urllib\request.py", line 189, in urlopen
+    return opener.open(url, data, timeout)
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Vitas\AppData\Local\Programs\Python\Python313\Lib\urllib\request.py", line 489, in open
+    response = self._open(req, data)
+  File "C:\Users\Vitas\AppData\Local\Programs\Python\Python313\Lib\urllib\request.py", line 511, in _open
+    return self._call_chain(self.handle_open, 'unknown',
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                            'unknown_open', req)
+                            ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Vitas\AppData\Local\Programs\Python\Python313\Lib\urllib\request.py", line 466, in _call_chain
+    result = func(*args)
+  File "C:\Users\Vitas\AppData\Local\Programs\Python\Python313\Lib\urllib\request.py", line 1395, in unknown_open
+    raise URLError('unknown url type: %s' % type)
+urllib.error.URLError: <urlopen error unknown url type: c>
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\pdfbase\ttfonts.py", line 158, in TTFOpenFile
+    f = open_for_read(fn,'rb')
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\lib\utils.py", line 534, in open_for_read
+    return open_for_read(name,mode)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\lib\utils.py", line 532, in open_for_read
+    raise IOError('Cannot open resource "%s"' % name)
+OSError: Cannot open resource "C:\Users\Vitas\AppData\Local\Temp\tmpdncnb03v.ttf"
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Renginiai\views.py", line 121, in renginys_pdf_view
+    pdf = pisa.pisaDocument(io.BytesIO(html.encode("utf-8")), result, link_callback=link_callback)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\document.py", line 139, in pisaDocument
+    context = pisaStory(
+        src,
+    ...<7 lines>...
+        xml_output=xml_output,
+    )
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\document.py", line 75, in pisaStory
+    pisaParser(src, context, default_css, xhtml, encoding, xml_output)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\parser.py", line 823, in pisaParser
+    context.parseCSS()
+    ~~~~~~~~~~~~~~~~^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\context.py", line 690, in parseCSS
+    self.css = self.cssParser.parse(self.cssText)
+               ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\w3c\cssParser.py", line 458, in parse
+    src, stylesheet = self._parseStylesheet(src)
+                      ~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\w3c\cssParser.py", line 561, in _parseStylesheet
+    src, atResults = self._parseAtKeyword(src)
+                     ~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\w3c\cssParser.py", line 685, in _parseAtKeyword
+    src, result = self._parseAtFontFace(src)
+                  ~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\w3c\cssParser.py", line 866, in _parseAtFontFace
+    result = [self.cssBuilder.atFontFace(properties)]
+              ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\context.py", line 221, in atFontFace
+    self.c.loadFont(names, src, bold=bold, italic=italic)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\context.py", line 1116, in loadFont
+    file = TTFont(fullFontName, filename)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\pdfbase\ttfonts.py", line 1206, in __init__
+    self.face = TTFontFace(filename, validate=validate, subfontIndex=subfontIndex)
+                ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\pdfbase\ttfonts.py", line 1087, in __init__
+    TTFontFile.__init__(self, filename, validate=validate, subfontIndex=subfontIndex)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\pdfbase\ttfonts.py", line 446, in __init__
+    TTFontParser.__init__(self, file, validate=validate,subfontIndex=subfontIndex)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\pdfbase\ttfonts.py", line 182, in __init__
+    self.readFile(file)
+    ~~~~~~~~~~~~~^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\pdfbase\ttfonts.py", line 258, in readFile
+    self.filename, f = TTFOpenFile(f)
+                       ~~~~~~~~~~~^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\pdfbase\ttfonts.py", line 168, in TTFOpenFile
+    raise TTFError('Can\'t open file "%s"' % fn)
+reportlab.pdfbase.ttfonts.TTFError: Can't open file "C:\Users\Vitas\AppData\Local\Temp\tmpdncnb03v.ttf"
+"GET /renginiai/6/pdf/ HTTP/1.1" 500 238027
+Internal Server Error: /renginiai/6/pdf/
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\lib\utils.py", line 523, in open_for_read
+    return open_for_read_by_name(name,mode)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\lib\utils.py", line 463, in open_for_read_by_name
+    return open(name,mode)
+PermissionError: [Errno 13] Permission denied: 'C:\\Users\\Vitas\\AppData\\Local\\Temp\\tmp1iy6bzsj.ttf'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\lib\utils.py", line 530, in open_for_read
+    return BytesIO((datareader if name[:5].lower()=='data:' else rlUrlRead)(name))
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\lib\utils.py", line 476, in rlUrlRead
+    return urlopen(name).read()
+           ~~~~~~~^^^^^^
+  File "C:\Users\Vitas\AppData\Local\Programs\Python\Python313\Lib\urllib\request.py", line 189, in urlopen
+    return opener.open(url, data, timeout)
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Vitas\AppData\Local\Programs\Python\Python313\Lib\urllib\request.py", line 489, in open
+    response = self._open(req, data)
+  File "C:\Users\Vitas\AppData\Local\Programs\Python\Python313\Lib\urllib\request.py", line 511, in _open
+    return self._call_chain(self.handle_open, 'unknown',
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                            'unknown_open', req)
+                            ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Vitas\AppData\Local\Programs\Python\Python313\Lib\urllib\request.py", line 466, in _call_chain
+    result = func(*args)
+  File "C:\Users\Vitas\AppData\Local\Programs\Python\Python313\Lib\urllib\request.py", line 1395, in unknown_open
+    raise URLError('unknown url type: %s' % type)
+urllib.error.URLError: <urlopen error unknown url type: c>
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\pdfbase\ttfonts.py", line 158, in TTFOpenFile
+    f = open_for_read(fn,'rb')
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\lib\utils.py", line 532, in open_for_read
+    raise IOError('Cannot open resource "%s"' % name)
+OSError: Cannot open resource "C:\Users\Vitas\AppData\Local\Temp\tmp1iy6bzsj.ttf"
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Renginiai\views.py", line 125, in renginys_pdf_view
+    pdf = pisa.pisaDocument(io.BytesIO(html.encode("utf-8")), result, link_callback=link_callback)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\document.py", line 139, in pisaDocument
+    context = pisaStory(
+        src,
+    ...<7 lines>...
+        xml_output=xml_output,
+    )
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\document.py", line 75, in pisaStory
+    pisaParser(src, context, default_css, xhtml, encoding, xml_output)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\parser.py", line 823, in pisaParser
+    context.parseCSS()
+    ~~~~~~~~~~~~~~~~^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\context.py", line 690, in parseCSS
+    self.css = self.cssParser.parse(self.cssText)
+               ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\w3c\cssParser.py", line 458, in parse
+    src, stylesheet = self._parseStylesheet(src)
+                      ~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\w3c\cssParser.py", line 561, in _parseStylesheet
+    src, atResults = self._parseAtKeyword(src)
+                     ~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\w3c\cssParser.py", line 685, in _parseAtKeyword
+    src, result = self._parseAtFontFace(src)
+                  ~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\w3c\cssParser.py", line 866, in _parseAtFontFace
+    result = [self.cssBuilder.atFontFace(properties)]
+              ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\context.py", line 221, in atFontFace
+    self.c.loadFont(names, src, bold=bold, italic=italic)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\context.py", line 1116, in loadFont
+    file = TTFont(fullFontName, filename)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\pdfbase\ttfonts.py", line 1206, in __init__
+    self.face = TTFontFace(filename, validate=validate, subfontIndex=subfontIndex)
+                ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\pdfbase\ttfonts.py", line 1087, in __init__
+    TTFontFile.__init__(self, filename, validate=validate, subfontIndex=subfontIndex)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\pdfbase\ttfonts.py", line 446, in __init__
+    TTFontParser.__init__(self, file, validate=validate,subfontIndex=subfontIndex)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\pdfbase\ttfonts.py", line 182, in __init__
+    self.readFile(file)
+    ~~~~~~~~~~~~~^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\pdfbase\ttfonts.py", line 258, in readFile
+    self.filename, f = TTFOpenFile(f)
+                       ~~~~~~~~~~~^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\pdfbase\ttfonts.py", line 168, in TTFOpenFile
+    raise TTFError('Can\'t open file "%s"' % fn)
+reportlab.pdfbase.ttfonts.TTFError: Can't open file "C:\Users\Vitas\AppData\Local\Temp\tmp1iy6bzsj.ttf"
+"GET /renginiai/6/pdf/ HTTP/1.1" 500 233140
+Internal Server Error: /renginiai/6/pdf/
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\lib\utils.py", line 523, in open_for_read
+    return open_for_read_by_name(name,mode)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\lib\utils.py", line 463, in open_for_read_by_name
+    return open(name,mode)
+PermissionError: [Errno 13] Permission denied: 'C:\\Users\\Vitas\\AppData\\Local\\Temp\\tmpwyyx5qfa.ttf'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\lib\utils.py", line 530, in open_for_read
+    return BytesIO((datareader if name[:5].lower()=='data:' else rlUrlRead)(name))
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\lib\utils.py", line 476, in rlUrlRead
+    return urlopen(name).read()
+           ~~~~~~~^^^^^^
+  File "C:\Users\Vitas\AppData\Local\Programs\Python\Python313\Lib\urllib\request.py", line 189, in urlopen
+    return opener.open(url, data, timeout)
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Vitas\AppData\Local\Programs\Python\Python313\Lib\urllib\request.py", line 489, in open
+    response = self._open(req, data)
+  File "C:\Users\Vitas\AppData\Local\Programs\Python\Python313\Lib\urllib\request.py", line 511, in _open
+    return self._call_chain(self.handle_open, 'unknown',
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                            'unknown_open', req)
+                            ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Vitas\AppData\Local\Programs\Python\Python313\Lib\urllib\request.py", line 466, in _call_chain
+    result = func(*args)
+  File "C:\Users\Vitas\AppData\Local\Programs\Python\Python313\Lib\urllib\request.py", line 1395, in unknown_open
+    raise URLError('unknown url type: %s' % type)
+urllib.error.URLError: <urlopen error unknown url type: c>
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\pdfbase\ttfonts.py", line 158, in TTFOpenFile
+    f = open_for_read(fn,'rb')
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\lib\utils.py", line 532, in open_for_read
+    raise IOError('Cannot open resource "%s"' % name)
+OSError: Cannot open resource "C:\Users\Vitas\AppData\Local\Temp\tmpwyyx5qfa.ttf"
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Renginiai\views.py", line 127, in renginys_pdf_view
+    pdf = pisa.pisaDocument(io.BytesIO(html.encode("utf-8")), result, link_callback=link_callback)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\document.py", line 139, in pisaDocument
+    context = pisaStory(
+        src,
+    ...<7 lines>...
+        xml_output=xml_output,
+    )
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\document.py", line 75, in pisaStory
+    pisaParser(src, context, default_css, xhtml, encoding, xml_output)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\parser.py", line 823, in pisaParser
+    context.parseCSS()
+    ~~~~~~~~~~~~~~~~^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\context.py", line 690, in parseCSS
+    self.css = self.cssParser.parse(self.cssText)
+               ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\w3c\cssParser.py", line 458, in parse
+    src, stylesheet = self._parseStylesheet(src)
+                      ~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\w3c\cssParser.py", line 561, in _parseStylesheet
+    src, atResults = self._parseAtKeyword(src)
+                     ~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\w3c\cssParser.py", line 685, in _parseAtKeyword
+    src, result = self._parseAtFontFace(src)
+                  ~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\w3c\cssParser.py", line 866, in _parseAtFontFace
+    result = [self.cssBuilder.atFontFace(properties)]
+              ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\context.py", line 221, in atFontFace
+    self.c.loadFont(names, src, bold=bold, italic=italic)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\context.py", line 1116, in loadFont
+    file = TTFont(fullFontName, filename)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\pdfbase\ttfonts.py", line 1206, in __init__
+    self.face = TTFontFace(filename, validate=validate, subfontIndex=subfontIndex)
+                ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\pdfbase\ttfonts.py", line 1087, in __init__
+    TTFontFile.__init__(self, filename, validate=validate, subfontIndex=subfontIndex)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\pdfbase\ttfonts.py", line 446, in __init__
+    TTFontParser.__init__(self, file, validate=validate,subfontIndex=subfontIndex)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\pdfbase\ttfonts.py", line 182, in __init__
+    self.readFile(file)
+    ~~~~~~~~~~~~~^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\pdfbase\ttfonts.py", line 258, in readFile
+    self.filename, f = TTFOpenFile(f)
+                       ~~~~~~~~~~~^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\pdfbase\ttfonts.py", line 168, in TTFOpenFile
+    raise TTFError('Can\'t open file "%s"' % fn)
+reportlab.pdfbase.ttfonts.TTFError: Can't open file "C:\Users\Vitas\AppData\Local\Temp\tmpwyyx5qfa.ttf"
+"GET /renginiai/6/pdf/ HTTP/1.1" 500 233140
+Internal Server Error: /renginiai/6/pdf/
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\lib\utils.py", line 523, in open_for_read
+    return open_for_read_by_name(name,mode)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\lib\utils.py", line 463, in open_for_read_by_name
+    return open(name,mode)
+PermissionError: [Errno 13] Permission denied: 'C:\\Users\\Vitas\\AppData\\Local\\Temp\\tmpz508yb6y.ttf'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\lib\utils.py", line 530, in open_for_read
+    return BytesIO((datareader if name[:5].lower()=='data:' else rlUrlRead)(name))
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\lib\utils.py", line 476, in rlUrlRead
+    return urlopen(name).read()
+           ~~~~~~~^^^^^^
+  File "C:\Users\Vitas\AppData\Local\Programs\Python\Python313\Lib\urllib\request.py", line 189, in urlopen
+    return opener.open(url, data, timeout)
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Vitas\AppData\Local\Programs\Python\Python313\Lib\urllib\request.py", line 489, in open
+    response = self._open(req, data)
+  File "C:\Users\Vitas\AppData\Local\Programs\Python\Python313\Lib\urllib\request.py", line 511, in _open
+    return self._call_chain(self.handle_open, 'unknown',
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                            'unknown_open', req)
+                            ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Vitas\AppData\Local\Programs\Python\Python313\Lib\urllib\request.py", line 466, in _call_chain
+    result = func(*args)
+  File "C:\Users\Vitas\AppData\Local\Programs\Python\Python313\Lib\urllib\request.py", line 1395, in unknown_open
+    raise URLError('unknown url type: %s' % type)
+urllib.error.URLError: <urlopen error unknown url type: c>
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\pdfbase\ttfonts.py", line 158, in TTFOpenFile
+    f = open_for_read(fn,'rb')
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\lib\utils.py", line 532, in open_for_read
+    raise IOError('Cannot open resource "%s"' % name)
+OSError: Cannot open resource "C:\Users\Vitas\AppData\Local\Temp\tmpz508yb6y.ttf"
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Renginiai\views.py", line 127, in renginys_pdf_view
+    pdf = pisa.pisaDocument(io.BytesIO(html.encode("utf-8")), result, link_callback=link_callback)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\document.py", line 139, in pisaDocument
+    context = pisaStory(
+        src,
+    ...<7 lines>...
+        xml_output=xml_output,
+    )
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\document.py", line 75, in pisaStory
+    pisaParser(src, context, default_css, xhtml, encoding, xml_output)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\parser.py", line 823, in pisaParser
+    context.parseCSS()
+    ~~~~~~~~~~~~~~~~^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\context.py", line 690, in parseCSS
+    self.css = self.cssParser.parse(self.cssText)
+               ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\w3c\cssParser.py", line 458, in parse
+    src, stylesheet = self._parseStylesheet(src)
+                      ~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\w3c\cssParser.py", line 561, in _parseStylesheet
+    src, atResults = self._parseAtKeyword(src)
+                     ~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\w3c\cssParser.py", line 685, in _parseAtKeyword
+    src, result = self._parseAtFontFace(src)
+                  ~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\w3c\cssParser.py", line 866, in _parseAtFontFace
+    result = [self.cssBuilder.atFontFace(properties)]
+              ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\context.py", line 221, in atFontFace
+    self.c.loadFont(names, src, bold=bold, italic=italic)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\context.py", line 1116, in loadFont
+    file = TTFont(fullFontName, filename)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\pdfbase\ttfonts.py", line 1206, in __init__
+    self.face = TTFontFace(filename, validate=validate, subfontIndex=subfontIndex)
+                ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\pdfbase\ttfonts.py", line 1087, in __init__
+    TTFontFile.__init__(self, filename, validate=validate, subfontIndex=subfontIndex)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\pdfbase\ttfonts.py", line 446, in __init__
+    TTFontParser.__init__(self, file, validate=validate,subfontIndex=subfontIndex)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\pdfbase\ttfonts.py", line 182, in __init__
+    self.readFile(file)
+    ~~~~~~~~~~~~~^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\pdfbase\ttfonts.py", line 258, in readFile
+    self.filename, f = TTFOpenFile(f)
+                       ~~~~~~~~~~~^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\pdfbase\ttfonts.py", line 168, in TTFOpenFile
+    raise TTFError('Can\'t open file "%s"' % fn)
+reportlab.pdfbase.ttfonts.TTFError: Can't open file "C:\Users\Vitas\AppData\Local\Temp\tmpz508yb6y.ttf"
+"GET /renginiai/6/pdf/ HTTP/1.1" 500 233140
+Internal Server Error: /renginiai/6/pdf/
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\lib\utils.py", line 523, in open_for_read
+    return open_for_read_by_name(name,mode)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\lib\utils.py", line 463, in open_for_read_by_name
+    return open(name,mode)
+PermissionError: [Errno 13] Permission denied: 'C:\\Users\\Vitas\\AppData\\Local\\Temp\\tmpmh0qfyr2.ttf'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\lib\utils.py", line 530, in open_for_read
+    return BytesIO((datareader if name[:5].lower()=='data:' else rlUrlRead)(name))
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\lib\utils.py", line 476, in rlUrlRead
+    return urlopen(name).read()
+           ~~~~~~~^^^^^^
+  File "C:\Users\Vitas\AppData\Local\Programs\Python\Python313\Lib\urllib\request.py", line 189, in urlopen
+    return opener.open(url, data, timeout)
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Vitas\AppData\Local\Programs\Python\Python313\Lib\urllib\request.py", line 489, in open
+    response = self._open(req, data)
+  File "C:\Users\Vitas\AppData\Local\Programs\Python\Python313\Lib\urllib\request.py", line 511, in _open
+    return self._call_chain(self.handle_open, 'unknown',
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                            'unknown_open', req)
+                            ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Vitas\AppData\Local\Programs\Python\Python313\Lib\urllib\request.py", line 466, in _call_chain
+    result = func(*args)
+  File "C:\Users\Vitas\AppData\Local\Programs\Python\Python313\Lib\urllib\request.py", line 1395, in unknown_open
+    raise URLError('unknown url type: %s' % type)
+urllib.error.URLError: <urlopen error unknown url type: c>
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\pdfbase\ttfonts.py", line 158, in TTFOpenFile
+    f = open_for_read(fn,'rb')
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\lib\utils.py", line 532, in open_for_read
+    raise IOError('Cannot open resource "%s"' % name)
+OSError: Cannot open resource "C:\Users\Vitas\AppData\Local\Temp\tmpmh0qfyr2.ttf"
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Renginiai\views.py", line 127, in renginys_pdf_view
+    pdf = pisa.pisaDocument(io.BytesIO(html.encode("utf-8")), result, link_callback=link_callback)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\document.py", line 139, in pisaDocument
+    context = pisaStory(
+        src,
+    ...<7 lines>...
+        xml_output=xml_output,
+    )
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\document.py", line 75, in pisaStory
+    pisaParser(src, context, default_css, xhtml, encoding, xml_output)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\parser.py", line 823, in pisaParser
+    context.parseCSS()
+    ~~~~~~~~~~~~~~~~^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\context.py", line 690, in parseCSS
+    self.css = self.cssParser.parse(self.cssText)
+               ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\w3c\cssParser.py", line 458, in parse
+    src, stylesheet = self._parseStylesheet(src)
+                      ~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\w3c\cssParser.py", line 561, in _parseStylesheet
+    src, atResults = self._parseAtKeyword(src)
+                     ~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\w3c\cssParser.py", line 685, in _parseAtKeyword
+    src, result = self._parseAtFontFace(src)
+                  ~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\w3c\cssParser.py", line 866, in _parseAtFontFace
+    result = [self.cssBuilder.atFontFace(properties)]
+              ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\context.py", line 221, in atFontFace
+    self.c.loadFont(names, src, bold=bold, italic=italic)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\context.py", line 1116, in loadFont
+    file = TTFont(fullFontName, filename)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\pdfbase\ttfonts.py", line 1206, in __init__
+    self.face = TTFontFace(filename, validate=validate, subfontIndex=subfontIndex)
+                ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\pdfbase\ttfonts.py", line 1087, in __init__
+    TTFontFile.__init__(self, filename, validate=validate, subfontIndex=subfontIndex)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\pdfbase\ttfonts.py", line 446, in __init__
+    TTFontParser.__init__(self, file, validate=validate,subfontIndex=subfontIndex)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\pdfbase\ttfonts.py", line 182, in __init__
+    self.readFile(file)
+    ~~~~~~~~~~~~~^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\pdfbase\ttfonts.py", line 258, in readFile
+    self.filename, f = TTFOpenFile(f)
+                       ~~~~~~~~~~~^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\pdfbase\ttfonts.py", line 168, in TTFOpenFile
+    raise TTFError('Can\'t open file "%s"' % fn)
+reportlab.pdfbase.ttfonts.TTFError: Can't open file "C:\Users\Vitas\AppData\Local\Temp\tmpmh0qfyr2.ttf"
+"GET /renginiai/6/pdf/ HTTP/1.1" 500 233140
+Internal Server Error: /renginiai/6/pdf/
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\lib\utils.py", line 523, in open_for_read
+    return open_for_read_by_name(name,mode)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\lib\utils.py", line 463, in open_for_read_by_name
+    return open(name,mode)
+PermissionError: [Errno 13] Permission denied: 'C:\\Users\\Vitas\\AppData\\Local\\Temp\\tmpnzps61cn.ttf'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\lib\utils.py", line 530, in open_for_read
+    return BytesIO((datareader if name[:5].lower()=='data:' else rlUrlRead)(name))
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\lib\utils.py", line 476, in rlUrlRead
+    return urlopen(name).read()
+           ~~~~~~~^^^^^^
+  File "C:\Users\Vitas\AppData\Local\Programs\Python\Python313\Lib\urllib\request.py", line 189, in urlopen
+    return opener.open(url, data, timeout)
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Vitas\AppData\Local\Programs\Python\Python313\Lib\urllib\request.py", line 489, in open
+    response = self._open(req, data)
+  File "C:\Users\Vitas\AppData\Local\Programs\Python\Python313\Lib\urllib\request.py", line 511, in _open
+    return self._call_chain(self.handle_open, 'unknown',
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                            'unknown_open', req)
+                            ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Vitas\AppData\Local\Programs\Python\Python313\Lib\urllib\request.py", line 466, in _call_chain
+    result = func(*args)
+  File "C:\Users\Vitas\AppData\Local\Programs\Python\Python313\Lib\urllib\request.py", line 1395, in unknown_open
+    raise URLError('unknown url type: %s' % type)
+urllib.error.URLError: <urlopen error unknown url type: c>
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\pdfbase\ttfonts.py", line 158, in TTFOpenFile
+    f = open_for_read(fn,'rb')
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\lib\utils.py", line 532, in open_for_read
+    raise IOError('Cannot open resource "%s"' % name)
+OSError: Cannot open resource "C:\Users\Vitas\AppData\Local\Temp\tmpnzps61cn.ttf"
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Renginiai\views.py", line 127, in renginys_pdf_view
+    pdf = pisa.pisaDocument(io.BytesIO(html.encode("utf-8")), result, link_callback=link_callback)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\document.py", line 139, in pisaDocument
+    context = pisaStory(
+        src,
+    ...<7 lines>...
+        xml_output=xml_output,
+    )
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\document.py", line 75, in pisaStory
+    pisaParser(src, context, default_css, xhtml, encoding, xml_output)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\parser.py", line 823, in pisaParser
+    context.parseCSS()
+    ~~~~~~~~~~~~~~~~^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\context.py", line 690, in parseCSS
+    self.css = self.cssParser.parse(self.cssText)
+               ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\w3c\cssParser.py", line 458, in parse
+    src, stylesheet = self._parseStylesheet(src)
+                      ~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\w3c\cssParser.py", line 561, in _parseStylesheet
+    src, atResults = self._parseAtKeyword(src)
+                     ~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\w3c\cssParser.py", line 685, in _parseAtKeyword
+    src, result = self._parseAtFontFace(src)
+                  ~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\w3c\cssParser.py", line 866, in _parseAtFontFace
+    result = [self.cssBuilder.atFontFace(properties)]
+              ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\context.py", line 221, in atFontFace
+    self.c.loadFont(names, src, bold=bold, italic=italic)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\context.py", line 1116, in loadFont
+    file = TTFont(fullFontName, filename)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\pdfbase\ttfonts.py", line 1206, in __init__
+    self.face = TTFontFace(filename, validate=validate, subfontIndex=subfontIndex)
+                ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\pdfbase\ttfonts.py", line 1087, in __init__
+    TTFontFile.__init__(self, filename, validate=validate, subfontIndex=subfontIndex)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\pdfbase\ttfonts.py", line 446, in __init__
+    TTFontParser.__init__(self, file, validate=validate,subfontIndex=subfontIndex)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\pdfbase\ttfonts.py", line 182, in __init__
+    self.readFile(file)
+    ~~~~~~~~~~~~~^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\pdfbase\ttfonts.py", line 258, in readFile
+    self.filename, f = TTFOpenFile(f)
+                       ~~~~~~~~~~~^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\pdfbase\ttfonts.py", line 168, in TTFOpenFile
+    raise TTFError('Can\'t open file "%s"' % fn)
+reportlab.pdfbase.ttfonts.TTFError: Can't open file "C:\Users\Vitas\AppData\Local\Temp\tmpnzps61cn.ttf"
+"GET /renginiai/6/pdf/ HTTP/1.1" 500 233620
+Internal Server Error: /renginiai/6/pdf/
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\lib\utils.py", line 523, in open_for_read
+    return open_for_read_by_name(name,mode)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\lib\utils.py", line 463, in open_for_read_by_name
+    return open(name,mode)
+PermissionError: [Errno 13] Permission denied: 'C:\\Users\\Vitas\\AppData\\Local\\Temp\\tmp72cl94go.ttf'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\lib\utils.py", line 530, in open_for_read
+    return BytesIO((datareader if name[:5].lower()=='data:' else rlUrlRead)(name))
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\lib\utils.py", line 476, in rlUrlRead
+    return urlopen(name).read()
+           ~~~~~~~^^^^^^
+  File "C:\Users\Vitas\AppData\Local\Programs\Python\Python313\Lib\urllib\request.py", line 189, in urlopen
+    return opener.open(url, data, timeout)
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Vitas\AppData\Local\Programs\Python\Python313\Lib\urllib\request.py", line 489, in open
+    response = self._open(req, data)
+  File "C:\Users\Vitas\AppData\Local\Programs\Python\Python313\Lib\urllib\request.py", line 511, in _open
+    return self._call_chain(self.handle_open, 'unknown',
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                            'unknown_open', req)
+                            ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Vitas\AppData\Local\Programs\Python\Python313\Lib\urllib\request.py", line 466, in _call_chain
+    result = func(*args)
+  File "C:\Users\Vitas\AppData\Local\Programs\Python\Python313\Lib\urllib\request.py", line 1395, in unknown_open
+    raise URLError('unknown url type: %s' % type)
+urllib.error.URLError: <urlopen error unknown url type: c>
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\pdfbase\ttfonts.py", line 158, in TTFOpenFile
+    f = open_for_read(fn,'rb')
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\lib\utils.py", line 532, in open_for_read
+    raise IOError('Cannot open resource "%s"' % name)
+OSError: Cannot open resource "C:\Users\Vitas\AppData\Local\Temp\tmp72cl94go.ttf"
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Renginiai\views.py", line 127, in renginys_pdf_view
+    pdf = pisa.pisaDocument(io.BytesIO(html.encode("utf-8")), result, link_callback=link_callback)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\document.py", line 139, in pisaDocument
+    context = pisaStory(
+        src,
+    ...<7 lines>...
+        xml_output=xml_output,
+    )
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\document.py", line 75, in pisaStory
+    pisaParser(src, context, default_css, xhtml, encoding, xml_output)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\parser.py", line 823, in pisaParser
+    context.parseCSS()
+    ~~~~~~~~~~~~~~~~^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\context.py", line 690, in parseCSS
+    self.css = self.cssParser.parse(self.cssText)
+               ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\w3c\cssParser.py", line 458, in parse
+    src, stylesheet = self._parseStylesheet(src)
+                      ~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\w3c\cssParser.py", line 561, in _parseStylesheet
+    src, atResults = self._parseAtKeyword(src)
+                     ~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\w3c\cssParser.py", line 685, in _parseAtKeyword
+    src, result = self._parseAtFontFace(src)
+                  ~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\w3c\cssParser.py", line 866, in _parseAtFontFace
+    result = [self.cssBuilder.atFontFace(properties)]
+              ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\context.py", line 221, in atFontFace
+    self.c.loadFont(names, src, bold=bold, italic=italic)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\context.py", line 1116, in loadFont
+    file = TTFont(fullFontName, filename)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\pdfbase\ttfonts.py", line 1206, in __init__
+    self.face = TTFontFace(filename, validate=validate, subfontIndex=subfontIndex)
+                ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\pdfbase\ttfonts.py", line 1087, in __init__
+    TTFontFile.__init__(self, filename, validate=validate, subfontIndex=subfontIndex)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\pdfbase\ttfonts.py", line 446, in __init__
+    TTFontParser.__init__(self, file, validate=validate,subfontIndex=subfontIndex)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\pdfbase\ttfonts.py", line 182, in __init__
+    self.readFile(file)
+    ~~~~~~~~~~~~~^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\pdfbase\ttfonts.py", line 258, in readFile
+    self.filename, f = TTFOpenFile(f)
+                       ~~~~~~~~~~~^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\pdfbase\ttfonts.py", line 168, in TTFOpenFile
+    raise TTFError('Can\'t open file "%s"' % fn)
+reportlab.pdfbase.ttfonts.TTFError: Can't open file "C:\Users\Vitas\AppData\Local\Temp\tmp72cl94go.ttf"
+"GET /renginiai/6/pdf/ HTTP/1.1" 500 233622
+Internal Server Error: /renginiai/6/pdf/
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\lib\utils.py", line 523, in open_for_read
+    return open_for_read_by_name(name,mode)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\lib\utils.py", line 463, in open_for_read_by_name
+    return open(name,mode)
+PermissionError: [Errno 13] Permission denied: 'C:\\Users\\Vitas\\AppData\\Local\\Temp\\tmp37u9kafe.ttf'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\lib\utils.py", line 530, in open_for_read
+    return BytesIO((datareader if name[:5].lower()=='data:' else rlUrlRead)(name))
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\lib\utils.py", line 476, in rlUrlRead
+    return urlopen(name).read()
+           ~~~~~~~^^^^^^
+  File "C:\Users\Vitas\AppData\Local\Programs\Python\Python313\Lib\urllib\request.py", line 189, in urlopen
+    return opener.open(url, data, timeout)
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Vitas\AppData\Local\Programs\Python\Python313\Lib\urllib\request.py", line 489, in open
+    response = self._open(req, data)
+  File "C:\Users\Vitas\AppData\Local\Programs\Python\Python313\Lib\urllib\request.py", line 511, in _open
+    return self._call_chain(self.handle_open, 'unknown',
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                            'unknown_open', req)
+                            ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Vitas\AppData\Local\Programs\Python\Python313\Lib\urllib\request.py", line 466, in _call_chain
+    result = func(*args)
+  File "C:\Users\Vitas\AppData\Local\Programs\Python\Python313\Lib\urllib\request.py", line 1395, in unknown_open
+    raise URLError('unknown url type: %s' % type)
+urllib.error.URLError: <urlopen error unknown url type: c>
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\pdfbase\ttfonts.py", line 158, in TTFOpenFile
+    f = open_for_read(fn,'rb')
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\lib\utils.py", line 532, in open_for_read
+    raise IOError('Cannot open resource "%s"' % name)
+OSError: Cannot open resource "C:\Users\Vitas\AppData\Local\Temp\tmp37u9kafe.ttf"
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Renginiai\views.py", line 128, in renginys_pdf_view
+    pdf = pisa.pisaDocument(io.BytesIO(html.encode("utf-8")), result, link_callback=link_callback)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\document.py", line 139, in pisaDocument
+    context = pisaStory(
+        src,
+    ...<7 lines>...
+        xml_output=xml_output,
+    )
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\document.py", line 75, in pisaStory
+    pisaParser(src, context, default_css, xhtml, encoding, xml_output)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\parser.py", line 823, in pisaParser
+    context.parseCSS()
+    ~~~~~~~~~~~~~~~~^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\context.py", line 690, in parseCSS
+    self.css = self.cssParser.parse(self.cssText)
+               ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\w3c\cssParser.py", line 458, in parse
+    src, stylesheet = self._parseStylesheet(src)
+                      ~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\w3c\cssParser.py", line 561, in _parseStylesheet
+    src, atResults = self._parseAtKeyword(src)
+                     ~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\w3c\cssParser.py", line 685, in _parseAtKeyword
+    src, result = self._parseAtFontFace(src)
+                  ~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\w3c\cssParser.py", line 866, in _parseAtFontFace
+    result = [self.cssBuilder.atFontFace(properties)]
+              ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\context.py", line 221, in atFontFace
+    self.c.loadFont(names, src, bold=bold, italic=italic)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\context.py", line 1116, in loadFont
+    file = TTFont(fullFontName, filename)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\pdfbase\ttfonts.py", line 1206, in __init__
+    self.face = TTFontFace(filename, validate=validate, subfontIndex=subfontIndex)
+                ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\pdfbase\ttfonts.py", line 1087, in __init__
+    TTFontFile.__init__(self, filename, validate=validate, subfontIndex=subfontIndex)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\pdfbase\ttfonts.py", line 446, in __init__
+    TTFontParser.__init__(self, file, validate=validate,subfontIndex=subfontIndex)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\pdfbase\ttfonts.py", line 182, in __init__
+    self.readFile(file)
+    ~~~~~~~~~~~~~^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\pdfbase\ttfonts.py", line 258, in readFile
+    self.filename, f = TTFOpenFile(f)
+                       ~~~~~~~~~~~^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\pdfbase\ttfonts.py", line 168, in TTFOpenFile
+    raise TTFError('Can\'t open file "%s"' % fn)
+reportlab.pdfbase.ttfonts.TTFError: Can't open file "C:\Users\Vitas\AppData\Local\Temp\tmp37u9kafe.ttf"
+"GET /renginiai/6/pdf/ HTTP/1.1" 500 233704
+Internal Server Error: /renginiai/6/pdf/
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\lib\utils.py", line 523, in open_for_read
+    return open_for_read_by_name(name,mode)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\lib\utils.py", line 463, in open_for_read_by_name
+    return open(name,mode)
+PermissionError: [Errno 13] Permission denied: 'C:\\Users\\Vitas\\AppData\\Local\\Temp\\tmp8hianb1g.ttf'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\lib\utils.py", line 530, in open_for_read
+    return BytesIO((datareader if name[:5].lower()=='data:' else rlUrlRead)(name))
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\lib\utils.py", line 476, in rlUrlRead
+    return urlopen(name).read()
+           ~~~~~~~^^^^^^
+  File "C:\Users\Vitas\AppData\Local\Programs\Python\Python313\Lib\urllib\request.py", line 189, in urlopen
+    return opener.open(url, data, timeout)
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Vitas\AppData\Local\Programs\Python\Python313\Lib\urllib\request.py", line 489, in open
+    response = self._open(req, data)
+  File "C:\Users\Vitas\AppData\Local\Programs\Python\Python313\Lib\urllib\request.py", line 511, in _open
+    return self._call_chain(self.handle_open, 'unknown',
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                            'unknown_open', req)
+                            ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Vitas\AppData\Local\Programs\Python\Python313\Lib\urllib\request.py", line 466, in _call_chain
+    result = func(*args)
+  File "C:\Users\Vitas\AppData\Local\Programs\Python\Python313\Lib\urllib\request.py", line 1395, in unknown_open
+    raise URLError('unknown url type: %s' % type)
+urllib.error.URLError: <urlopen error unknown url type: c>
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\pdfbase\ttfonts.py", line 158, in TTFOpenFile
+    f = open_for_read(fn,'rb')
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\lib\utils.py", line 532, in open_for_read
+    raise IOError('Cannot open resource "%s"' % name)
+OSError: Cannot open resource "C:\Users\Vitas\AppData\Local\Temp\tmp8hianb1g.ttf"
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Renginiai\views.py", line 128, in renginys_pdf_view
+    pdf = pisa.pisaDocument(io.BytesIO(html.encode("utf-8")), result, link_callback=link_callback)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\document.py", line 139, in pisaDocument
+    context = pisaStory(
+        src,
+    ...<7 lines>...
+        xml_output=xml_output,
+    )
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\document.py", line 75, in pisaStory
+    pisaParser(src, context, default_css, xhtml, encoding, xml_output)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\parser.py", line 823, in pisaParser
+    context.parseCSS()
+    ~~~~~~~~~~~~~~~~^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\context.py", line 690, in parseCSS
+    self.css = self.cssParser.parse(self.cssText)
+               ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\w3c\cssParser.py", line 458, in parse
+    src, stylesheet = self._parseStylesheet(src)
+                      ~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\w3c\cssParser.py", line 561, in _parseStylesheet
+    src, atResults = self._parseAtKeyword(src)
+                     ~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\w3c\cssParser.py", line 685, in _parseAtKeyword
+    src, result = self._parseAtFontFace(src)
+                  ~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\w3c\cssParser.py", line 866, in _parseAtFontFace
+    result = [self.cssBuilder.atFontFace(properties)]
+              ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\context.py", line 221, in atFontFace
+    self.c.loadFont(names, src, bold=bold, italic=italic)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\xhtml2pdf\context.py", line 1116, in loadFont
+    file = TTFont(fullFontName, filename)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\pdfbase\ttfonts.py", line 1206, in __init__
+    self.face = TTFontFace(filename, validate=validate, subfontIndex=subfontIndex)
+                ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\pdfbase\ttfonts.py", line 1087, in __init__
+    TTFontFile.__init__(self, filename, validate=validate, subfontIndex=subfontIndex)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\pdfbase\ttfonts.py", line 446, in __init__
+    TTFontParser.__init__(self, file, validate=validate,subfontIndex=subfontIndex)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\pdfbase\ttfonts.py", line 182, in __init__
+    self.readFile(file)
+    ~~~~~~~~~~~~~^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\pdfbase\ttfonts.py", line 258, in readFile
+    self.filename, f = TTFOpenFile(f)
+                       ~~~~~~~~~~~^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\pdfbase\ttfonts.py", line 168, in TTFOpenFile
+    raise TTFError('Can\'t open file "%s"' % fn)
+reportlab.pdfbase.ttfonts.TTFError: Can't open file "C:\Users\Vitas\AppData\Local\Temp\tmp8hianb1g.ttf"
+"GET /renginiai/6/pdf/ HTTP/1.1" 500 233704
+Internal Server Error: /renginiai/6/pdf/
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Renginiai\views.py", line 159, in renginys_pdf_view
+    line = f'{i}. „<b>{k.pavadinimas}</b>“ ({k.tipas})'
+              ^
+NameError: name 'i' is not defined
+"GET /renginiai/6/pdf/ HTTP/1.1" 500 90529
+Internal Server Error: /renginiai/6/pdf/
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\lib\styles.py", line 231, in __getitem__
+    return self.byAlias[key]
+           ~~~~~~~~~~~~^^^^^
+KeyError: 'BoldOnly'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\lib\styles.py", line 234, in __getitem__
+    return self.byName[key]
+           ~~~~~~~~~~~^^^^^
+KeyError: 'BoldOnly'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Renginiai\views.py", line 161, in renginys_pdf_view
+    main_parts.append(Paragraph(f'„{k.pavadinimas}“', styles['BoldOnly']))  # bold title
+                                                      ~~~~~~^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\reportlab\lib\styles.py", line 236, in __getitem__
+    raise KeyError("Style '%s' not found in stylesheet" % key)
+KeyError: "Style 'BoldOnly' not found in stylesheet"
+"GET /renginiai/6/pdf/ HTTP/1.1" 500 103609
+Internal Server Error: /renginiai/25/nariai/
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Renginiai\views.py", line 199, in nariai_for_renginys
+    html = render_to_string("components/nariai_checkbox_list.html", {"nariai": nariai})
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\loader.py", line 19, in get_template
+    raise TemplateDoesNotExist(template_name, chain=chain)
+django.template.exceptions.TemplateDoesNotExist: components/nariai_checkbox_list.html
+"GET /renginiai/25/nariai/ HTTP/1.1" 500 101079
+Internal Server Error: /renginiai/17/nariai/
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Renginiai\views.py", line 199, in nariai_for_renginys
+    html = render_to_string("components/nariai_checkbox_list.html", {"nariai": nariai})
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\loader.py", line 19, in get_template
+    raise TemplateDoesNotExist(template_name, chain=chain)
+django.template.exceptions.TemplateDoesNotExist: components/nariai_checkbox_list.html
+"GET /renginiai/17/nariai/ HTTP/1.1" 500 101079
+Internal Server Error: /renginiai/6/nariai/
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Renginiai\views.py", line 199, in nariai_for_renginys
+    html = render_to_string("components/nariai_checkbox_list.html", {"nariai": nariai})
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\loader.py", line 19, in get_template
+    raise TemplateDoesNotExist(template_name, chain=chain)
+django.template.exceptions.TemplateDoesNotExist: components/nariai_checkbox_list.html
+"GET /renginiai/6/nariai/ HTTP/1.1" 500 101065
+Internal Server Error: /renginiai/6/nariai/
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Renginiai\views.py", line 199, in nariai_for_renginys
+    html = render_to_string("components/nariai_checkbox_list.html", {"nariai": nariai})
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\template\loader.py", line 19, in get_template
+    raise TemplateDoesNotExist(template_name, chain=chain)
+django.template.exceptions.TemplateDoesNotExist: components/nariai_checkbox_list.html
+"GET /renginiai/6/nariai/ HTTP/1.1" 500 101065

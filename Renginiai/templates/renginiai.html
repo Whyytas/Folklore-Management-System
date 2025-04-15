@@ -142,6 +142,15 @@
                                                                 Ištrinti
                                                             </button>
                                                         </li>
+                                                        <li>
+                                                            <button class="dropdown-item d-flex align-items-center justify-content-center gap-2 py-2"
+        onclick="openPdfModal({{ renginys.id }})">
+    <span class="material-symbols-outlined">download</span>
+    Atsisiųsti PDF
+</button>
+
+                                                        </li>
+
                                                     </ul>
                                                 </div>
                                             </td>
@@ -164,6 +173,7 @@
 
 
 
+
                                                             {{ sort_dir }}{% if programa_id %}&programa_id={{ programa_id }}{% endif %}{% if search %}&search={{ search }}{% endif %}"
                                             >
                                                 «
@@ -182,6 +192,7 @@
 
 
 
+
                                                             {{ sort_dir }}{% if programa_id %}&programa_id={{ programa_id }}{% endif %}{% if search %}&search={{ search }}{% endif %}"
                                             >
                                                 {{ num }}
@@ -192,6 +203,7 @@
                                         <a
                                                 class="page-link"
                                                 href="?page={{ num }}&sort={{ sort_field }}&dir=
+
 
 
 
@@ -245,6 +257,32 @@
                         </div>
                     </div>
                 </div>
+
+            <div class="modal fade" id="pdfModal" tabindex="-1" aria-labelledby="pdfModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content shadow border-0 rounded-4">
+            <form method="post" action="{% url 'renginys_pdf' selected_renginys.id %}" id="pdfForm" target="_blank">
+                {% csrf_token %}
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title">Pasirinkite narius PDF dokumentui</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+    <div class="row" id="nariaiContainer">
+        <p class="text-muted">Kraunama...</p>
+    </div>
+</div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Atšaukti</button>
+                    <button type="submit" class="btn btn-primary">Generuoti PDF</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
             </div>
         </div>
     </div>
@@ -273,6 +311,28 @@
             document.getElementById("renginysName").innerText = name;
             document.getElementById("deleteForm").action = `/renginiai/${id}/delete/`;
         }
+
+        function openPdfModal(renginysId) {
+    const form = document.getElementById("pdfForm");
+    form.action = `/renginiai/${renginysId}/pdf/`;
+
+    const container = document.getElementById("nariaiContainer");
+    container.innerHTML = `<p class="text-muted">Kraunama...</p>`;
+
+    fetch(`/renginiai/${renginysId}/nariai/`)
+        .then(response => response.json())
+        .then(data => {
+            container.innerHTML = data.html;
+        })
+        .catch(err => {
+            container.innerHTML = `<p class="text-danger">Klaida kraunant narius.</p>`;
+            console.error(err);
+        });
+
+    const modal = new bootstrap.Modal(document.getElementById("pdfModal"));
+    modal.show();
+}
+
     </script>
 
 {% endblock content %}

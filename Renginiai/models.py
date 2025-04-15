@@ -1,4 +1,5 @@
-from time import localtime
+# from time import localtime
+from django.utils.timezone import localtime, is_naive, make_aware
 
 from django.db import models
 
@@ -15,7 +16,10 @@ class Renginys(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def formatted_data_laikas(self):
-        return localtime(self.data_laikas).strftime("%Y-%m-%d %H:%M")
+        dt = self.data_laikas
+        if is_naive(dt):
+            dt = make_aware(dt)
+        return localtime(dt).strftime("%Y-%m-%d %H:%M")
 
     def __str__(self):
         return f"{self.pavadinimas} ({self.ansamblis})"

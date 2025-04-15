@@ -9,6 +9,4 @@ urlpatterns = [
     path('<int:pk>/delete/', istrinti_programa, name='program_delete'),
 path('generuoti/', program_generate, name='program_generate'),
 path("generate-kuriniai/", generate_kuriniai, name="generate_kuriniai"),
-
-
 ]

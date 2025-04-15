@@ -1,15 +1,30 @@
+import io
+import os
+
+from django.conf import settings
+from django.contrib.staticfiles import finders
 from django.core.paginator import Paginator
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
+from django.template.loader import render_to_string
 from django.utils.timezone import make_aware
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
+from xhtml2pdf import pisa
+from reportlab.lib.pagesizes import A4
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, ListFlowable, ListItem
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.lib.enums import TA_CENTER
 
 from Ansambliai.models import Ansamblis
-from Programos.models import Programa
+from Initial.models import User
+from Programos.models import Programa, ProgramosKurinys
 from .models import Renginys
 from .forms import RenginysForm
 from django.http import HttpResponseForbidden
 import datetime  # ✅ Correct way to import datetime module
-
 
 def renginiai_list(request):
     selected_ansamblis_id = request.session.get("selected_ansamblis_id")
@@ -32,6 +47,8 @@ def renginiai_list(request):
     paginator = Paginator(renginiai, 15)
     page = request.GET.get("page")
     page_obj = paginator.get_page(page)
+    selected_renginys = renginiai.first()
+    nariai = User.objects.filter(ansambliai=selected_renginys.ansamblis, role="narys") if selected_renginys else []
 
     return render(request, 'renginiai.html', {
         'renginiai': page_obj.object_list,
@@ -41,6 +58,8 @@ def renginiai_list(request):
         'programa_id': programa_id,
         'search': search,
         'programos': Programa.objects.all(),
+        "nariai": nariai,
+        "selected_renginys": selected_renginys,
     })
 
 def renginiai_add(request):
@@ -100,3 +119,83 @@ def delete_renginys(request, renginys_id):
 def publicEvents(request):
     return render(request, 'renginiaiPublic.html', )
 
+def renginys_pdf_view(request, renginys_id):
+    from reportlab.lib.styles import ListStyle
+
+    list_style = ListStyle(
+        name='TimesNumbered',
+        leftIndent=20,
+        bulletFontName='TimesNewRoman',
+        bulletFontSize=12,
+        bulletIndent=0
+    )
+
+    selected_ids = request.POST.getlist("nariai")
+    renginys = get_object_or_404(Renginys, id=renginys_id)
+    nariai = User.objects.filter(id__in=selected_ids, ansambliai=renginys.ansamblis).distinct()
+    programos_kuriniai = ProgramosKurinys.objects.filter(programa=renginys.programa).select_related("kurinys")
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'inline; filename="renginys_{renginys_id}.pdf"'
+
+    buffer = io.BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=A4)
+
+    pdfmetrics.registerFont(TTFont('TimesNewRoman', 'C:/Windows/Fonts/times.ttf'))
+    pdfmetrics.registerFont(TTFont('TimesNewRoman-Bold', 'C:/Windows/Fonts/timesbd.ttf'))
+
+    styles = getSampleStyleSheet()
+    styles.add(ParagraphStyle(name='CenterTitle', fontName='TimesNewRoman', fontSize=20, alignment=TA_CENTER, spaceAfter=20))
+    styles.add(ParagraphStyle(name='NormalCustom', fontName='TimesNewRoman', fontSize=12, leading=15))
+    styles.add(ParagraphStyle(name='NormalBold', fontName='TimesNewRoman-Bold', fontSize=12, leading=15))
+
+    elements = []
+
+    formatted_date = renginys.formatted_data_laikas()
+    address = renginys.adresas
+    title = renginys.pavadinimas
+
+    elements.append(Paragraph(f"{formatted_date}<br/>{address}", styles['NormalCustom']))
+    elements.append(Spacer(1, 12))
+    elements.append(Paragraph(title, styles['CenterTitle']))
+    elements.append(Spacer(1, 6))
+
+    list_items = []
+    for pk in programos_kuriniai:
+        k = pk.kurinys
+
+        line = f'„<font name="TimesNewRoman-Bold">{k.pavadinimas}</font>“ ({k.tipas})'
+        if k.vieta:
+            line += f', {k.vieta}'
+        if k.regionas:
+            line += f' ({k.regionas})'
+
+        list_items.append(Paragraph(line, styles['NormalCustom']))
+
+    # elements.append(ListFlowable(list_items, bulletType='1', start=1))
+
+    elements.append(ListFlowable(
+        list_items,
+        bulletType='1',
+        start='1',
+        bulletFormat="%s.",  # 👈 Add dot after number
+        style=list_style
+    ))
+
+    elements.append(Spacer(1, 20))
+    elements.append(Paragraph("Dalyvaujantys nariai:", styles['NormalBold']))
+    for narys in nariai:
+        elements.append(Paragraph(f"{narys.vardas} {narys.pavarde}", styles['NormalCustom']))
+
+    doc.build(elements)
+    response.write(buffer.getvalue())
+    buffer.close()
+    return response
+
+def nariai_for_renginys(request, renginys_id):
+    renginys = get_object_or_404(Renginys, id=renginys_id)
+    nariai = User.objects.filter(ansambliai__id=renginys.ansamblis.id).distinct()
+
+
+    html = render_to_string("nariai_checkbox_list.html", {"nariai": nariai})
+    return JsonResponse({"html": html})

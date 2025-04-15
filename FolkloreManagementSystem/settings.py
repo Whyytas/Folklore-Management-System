@@ -36,7 +36,7 @@ if not SECRET_KEY:
     raise ValueError("Missing DJANGO_SECRET_KEY environment variable")
 
 # Debug mode (should be False in production)
-DEBUG = True
+DEBUG = False
 
 INTERNAL_IPS = [
     # ...
