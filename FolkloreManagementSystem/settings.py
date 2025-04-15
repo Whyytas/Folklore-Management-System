@@ -29,12 +29,14 @@ DATETIME_FORMAT = "Y-m-d H:i"
 # Security keys (ensure these are stored securely)
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 YOUTUBE_API_KEY = os.getenv("YOUTUBE_API_KEY")
+RESEND_API_KEY = os.getenv("RESEND_API_KEY")
+DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL")
 
 if not SECRET_KEY:
     raise ValueError("Missing DJANGO_SECRET_KEY environment variable")
 
 # Debug mode (should be False in production)
-DEBUG = False
+DEBUG = True
 
 INTERNAL_IPS = [
     # ...

@@ -1,0 +1,10 @@
+<p>Sveiki {{ user.get_username }},</p>
+<p>Gavome užklausą atstatyti slaptažodį. Spauskite žemiau esančią nuorodą:</p>
+
+<p>
+    <a href="{{ protocol }}://{{ domain }}{% url 'password_reset_confirm' uidb64=uid token=token %}">
+        Atstatyti slaptažodį
+    </a>
+</p>
+
+<p>Jeigu tai nebuvote jūs – ignoruokite šį laišką.</p>
