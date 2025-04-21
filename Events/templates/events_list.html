@@ -1,0 +1,341 @@
+{% extends "layouts/base.html" %} {% block title %} Renginiai Sąrašas {% endblock %} {% block content %}
+    <div class="container-fluid mt-4">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="card shadow">
+                    <div class="card-header d-flex justify-content-between align-items-center py-3 table-header-custom">
+                        <h4 class="mb-0 d-flex align-items-center gap-2">
+                            <span class="material-symbols-outlined">today</span>
+                            Renginių sąrašas
+                        </h4>
+                        {% if request.user.role != "narys" %}
+                            <a href="{% url 'renginiai_add' %}"
+                               class="btn badge-ansamblis d-flex align-items-center action-btn">
+                                <span class="material-symbols-outlined me-2">add</span> Pridėti
+                            </a>
+                        {% endif %}
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <div class="d-flex flex-column flex-md-row gap-3 px-2 mb-4">
+                                <!-- Search form -->
+                                <form method="get" class="flex-fill">
+                                    <input type="hidden" name="sort" value="{{ sort_field }}"/>
+                                    <input type="hidden" name="dir" value="{{ sort_dir }}"/>
+                                    <input type="hidden" name="program_id" value="{{ program_id }}"/>
+                                    <div class="input-group">
+            <span class="input-group-text">
+                <span class="material-symbols-outlined">search</span>
+            </span>
+                                        <input type="text" id="search" name="search" class="form-control"
+                                               value="{{ search }}" placeholder="Ieškoti pagal pavadinimą..."/>
+                                    </div>
+                                </form>
+
+                                <!-- Programa filter -->
+                                <form method="get" class="flex-fill">
+                                    <input type="hidden" name="sort" value="{{ sort_field }}"/>
+                                    <input type="hidden" name="dir" value="{{ sort_dir }}"/>
+                                    <input type="hidden" name="search" value="{{ search }}"/>
+                                    <select name="program_id" id="program_id" class="form-select h-100"
+                                            onchange="this.form.submit()">
+                                        <option value="">Visos programos</option>
+                                        {% for program in programs %}
+                                            <option value="{{ program.id }}"
+                                                    {% if program.id|stringformat:"s" == program_id %}selected{% endif %}>
+                                                {{ program.title }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </form>
+                            </div>
+                            <table class="table table-hover table-striped align-middle">
+                                <thead class="thead-dark">
+                                <tr>
+                                    <th class="text-end">#</th>
+                                    <th class="text-start">
+                                        <a href="?sort=title&dir={% if sort_field == 'title' and sort_dir == 'asc' %}desc{% else %}asc{% endif %}"
+                                           class="text-decoration-none text-dark">
+                                            Pavadinimas {% if sort_field == 'title' %}
+                                            <span class="material-symbols-outlined align-middle">
+                                                {% if sort_dir == 'asc' %}arrow_drop_up{% else %}
+                                                    arrow_drop_down{% endif %}
+                                            </span>
+                                        {% endif %}
+                                        </a>
+                                    </th>
+                                    <th class="text-start">Adresas</th>
+                                    <th class="text-center">Programa</th>
+                                    <th class="text-center">
+                                        <a href="?sort=date&dir={% if sort_field == 'date' and sort_dir == 'asc' %}desc{% else %}asc{% endif %}"
+                                           class="text-decoration-none text-dark">
+                                            Data {% if sort_field == 'date' %}
+                                            <span class="material-symbols-outlined align-middle">
+                                                {% if sort_dir == 'asc' %}arrow_drop_up{% else %}
+                                                    arrow_drop_down{% endif %}
+                                            </span>
+                                        {% endif %}
+                                        </a>
+                                    </th>
+                                    {% if request.user.role != "narys" %}
+                                        <th class="text-center">Valdyti</th>
+                                    {% endif %}
+                                </tr>
+                                </thead>
+
+                                <tbody id="table-body">
+                                {% for event in events %}
+                                    <tr>
+                                        <td class="align-middle text-end">{{ page_obj.start_index|add:forloop.counter0 }}</td>
+                                        <td class="align-middle text-start fw-bold">{{ event.title }}</td>
+                                        <td class="align-middle text-start">{{ event.address }}</td>
+                                        <td class="align-middle text-center">
+                                            {% if event.program %}
+                                                <a href="{% url 'programos_kuriniai' event.program.id %}"
+                                                   class="text-decoration-none">
+                                                    <span class="badge-ansamblis p-1">{{ event.program.title }}</span>
+                                                </a>
+                                            {% else %}
+                                                <span class="text-muted">Nėra programos</span>
+                                            {% endif %}
+                                        </td>
+
+
+                                        <td class="align-middle text-center">
+                                            {{ event.date|date:"Y-m-d H:i" }}
+                                        </td>
+
+                                        {% if request.user.role != "narys" %}
+                                            <td class="align-middle text-center">
+                                                <div class="dropdown d-inline-block">
+                                                    <button
+                                                            class="btn btn-sm badge-ansamblis dropdown-toggle d-flex align-items-center justify-content-center px-3"
+                                                            type="button"
+                                                            id="valdytiDropdown_{{ event.id }}"
+                                                            data-bs-toggle="dropdown"
+                                                            aria-expanded="false"
+                                                    >
+                                                        <span class="material-symbols-outlined me-1">manage_accounts</span>
+                                                        Valdyti
+                                                    </button>
+                                                    <ul class="dropdown-menu text-center"
+                                                        aria-labelledby="valdytiDropdown_{{ event.id }}">
+                                                        <li>
+                                                            <a class="dropdown-item d-flex align-items-center justify-content-center gap-2 py-2"
+                                                               href="{% url 'renginiai_edit' event.id %}">
+                                                                <span class="material-symbols-outlined">edit</span>
+                                                                Redaguoti
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <button
+                                                                    class="dropdown-item d-flex align-items-center justify-content-center gap-2 py-2 text-danger"
+                                                                    onclick="setDeleteUrl({{ event.id }}, '{{ event.title }}')"
+                                                                    data-bs-toggle="modal"
+                                                                    data-bs-target="#deleteModal"
+                                                            >
+                                                                <span class="material-symbols-outlined">delete_forever</span>
+                                                                Ištrinti
+                                                            </button>
+                                                        </li>
+                                                        <li>
+                                                            <button class="dropdown-item d-flex align-items-center justify-content-center gap-2 py-2"
+                                                                    onclick="openPdfModal({{ event.id }})">
+                                                                <span class="material-symbols-outlined">download</span>
+                                                                Atsisiųsti PDF
+                                                            </button>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </td>
+                                        {% endif %}
+                                    </tr>
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="6" class="text-center text-muted">Nėra sukurtų renginių.</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                            <div class="d-flex justify-content-center mt-4">
+                                <ul class="pagination" id="pagination"></ul>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content shadow-lg border-0 rounded-4">
+                            <div class="modal-header bg-danger text-white">
+                                <h5 class="modal-title d-flex align-items-center"><span
+                                        class="material-symbols-outlined me-2">warning</span> Patvirtinti ištrynimą</h5>
+                                <button type="button" class="btn-close btn-close-white"
+                                        data-bs-dismiss="modal"></button>
+                            </div>
+
+                            <div class="modal-body text-center py-4">
+                                <p class="fs-5">Ar tikrai norite ištrinti <strong id="renginysName"></strong>?</p>
+                                <p class="text-muted">Šio veiksmo nebegalėsite atšaukti.</p>
+                            </div>
+
+                            <div class="modal-footer d-flex justify-content-center border-0 pb-4">
+                                <button type="button"
+                                        class="btn btn-light px-4 py-2 btn-outline-dark d-flex align-items-center justify-content-center"
+                                        data-bs-dismiss="modal">
+                                    <span class="material-symbols-outlined me-2">close</span>
+                                    <span>Grįžti</span>
+                                </button>
+
+                                <form id="deleteForm" method="post">
+                                    {% csrf_token %}
+                                    <button type="submit"
+                                            class="btn btn-danger px-4 py-2 d-flex align-items-center justify-content-center">
+                                        <span class="material-symbols-outlined me-2">delete_forever</span>
+                                        <span>Ištrinti</span>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% if selected_event %}
+                    <div class="modal fade" id="pdfModal" tabindex="-1" aria-labelledby="pdfModalLabel"
+                         aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered modal-lg">
+                            <div class="modal-content shadow border-0 rounded-4">
+                                <form method="post" action="{% url 'event_pdf' selected_event.id %}" id="pdfForm"
+                                      target="_blank">
+                                    {% csrf_token %}
+                                    <div class="modal-header table-header-custom">
+                                        <h5 class="modal-title">Pasirinkite narius PDF dokumentui</h5>
+                                        <button type="button" class="btn-close btn-close-white"
+                                                data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="row" id="nariaiContainer">
+                                            <p class="text-muted">Kraunama...</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Grįžti
+                                        </button>
+                                        <button type="submit" class="btn primary-background">Generuoti PDF</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function setDeleteUrl(id, name) {
+            document.getElementById("renginysName").innerText = name;
+            document.getElementById("deleteForm").action = `/renginiai/${id}/delete/`;
+        }
+    </script>
+    <script>
+        function setDeleteUrl(id, name) {
+            document.getElementById("renginysName").innerText = name;
+            document.getElementById("deleteForm").action = `/renginiai/${id}/delete/`;
+        }
+
+        function openPdfModal(renginysId) {
+            const form = document.getElementById("pdfForm");
+            form.action = `/renginiai/${renginysId}/pdf/`;
+
+            const container = document.getElementById("nariaiContainer");
+            container.innerHTML = `<p class="text-muted">Kraunama...</p>`;
+
+            fetch(`/renginiai/${renginysId}/nariai/`)
+                .then(response => response.json())
+                .then(data => {
+                    container.innerHTML = data.html;
+                })
+                .catch(err => {
+                    container.innerHTML = `<p class="text-danger">Klaida kraunant narius.</p>`;
+                    console.error(err);
+                });
+
+            const modal = new bootstrap.Modal(document.getElementById("pdfModal"));
+            modal.show();
+        }
+
+
+    </script>
+
+    <script>
+document.addEventListener("DOMContentLoaded", function () {
+    const searchInput = document.getElementById("search");
+    const tableBody = document.getElementById("table-body");
+    const pagination = document.getElementById("pagination");
+    const allRows = Array.from(tableBody.querySelectorAll("tr"));
+    const rowsPerPage = 15;
+    let filteredRows = [...allRows];
+
+    function renderPage(page) {
+        tableBody.innerHTML = "";
+        const start = (page - 1) * rowsPerPage;
+        const end = start + rowsPerPage;
+
+        filteredRows.slice(start, end).forEach((row, i) => {
+            const indexCell = row.querySelector("td.text-end");
+            if (indexCell) indexCell.textContent = start + i + 1;
+            tableBody.appendChild(row);
+        });
+
+        renderPagination(page);
+    }
+
+    function renderPagination(currentPage) {
+        pagination.innerHTML = "";
+        const totalPages = Math.ceil(filteredRows.length / rowsPerPage);
+        if (totalPages <= 1) return pagination.classList.add("d-none");
+
+        pagination.classList.remove("d-none");
+
+        for (let i = 1; i <= totalPages; i++) {
+            const li = document.createElement("li");
+            li.className = "page-item" + (i === currentPage ? " active" : "");
+            const a = document.createElement("a");
+            a.className = "page-link";
+            a.href = "#";
+            a.textContent = i;
+            a.addEventListener("click", function (e) {
+                e.preventDefault();
+                renderPage(i);
+            });
+            li.appendChild(a);
+            pagination.appendChild(li);
+        }
+    }
+
+    function applySearch() {
+        const query = searchInput.value.toLowerCase().trim();
+        if (query === "") {
+            filteredRows = [...allRows];
+        } else {
+            filteredRows = allRows.filter(row => {
+                const nameCell = row.querySelector("td:nth-child(2)");
+                return nameCell && nameCell.textContent.toLowerCase().includes(query);
+            });
+        }
+
+        renderPage(1);
+    }
+
+    searchInput.addEventListener("input", applySearch);
+    renderPage(1); // Initial render
+});
+</script>
+
+
+{% endblock content %}

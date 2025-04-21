@@ -1,0 +1,563 @@
+{% extends "layouts/base.html" %}
+{% block title %} Pridėti Repeticiją {% endblock %}
+{% block content %}
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <div class="card shadow">
+                    <!-- Form Header -->
+                    <div class="card-header py-3 text-center table-header-custom text-white d-flex align-items-center gap-2">
+                        <span class="material-symbols-outlined">schedule</span>
+                        <h4 class="mb-0">Pridėti naują repeticiją</h4>
+                    </div>
+
+                    <div class="card-body">
+                        <form id="rehearsal-form">
+                            {% csrf_token %}
+                            <!-- Pavadinimas Field -->
+                            <div class="mb-4">
+                                <label for="pavadinimas" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">music_note</span> Pavadinimas
+                                </label>
+                                <input type="text" class="form-control" id="title" name="title"
+                                       placeholder="Įveskite repeticijos pavadinimą" required autocomplete="off">
+                            </div>
+                            <!-- Data Picker -->
+                            <div class="mb-4">
+                                <label for="date" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">event</span> Data
+                                </label>
+                                <input type="text" class="form-control" id="data" name="date"
+                                       placeholder="Pasirinkite datą ir laiką" autocomplete="off" required>
+                            </div>
+                            <!-- Ansamblis Dropdown -->
+                            <div class="mb-4">
+                                <label for="ansamblis" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">groups</span> Ansamblis
+                                </label>
+                                <select class="form-select" id="ensemble" name="ensemble" required>
+                                    <option value="" selected>Nepasirinktas</option>
+                                    {% for ensemble in ensembles %}
+                                        <option value="{{ ensemble.id }}">{{ ensemble.title }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <!-- Kūriniai Selection Section -->
+                            <div class="row" id="pieces-container" style="display:none;">
+                                <!-- Available Kūriniai -->
+                                <div class="col-md-6">
+                                    <div class="card shadow-sm">
+                                        <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                                            <h5 class="mb-0">Visi kūriniai</h5>
+                                            <input type="text" id="searchPieces"
+                                                   class="form-control form-control-sm w-50"
+                                                   placeholder="Ieškoti kūrinio...">
+                                        </div>
+                                        <div id="pieces-loading" class="text-center my-3" style="display:none;">
+                                            <div class="spinner-border text-primary primary" role="status">
+                                                <span class="visually-hidden">Kraunama...</span>
+                                            </div>
+                                        </div>
+                                        <div class="card-body" id="all-pieces">
+                                        </div>
+                                        <div id="pieces-pagination"
+                                             class="d-flex justify-content-center gap-2 mt-3 px-2 pb-2 primary"></div>
+                                    </div>
+                                </div>
+                                <!-- Selected Kūriniai -->
+                                <div class="col-md-6">
+                                    <div class="card shadow-sm">
+                                        <div class="card-header bg-light">
+                                            <h5 class="mb-0">Pasirinkti kūriniai</h5>
+                                        </div>
+                                        <div class="card-body" id="selected-pieces">
+                                            <p id="empty-message" class="text-muted text-center">Nėra pasirinktų
+                                                kūrinių
+                                            </p>
+                                        </div>
+                                        <div class="card-footer text-end">
+                                            <strong>Bendra trukmė: <span id="total-duration">00:00</span></strong>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Form Actions -->
+                            <div class="d-flex justify-content-between mt-4">
+                                <a href="{% url 'rehearsals' %}"
+                                   class="btn btn-outline-secondary d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-1">arrow_back</span> Grįžti
+                                </a>
+                                <button type="submit" class="btn primary-background d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-1">save</span> Išsaugoti repeticiją
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Lyrics Modal -->
+    <div class="modal fade" id="lyricsModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content shadow-lg border-0 rounded-4">
+                <div class="modal-header bg-info text-white">
+                    <h5 class="modal-title d-flex align-items-center">
+                        <span class="material-symbols-outlined me-2">library_books</span> Dainos Žodžiai
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center py-4">
+                    <h5 class="fw-bold" id="lyricsTitle"></h5>
+                    <hr>
+                    <pre id="lyricsText" class="text-wrap text-break text-center"
+                         style="white-space: pre-line; font-size: 1.1rem;"></pre>
+                </div>
+                <div class="modal-footer d-flex justify-content-center border-0 pb-4">
+                    <button type="button" class="btn btn-outline-dark px-4 py-2 d-flex align-items-center"
+                            data-bs-dismiss="modal">
+                        <span class="material-symbols-outlined me-2">close</span> Uždaryti
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Description Modal -->
+    <div class="modal fade" id="descriptionModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content shadow-lg border-0 rounded-4">
+                <div class="modal-header bg-secondary text-white">
+                    <h5 class="modal-title d-flex align-items-center">
+                        <span class="material-symbols-outlined me-2">description</span> Kūrinio aprašymas
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center py-4">
+                    <h5 class="fw-bold" id="descriptionTitle"></h5>
+                    <hr>
+                    <pre id="descriptionText" class="text-wrap text-break text-center"
+                         style="white-space: pre-line; font-size: 1.1rem;"></pre>
+                </div>
+                <div class="modal-footer d-flex justify-content-center border-0 pb-4">
+                    <button type="button" class="btn btn-outline-dark px-4 py-2 d-flex align-items-center"
+                            data-bs-dismiss="modal">
+                        <span class="material-symbols-outlined me-2">close</span> Uždaryti
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- PDF Modal -->
+    <div class="modal fade" id="pdfModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered" style="max-width: 95vw; height: 95vh;">
+            <div class="modal-content shadow-lg border-0 rounded-4"
+                 style="height: 100%; display: flex; flex-direction: column;">
+                <div class="modal-header bg-dark text-white rounded-top-4">
+                    <h5 class="modal-title d-flex align-items-center">
+                        <span class="material-symbols-outlined me-2">picture_as_pdf</span> Kūrinio PDF
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-0" style="flex: 1; overflow: hidden;">
+                    <iframe id="pdfViewer" src="" width="100%" height="100%" frameborder="0"
+                            style="border-radius: 0 0 1rem 1rem;"></iframe>
+                </div>
+                <div class="modal-footer d-flex justify-content-center border-0 pb-4">
+                    <button type="button" class="btn btn-outline-dark px-4 py-2 d-flex align-items-center"
+                            data-bs-dismiss="modal">
+                        <span class="material-symbols-outlined me-2">close</span> Uždaryti
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Image Modal -->
+    <div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" style="max-width: unset; margin: auto;">
+            <div class="modal-content shadow-lg border-0 bg-light p-2" style="display: inline-block;">
+                <div class="modal-header bg-dark text-white rounded-top-3 py-2 px-3">
+                    <h5 class="modal-title d-flex align-items-center">
+                        <span class="material-symbols-outlined me-2">image</span> Kūrinio notes
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body bg-light p-2 d-flex justify-content-center align-items-center">
+                    <img id="imageViewer" src="" class="rounded shadow"
+                         style="display: block; max-width: 70vw; max-height: 75vh; object-fit: contain;" alt="">
+                </div>
+                <div class="modal-footer bg-light border-0 d-flex justify-content-center py-2">
+                    <button type="button" class="btn btn-outline-dark d-flex align-items-center px-3 py-1"
+                            data-bs-dismiss="modal">
+                        <span class="material-symbols-outlined me-1">close</span> Uždaryti
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    <!-- JavaScript Logic -->
+    <script>
+        // Real-time search filtering
+
+
+        document.addEventListener("DOMContentLoaded", function () {
+            // Initialize date picker
+            flatpickr("#data", {
+                enableTime: true,
+                dateFormat: "Y-m-d H:i",
+                time_24hr: true,
+                minDate: "today",
+                locale: flatpickr.l10ns.lt,
+            });
+
+
+            const csrfToken = document.querySelector("[name=csrfmiddlewaretoken]").value;
+            const ensembleSelect = document.getElementById("ensemble");
+            const form = document.getElementById("rehearsal-form");
+            const piecesContainer = document.getElementById("pieces-container");
+            const allPiecesEl = document.getElementById("all-pieces");
+            const selectedPiecesEl = document.getElementById("selected-pieces");
+            const totaldurationEl = document.getElementById("total-duration");
+
+            document.getElementById("searchPieces").addEventListener("input", function () {
+                const query = this.value.toLowerCase().trim();
+                const filtered = allPiecesCache.filter(k => k.title.toLowerCase().includes(query));
+                paginatePieces(filtered, document.getElementById("all-pieces"), 10, 1);
+            });
+
+            ensembleSelect.addEventListener("change", function () {
+                const ensembleId = this.value;
+                if (!ensembleId) return;
+
+                const loader = document.getElementById("pieces-loading");
+                const pagination = document.getElementById("pieces-pagination");
+
+                loader.style.display = "block";
+                pagination.style.display = "none";
+                allPiecesEl.innerHTML = ""; // clear content while loading
+
+                fetch(`/ansambliai/${ensembleId}/kuriniai/`)
+                    .then(res => res.ok ? res.json() : Promise.reject("Nepavyko gauti kūrinių"))
+                    .then(data => {
+                        allPiecesCache = data;
+                        document.getElementById("pieces-container").style.display = "flex";
+                        paginatePieces(allPiecesCache, allPiecesEl, 10, 1);
+                    })
+                    .catch(err => alert(err))
+                    .finally(() => {
+                        loader.style.display = "none";
+                        pagination.style.display = "flex";
+                    });
+
+
+            });
+
+
+            Sortable.create(selectedPiecesEl, {
+                animation: 150,
+                ghostClass: 'sortable-ghost'
+            });
+
+            let allPiecesCache = [];
+
+            function paginatePieces(items, containerEl, perPage = 10, page = 1) {
+                const totalPages = Math.ceil(items.length / perPage);
+                const start = (page - 1) * perPage;
+                const end = start + perPage;
+                const paginatedItems = items.slice(start, end);
+
+                containerEl.innerHTML = "";
+                paginatedItems.forEach(k => {
+                    const html = generateKurinysCardHTML(k);
+                    const el = document.createElement("div");
+                    el.className = "pieces-item card mb-2";
+                    el.id = `kurinys-${k.id}`;
+                    el.dataset.id = k.id;
+                    el.dataset.duration = k.duration || "00:00";
+                    el.innerHTML = html;
+                    containerEl.appendChild(el);
+                });
+
+                renderPaginationControls(totalPages, page, (newPage) =>
+                    paginatePieces(items, containerEl, perPage, newPage)
+                );
+            }
+
+
+            function renderPaginationControls(totalPages, currentPage, onPageChange) {
+                const pagination = document.getElementById("pieces-pagination");
+                pagination.innerHTML = "";
+
+                const nav = document.createElement("nav");
+                nav.setAttribute("aria-label", "Kūriniai puslapiai");
+
+                const ul = document.createElement("ul");
+                ul.className = "pagination";
+
+                for (let i = 1; i <= totalPages; i++) {
+                    const li = document.createElement("li");
+                    li.className = `page-item ${i === currentPage ? "active" : ""}`;
+
+                    const a = document.createElement("button");
+                    a.className = "page-link";
+                    a.textContent = i;
+                    a.addEventListener("click", () => onPageChange(i));
+
+                    li.appendChild(a);
+                    ul.appendChild(li);
+                }
+
+                nav.appendChild(ul);
+                pagination.appendChild(nav);
+            }
+
+            function generateKurinysCardHTML(k) {
+                return `
+        <div class="card-body d-flex justify-content-between align-items-center">
+            <div>
+                <div class="fw-bold">${k.title}</div>
+                <small class="text-muted">
+                    <span class="badge bg-secondary me-1">${k.type}</span>
+                    <span class="badge bg-info text-dark">${k.region}</span>
+                </small>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+                <div class="dropdown">
+                    <button class="btn btn-outline-secondary btn-sm d-flex align-items-center justify-content-center"
+                            type="button" title="Peržiūra"
+                            id="perziuraBtn${k.id}" data-bs-toggle="dropdown" aria-expanded="false">
+                        <span class="material-symbols-outlined">visibility</span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="perziuraBtn${k.id}">
+                        ${k.youtube_url ? `<li><a class="dropdown-item" href="${k.youtube_url}" target="_blank">
+                            <span class="material-symbols-outlined me-1">ondemand_video</span> Video</a></li>` : ''}
+                        ${k.type === "Daina" && k.lyrics ? `<li><button class="dropdown-item" onclick="showLyrics('${k.title}', \`${k.lyrics}\`)">
+                            <span class="material-symbols-outlined me-1">library_books</span> Žodžiai</button></li>` : ''}
+                        ${k.description ? `<li><button class="dropdown-item" onclick="showDescription('${k.title}', \`${k.description}\`)">
+                            <span class="material-symbols-outlined me-1">description</span> Aprašymas</button></li>` : ''}
+                        ${k.notes ? `<li><button class="dropdown-item" onclick="showPDF('${k.title}', '${k.notes}')">
+                            <span class="material-symbols-outlined me-1">picture_as_pdf</span> PDF</button></li>` : ''}
+                        ${k.notes_image ? `<li><button class="dropdown-item" onclick="showImage('${k.title}', '${k.notes_image}')">
+                            <span class="material-symbols-outlined me-1">image</span> Paveikslėlis</button></li>` : ''}
+                    </ul>
+                </div>
+                <button class="btn btn-outline-primary btn-sm d-flex align-items-center justify-content-center"
+                        onclick="moveKurinys(${k.id}, \`${k.title}\`, '${k.duration}', '${k.type}', '${k.region}', \`${k.lyrics || ''}\`, \`${k.description || ''}\`, '${k.youtube_url || ''}', '${k.notes || ''}', '${k.notes_image || ''}')">
+                    <span class="material-symbols-outlined me-1">add_circle</span>${k.duration || "00:00"}
+                </button>
+            </div>
+        </div>`;
+            }
+
+
+            // Move kūrinys to selected list
+            window.moveKurinys = function (id, name, duration, type, region, lyrics, description, youtube_url, notes, notes_image) {
+                if (document.getElementById(`selected-${id}`)) return;
+
+                const html = `
+   <div class="pieces-item card mb-2" id="selected-${id}" data-id="${id}" data-duration="${duration}">
+   <div class="card-body">
+   <div class="d-flex justify-content-between align-items-center">
+       <div>
+           <div class="fw-bold">${name}</div>
+           <small class="text-muted">
+               <span class="badge bg-secondary me-1">${type}</span>
+               <span class="badge bg-info text-dark">${region}</span>
+           </small>
+       </div>
+       <div class="d-flex align-items-center gap-2">
+           <!-- Peržiūra Dropdown -->
+           <div class="dropdown">
+               <button class="btn btn-outline-secondary btn-sm d-flex align-items-center justify-content-center"
+                       type="button" title="Peržiūra"
+                       id="perziuraSelBtn${id}" data-bs-toggle="dropdown" aria-expanded="false">
+                   <span class="material-symbols-outlined">visibility</span>
+               </button>
+               <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="perziuraSelBtn${id}">
+                   ${youtube_url ? `
+                   <li><a class="dropdown-item" href="${youtube_url}" target="_blank">
+                       <span class="material-symbols-outlined me-1">ondemand_video</span> Video
+                   </a></li>` : ''}
+                   ${type === "Daina" && lyrics ? `
+                   <li><button class="dropdown-item" onclick="showLyrics('${name}', \`${lyrics}\`)">
+                       <span class="material-symbols-outlined me-1">library_books</span> Žodžiai
+                   </button></li>` : ''}
+                   ${description ? `
+                   <li><button class="dropdown-item" onclick="showDescription('${name}', \`${description}\`)">
+                       <span class="material-symbols-outlined me-1">description</span> Aprašymas
+                   </button></li>` : ''}
+                   ${notes ? `
+                   <li><button class="dropdown-item" onclick="showPDF('${name}', '${notes}')">
+                       <span class="material-symbols-outlined me-1">picture_as_pdf</span> PDF
+                   </button></li>` : ''}
+                   ${notes_image ? `
+                   <li><button class="dropdown-item" onclick="showImage('${name}', '${notes_image}')">
+                       <span class="material-symbols-outlined me-1">image</span> Paveikslėlis
+                   </button></li>` : ''}
+               </ul>
+           </div>
+
+           <!-- Remove Button -->
+           <button type="button" class="btn btn-outline-danger btn-sm d-flex align-items-center justify-content-center"
+                   onclick="removeKurinys(${id}, '${name}', '${duration}', '${type}', '${region}', \`${lyrics}\`, \`${description}\`, '${youtube_url}', '${notes}', '${notes_image}')">
+               <span class="material-symbols-outlined me-1">remove_circle</span>${duration}
+           </button>
+       </div>
+   </div>
+   </div>
+   </div>`;
+
+                selectedPiecesEl.insertAdjacentHTML('beforeend', html);
+                document.getElementById(`kurinys-${id}`).remove();
+                updateEmptyMessage();
+                updateTotalduration();
+            };
+
+
+            // Move kūrinys back to available list
+            window.removeKurinys = function (id, name, duration, type, region, lyrics, description, youtube_url, notes, notes_image) {
+                const html = `
+   <div class="pieces-item card mb-2" id="kurinys-${id}" data-id="${id}" data-duration="${duration}">
+   <div class="card-body">
+   <div class="d-flex justify-content-between align-items-center">
+       <div>
+           <div class="fw-bold">${name}</div>
+           <small class="text-muted">
+               <span class="badge bg-secondary me-1">${type}</span>
+               <span class="badge bg-info text-dark">${region}</span>
+           </small>
+       </div>
+       <div class="d-flex align-items-center gap-2">
+           <div class="dropdown">
+               <button class="btn btn-outline-secondary btn-sm d-flex align-items-center justify-content-center"
+                       type="button" title="Peržiūra"
+                       id="perziuraBtn${id}" data-bs-toggle="dropdown" aria-expanded="false">
+                   <span class="material-symbols-outlined">visibility</span>
+               </button>
+               <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="perziuraBtn${id}">
+                   ${youtube_url ? `
+                   <li><a class="dropdown-item" href="${youtube_url}" target="_blank">
+                       <span class="material-symbols-outlined me-1">ondemand_video</span> Video
+                   </a></li>` : ''}
+                   ${type === "Daina" && lyrics ? `
+                   <li><button class="dropdown-item" onclick="showLyrics('${name}', \`${lyrics}\`)">
+                       <span class="material-symbols-outlined me-1">library_books</span> Žodžiai
+                   </button></li>` : ''}
+                   ${description ? `
+                   <li><button class="dropdown-item" onclick="showDescription('${name}', \`${description}\`)">
+                       <span class="material-symbols-outlined me-1">description</span> description
+                   </button></li>` : ''}
+                   ${notes ? `
+                   <li><button class="dropdown-item" onclick="showPDF('${name}', '${notes}')">
+                       <span class="material-symbols-outlined me-1">picture_as_pdf</span> PDF
+                   </button></li>` : ''}
+                   ${notes_image ? `
+                   <li><button class="dropdown-item" onclick="showImage('${name}', '${notes_image}')">
+                       <span class="material-symbols-outlined me-1">image</span> Paveikslėlis
+                   </button></li>` : ''}
+               </ul>
+           </div>
+
+           <button type="button" class="btn btn-outline-primary btn-sm d-flex align-items-center justify-content-center"
+                   onclick="moveKurinys(
+                       ${id},
+                       \`${name}\`,
+                       '${duration}',
+                       '${type}',
+                       '${region}',
+                       \`${lyrics}\`,
+                       \`${description}\`,
+                       '${youtube_url}',
+                       '${notes}',
+                       '${notes_image}'
+                   )">
+               <span class="material-symbols-outlined me-1">add_circle</span>${duration}
+           </button>
+       </div>
+   </div>
+   </div>
+   </div>`;
+
+                allPiecesEl.insertAdjacentHTML('beforeend', html);
+                document.getElementById(`selected-${id}`).remove();
+                updateEmptyMessage();
+                updateTotalduration();
+            };
+
+
+            function updateEmptyMessage() {
+                const msg = document.getElementById("empty-message");
+                const count = selectedPiecesEl.querySelectorAll(".pieces-item").length;
+                if (msg) msg.style.display = count > 0 ? "none" : "block";
+            }
+
+            function updateTotalduration() {
+                let total = 0;
+                selectedPiecesEl.querySelectorAll(".pieces-item").forEach(item => {
+                    const [m, s] = item.dataset.duration.split(":").map(Number);
+                    total += m * 60 + s;
+                });
+                const mins = String(Math.floor(total / 60)).padStart(2, '0');
+                const secs = String(total % 60).padStart(2, '0');
+                totaldurationEl.textContent = `${mins}:${secs}`;
+            }
+
+            // Submit form
+            form.addEventListener("submit", function (e) {
+                e.preventDefault();
+                const payload = {
+                    title: document.getElementById("title").value.trim(),
+                    date: document.getElementById("data").value.trim(),
+                    ensemble: parseInt(ensembleSelect.value),
+                    pieces: Array.from(selectedPiecesEl.querySelectorAll(".pieces-item")).map(item => parseInt(item.dataset.id))
+                };
+                if (!payload.title || !payload.date || !payload.ensemble || !payload.pieces.length) {
+                    alert("Užpildykite visus laukus ir pasirinkite bent vieną kūrinį!");
+                    return;
+                }
+
+                fetch("{% url 'repeticija_create' %}", {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json", "X-CSRFToken": csrfToken},
+                    body: JSON.stringify(payload)
+                }).then(async res => {
+                    const result = await res.json();
+                    if (res.ok && result.redirect) {
+                        window.location.href = result.redirect;
+                    } else {
+                        alert(result.error || "Nepavyko išsaugoti repeticijos.");
+                    }
+                }).catch(() => alert("Įvyko klaida siunčiant duomenis."));
+
+            });
+        });
+
+        function showLyrics(title, text) {
+            document.getElementById("lyricsTitle").innerText = title;
+            document.getElementById("lyricsText").innerText = text || "Žodžių nėra.";
+            new bootstrap.Modal(document.getElementById("lyricsModal")).show();
+        }
+
+        function showDescription(title, text) {
+            document.getElementById("descriptionTitle").innerText = title;
+            document.getElementById("descriptionText").innerText = text || "Aprašymo nėra.";
+            new bootstrap.Modal(document.getElementById("descriptionModal")).show();
+        }
+
+        function showPDF(title, url) {
+            document.getElementById("pdfViewer").src = url;
+            new bootstrap.Modal(document.getElementById("pdfModal")).show();
+        }
+
+        function showImage(title, url) {
+            document.getElementById("imageViewer").src = url;
+            new bootstrap.Modal(document.getElementById("imageModal")).show();
+        }
+
+        window.showLyrics = showLyrics;
+        window.showDescription = showDescription;
+        window.showPDF = showPDF;
+        window.showImage = showImage;
+
+    </script>
+{% endblock %}

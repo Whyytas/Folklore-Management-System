@@ -1,0 +1,214 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Padaliniai {% endblock %}
+
+{% block content %}
+    <div class="container-fluid mt-4">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="card shadow">
+                    <div class="card-header d-flex justify-content-between align-items-center py-3 table-header-custom">
+                        <h4>Padaliniai</h4>
+                        <a href="{% url 'padaliniai_add' %}"
+                           class="btn badge-ansamblis d-flex align-items-center action-btn">
+                            <span class="material-symbols-outlined me-2">add</span> Pridėti
+                        </a>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <!-- Search bar -->
+                            <form method="get" class="mb-4 px-2" style="max-width: 400px;">
+                                <div class="input-group">
+        <span class="input-group-text">
+            <span class="material-symbols-outlined">search</span>
+        </span>
+                                    <input type="text" name="search" id="searchInput" class="form-control"
+                                           value="{{ search }}" placeholder="Ieškoti pagal pavadinimą...">
+
+                                    {% if sort_param %}
+                                        <input type="hidden" name="sort" value="{{ sort_param }}">
+                                    {% endif %}
+                                </div>
+                            </form>
+
+
+                            <table class="table table-hover table-striped align-middle">
+                                <thead class="thead-dark">
+                                <tr>
+                                    <th class="text-end">#</th>
+                                    <!-- Column header for sortable Pavadinimas -->
+                                    <th class="text-start">
+                                        <a href="?{% if search %}search={{ search|urlencode }}&{% endif %}sort={% if sort_param == 'title' %}-title{% else %}title{% endif %}"
+                                           class="text-decoration-none text-dark d-flex align-items-center gap-1">
+                                            Pavadinimas
+                                            {% if sort_param == 'title' %}
+                                                <span class="material-symbols-outlined">arrow_drop_up</span>
+                                            {% elif sort_param == '-title' %}
+                                                <span class="material-symbols-outlined">arrow_drop_down</span>
+                                            {% endif %}
+                                        </a>
+                                    </th>
+                                    <th class="text-start">Adresas</th>
+                                    <th class="text-center">Tel. nr.</th>
+                                    <th class="text-start">Ansambliai</th>
+                                    <th class="text-center">Valdyti</th>
+                                </tr>
+                                </thead>
+
+                                <tbody id="table-body">
+                                {% for department in departments %}
+                                    <tr class="searchable-row">
+                                        <td class="align-middle text-end">{{ forloop.counter }}</td>
+                                        <td class="align-middle text-start fw-bold department-title">{{ department.title }}</td>
+                                        <td class="align-middle text-start">{{ department.address }}</td>
+                                        <td class="align-middle text-center">{{ department.phone }}</td>
+                                        <td class="align-middle text-start">
+                                            {% if department.ensembles.exists %}
+                                                {% for ensemble in department.ensembles.all %}
+                                                    <span class="badge badge-ansamblis">{{ ensemble.title }}</span>
+                                                {% endfor %}
+                                            {% else %}
+                                                <span class="text-muted">—</span>
+                                            {% endif %}
+                                        </td>
+
+                                        <td class="align-middle text-center">
+                                            <div class="dropdown d-inline-block">
+                                                <button class="btn btn-sm badge-ansamblis dropdown-toggle d-flex align-items-center justify-content-center px-3"
+                                                        type="button" id="valdytiDropdown_{{ department.id }}"
+                                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <span class="material-symbols-outlined me-1">manage_accounts</span>
+                                                    Valdyti
+                                                </button>
+                                                <ul class="dropdown-menu text-center"
+                                                    aria-labelledby="valdytiDropdown_{{ department.id }}">
+                                                    <li>
+                                                        <a class="dropdown-item d-flex align-items-center justify-content-center gap-2 py-2"
+                                                           href="{% url 'padaliniai_edit' department.id %}">
+                                                            <span class="material-symbols-outlined">edit</span>
+                                                            Redaguoti
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <button class="dropdown-item d-flex align-items-center justify-content-center gap-2 py-2 text-danger"
+                                                                onclick="setDeleteUrl({{ department.id }}, '{{ department.title }}')"
+                                                                data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                                            <span class="material-symbols-outlined">delete_forever</span>
+                                                            Ištrinti
+                                                        </button>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </td>
+
+                                    </tr>
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="5" class="text-center text-muted">Nėra sukurtų padalinių.</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                            <nav class="d-flex justify-content-center mt-3">
+                                <ul class="pagination" id="pagination"></ul>
+                            </nav>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content shadow-lg border-0 rounded-4">
+                            <div class="modal-header bg-danger text-white">
+                                <h5 class="modal-title d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">warning</span>
+                                    Patvirtinti ištrynimą
+                                </h5>
+                                <button type="button" class="btn-close btn-close-white"
+                                        data-bs-dismiss="modal"></button>
+                            </div>
+
+                            <div class="modal-body text-center py-4">
+                                <p class="fs-5">Ar tikrai norite ištrinti <strong id="padalinysName"></strong>?</p>
+                                <p class="text-muted">Šio veiksmo nebegalėsite atšaukti.</p>
+                            </div>
+
+                            <div class="modal-footer d-flex justify-content-center border-0 pb-4">
+                                <button type="button" class="btn btn-light px-4 py-2 btn-outline-dark"
+                                        data-bs-dismiss="modal">Grįžti
+                                </button>
+                                <form id="deleteForm" method="post">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger px-4 py-2">Ištrinti</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+
+        function setDeleteUrl(padalinysId, padalinysName) {
+            document.getElementById("padalinysName").innerText = padalinysName;
+            document.getElementById("deleteForm").setAttribute("action", `/padaliniai/${padalinysId}/delete/`);
+        }
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const searchInput = document.getElementById("searchInput");
+            const rows = Array.from(document.querySelectorAll(".searchable-row"));
+            const rowsPerPage = 15;
+            let currentPage = 1;
+
+            const renderRows = () => {
+                const filter = searchInput.value.toLowerCase();
+                const filteredRows = rows.filter(row =>
+                    row.querySelector(".department-title").textContent.toLowerCase().includes(filter)
+                );
+
+                rows.forEach(row => row.style.display = "none");
+
+                const start = (currentPage - 1) * rowsPerPage;
+                const end = start + rowsPerPage;
+                filteredRows.slice(start, end).forEach(row => row.style.display = "");
+
+                renderPagination(filteredRows.length);
+            };
+
+            const renderPagination = (total) => {
+                const paginationContainer = document.getElementById("pagination");
+                if (!paginationContainer) return;
+                paginationContainer.innerHTML = "";
+
+                const totalPages = Math.ceil(total / rowsPerPage);
+                for (let i = 1; i <= totalPages; i++) {
+                    const li = document.createElement("li");
+                    li.className = `page-item ${i === currentPage ? "active" : ""}`;
+                    const btn = document.createElement("button");
+                    btn.className = "page-link";
+                    btn.textContent = i;
+                    btn.onclick = () => {
+                        currentPage = i;
+                        renderRows();
+                    };
+                    li.appendChild(btn);
+                    paginationContainer.appendChild(li);
+                }
+            };
+
+            searchInput.addEventListener("input", () => {
+                currentPage = 1;
+                renderRows();
+            });
+
+            renderRows();
+        });
+    </script>
+
+
+{% endblock %}

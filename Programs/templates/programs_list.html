@@ -1,0 +1,318 @@
+{% extends "layouts/base.html" %} {% block title %} Programų Sąrašas {% endblock %} {% block content %}
+    <div class="container-fluid mt-4">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="card shadow">
+                    <!--  Header with Add Button -->
+                    <div class="card-header d-flex justify-content-between align-content-center py-3 table-header-custom">
+                        <h4 class="d-flex align-items-center gap-2">
+                            <span class="material-symbols-outlined">format_list_bulleted</span>
+                            Programų sąrašas
+                        </h4>
+                        {% if request.user.role != "narys" %}
+                            <div class="d-flex align-items-center justify-content-end">
+                                <a href="{% url 'program_create' %}"
+                                   class="btn badge-ansamblis d-flex align-items-center"> <span
+                                        class="material-symbols-outlined me-2">add</span> Pridėti </a>
+                                <a href="{% url 'program_generate' %}"
+                                   class="btn badge-ansamblis d-flex align-items-center ms-2"> <span
+                                        class="material-symbols-outlined me-2">add</span> Generuoti </a>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="card-body">
+                        <!--  Styled Search Input (Left-Aligned, Icon Inside) -->
+                        <div class="mb-4 px-3 d-flex flex-wrap gap-3">
+                            <!-- Search Input -->
+                            <div class="flex-fill">
+                                <div class="input-group w-100">
+            <span class="input-group-text">
+                <span class="material-symbols-outlined">search</span>
+            </span>
+                                    <input type="text" id="searchInput" class="form-control"
+                                           placeholder="Ieškoti pagal pavadinimą..."/>
+                                </div>
+                            </div>
+
+                            <!-- Filter Dropdown -->
+                            <form method="get" class="flex-fill">
+                                <input type="hidden" name="sort" value="{{ sort_field }}"/>
+                                <input type="hidden" name="dir" value="{{ sort_dir }}"/>
+                                <select name="type" id="type" class="form-select h-100" onchange="this.form.submit()">
+                                    <option value="">Filtruoti pagal tipus</option>
+                                    {% for value, label in types %}
+                                        <option value="{{ value }}"
+                                                {% if value == type_filter %}selected{% endif %}>{{ label }}</option>
+                                    {% endfor %}
+                                </select>
+                            </form>
+                        </div>
+
+
+                        <div class="table-responsive">
+                            <table class="table table-hover table-striped align-middle">
+                                <thead class="thead-dark">
+                                <tr>
+                                    <th class="text-end">#</th>
+                                    <!-- Align ID to the right -->
+                                    <!-- Sortable Pavadinimas -->
+                                    <th class="text-start">
+                                        <a href="?sort=pavadinimas&dir={% if sort_field == 'pavadinimas' and sort_dir == 'asc' %}desc{% else %}asc{% endif %}"
+                                           class="text-decoration-none text-dark">
+                                            Pavadinimas {% if sort_field == 'pavadinimas' %}
+                                            <span class="material-symbols-outlined align-middle">
+                                                {% if sort_dir == 'asc' %}arrow_drop_up{% else %}
+                                                    arrow_drop_down{% endif %}
+
+                                            </span>
+                                        {% endif %}
+                                        </a>
+                                    </th>
+                                    <!-- Sortable Trukmė -->
+                                    <th class="text-center">
+                                        <a href="?sort=trukme&dir={% if sort_field == 'trukme' and sort_dir == 'asc' %}desc{% else %}asc{% endif %}"
+                                           class="text-decoration-none text-dark">
+                                            Trukmė {% if sort_field == 'trukme' %}
+                                            <span class="material-symbols-outlined align-middle">
+                                                {% if sort_dir == 'asc' %}arrow_drop_up{% else %}
+                                                    arrow_drop_down{% endif %}
+                                            </span>
+                                        {% endif %}
+                                        </a>
+                                    </th>
+                                    <th class="text-center">Tipas</th>
+                                    <th class="text-center">Ansamblis</th>
+
+                                    <th class="text-center">Peržiūra</th>
+                                    {% if request.user.role != "narys" %}
+                                        <th class="text-center">Valdyti</th>
+                                    {% endif %}
+                                </tr>
+                                </thead>
+
+                                <tbody id="table-body">
+                                {% for program in programs %}
+                                    <tr>
+                                        <td class="align-middle text-end">{{ page_obj.start_index|add:forloop.counter0 }}</td>
+
+                                        <td class="align-middle text-start fw-bold">{{ program.title }}</td>
+                                        <!--  Calculated from kūriniai -->
+                                        <td class="text-center">{{ program.duration }}</td>
+                                        <!--  Stored in DB -->
+                                        <td class="align-middle text-center">{{ program.type }}</td>
+                                        <td class="align-middle text-center">
+                                            {{ program.ensemble.title|default:"—" }}
+                                        </td>
+
+                                        <td class="align-middle text-center">
+                                            <div class="d-flex justify-content-center">
+                                                <a href="{% url 'programos_kuriniai' program.id %}"
+                                                   class="btn badge-ansamblis d-flex align-items-center">
+                                                    <span class="material-symbols-outlined me-2">visibility</span>
+                                                    Peržiūrėti
+                                                </a>
+                                            </div>
+                                        </td>
+
+                                        <!--  Full Bootstrap Edit & Delete Buttons -->
+                                        {% if request.user.role != "narys" %}
+                                            <td class="align-middle text-center">
+                                                <div class="dropdown d-inline-block">
+                                                    <button
+                                                            class="btn btn-sm badge-ansamblis dropdown-toggle d-flex align-items-center justify-content-center px-3"
+                                                            type="button"
+                                                            id="valdytiDropdown_{{ program.id }}"
+                                                            data-bs-toggle="dropdown"
+                                                            aria-expanded="false"
+                                                    >
+                                                        <span class="material-symbols-outlined me-1">manage_accounts</span>
+                                                        Valdyti
+                                                    </button>
+                                                    <ul class="dropdown-menu text-center"
+                                                        aria-labelledby="valdytiDropdown_{{ program.id }}">
+                                                        <li>
+                                                            <a class="dropdown-item d-flex align-items-center justify-content-center gap-2 py-2"
+                                                               href="{% url 'program_edit' program.id %}">
+                                                                <span class="material-symbols-outlined">edit</span>
+                                                                Redaguoti
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <button
+                                                                    class="dropdown-item d-flex align-items-center justify-content-center gap-2 py-2 text-danger"
+                                                                    onclick="setDeleteUrl({{ program.id }}, '{{ program.pavadinimas }}')"
+                                                                    data-bs-toggle="modal"
+                                                                    data-bs-target="#deleteModal"
+                                                            >
+                                                                <span class="material-symbols-outlined">delete_forever</span>
+                                                                Ištrinti
+                                                            </button>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </td>
+
+                                        {% endif %}
+                                    </tr>
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="8" class="text-center text-muted">Nėra sukurtų programų.</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                            <!--  Pagination Controls -->
+                            <div class="d-flex justify-content-center mt-4">
+                                <ul class="pagination" id="pagination"></ul>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DELETE CONFIRMATION MODAL -->
+                <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content shadow-lg border-0 rounded-4">
+
+                            <!-- Modal Header with Warning Icon -->
+                            <div class="modal-header bg-danger text-white">
+                                <h5 class="modal-title d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">warning</span>
+                                    Patvirtinti ištrynimą
+                                </h5>
+                                <button type="button" class="btn-close btn-close-white"
+                                        data-bs-dismiss="modal"></button>
+                            </div>
+
+                            <!-- 📝 Modal Body with More Padding -->
+                            <div class="modal-body text-center py-4">
+                                <p class="fs-5">Ar tikrai norite ištrinti <strong id="programName"></strong>?</p>
+                                <p class="text-muted">Šio veiksmo nebegalėsite atšaukti.</p>
+                            </div>
+
+                            <!-- Modal Footer with Centered Buttons -->
+                            <div class="modal-footer d-flex justify-content-center border-0 pb-4">
+                                <button type="button"
+                                        class="btn btn-light px-4 py-2 d-flex btn-outline-dark align-items-center justify-content-center"
+                                        data-bs-dismiss="modal">
+                                    <span class="material-symbols-outlined me-2">close</span> Grįžti
+                                </button>
+
+                                <form id="deleteForm" method="post" onsubmit="deleteProgram(event)">
+                                    {% csrf_token %}
+                                    <button type="submit"
+                                            class="btn btn-danger px-4 py-2 d-flex align-items-center justify-content-center">
+                                        <span class="material-symbols-outlined me-2">delete_forever</span> Ištrinti
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        //  Make these functions global
+        function setDeleteUrl(programId, programName) {
+            document.getElementById("programName").innerText = programName;
+            document.getElementById("deleteForm").setAttribute("action", `/programos/${programId}/delete/`);
+        }
+
+        async function deleteProgram(event) {
+            event.preventDefault();
+            try {
+                const response = await fetch(document.getElementById("deleteForm").action, {
+                    method: "POST",
+                    headers: {
+                        "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value,
+                    },
+                });
+
+                if (response.ok) {
+                    bootstrap.Modal.getInstance(document.getElementById("deleteModal")).hide();
+                    setTimeout(() => window.location.reload(), 500);
+                } else {
+                    alert("Klaida: Nepavyko ištrinti programos!");
+                }
+            } catch (error) {
+                console.error("Klaida ištrinant programą:", error);
+            }
+        }
+
+        //  Ensure all event listeners run after the DOM is ready
+        document.addEventListener("DOMContentLoaded", function () {
+            console.log("JavaScript loaded successfully!");
+        });
+    </script>
+
+    <script>
+document.addEventListener("DOMContentLoaded", function () {
+    const searchInput = document.getElementById("searchInput");
+    const tableBody = document.getElementById("table-body");
+    const pagination = document.getElementById("pagination");
+    const allRows = Array.from(tableBody.querySelectorAll("tr"));
+    const rowsPerPage = 15;
+    let filteredRows = [...allRows];
+
+    function renderPage(page) {
+        tableBody.innerHTML = "";
+        const start = (page - 1) * rowsPerPage;
+        const end = start + rowsPerPage;
+
+        filteredRows.slice(start, end).forEach((row, i) => {
+            const indexCell = row.querySelector("td.text-end");
+            if (indexCell) indexCell.textContent = start + i + 1;
+            tableBody.appendChild(row);
+        });
+
+        renderPagination(page);
+    }
+
+    function renderPagination(currentPage) {
+        pagination.innerHTML = "";
+        const totalPages = Math.ceil(filteredRows.length / rowsPerPage);
+        if (totalPages <= 1) return pagination.classList.add("d-none");
+
+        pagination.classList.remove("d-none");
+
+        for (let i = 1; i <= totalPages; i++) {
+            const li = document.createElement("li");
+            li.className = "page-item" + (i === currentPage ? " active" : "");
+            const a = document.createElement("a");
+            a.className = "page-link";
+            a.href = "#";
+            a.textContent = i;
+            a.addEventListener("click", function (e) {
+                e.preventDefault();
+                renderPage(i);
+            });
+            li.appendChild(a);
+            pagination.appendChild(li);
+        }
+    }
+
+    function applySearch() {
+        const query = searchInput.value.toLowerCase().trim();
+        if (query === "") {
+            filteredRows = [...allRows];
+        } else {
+            filteredRows = allRows.filter(row => {
+                const nameCell = row.querySelector("td:nth-child(2)");
+                return nameCell && nameCell.textContent.toLowerCase().includes(query);
+            });
+        }
+
+        renderPage(1);
+    }
+
+    searchInput.addEventListener("input", applySearch);
+    renderPage(1); // Initial render
+});
+</script>
+
+{% endblock content %}

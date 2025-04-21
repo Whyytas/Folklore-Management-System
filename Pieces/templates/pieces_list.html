@@ -1,0 +1,642 @@
+{% extends "layouts/base.html" %}
+{% block title %} Kūriniai Sąrašas {% endblock %}
+
+{% block content %}
+    <style>
+        .table-responsive {
+            overflow: visible !important;
+            position: relative;
+        }
+
+        .table-responsive .dropdown-menu {
+            z-index: 1060; /* Ensure it renders above other content */
+        }
+    </style>
+    <div class="container-fluid mt-4">
+        <div class="row justify-content-center">
+            <div class="col-12" style="max-width: 100%;">
+                <div class="card shadow w-100 p-0">
+                    <!-- Header with Add Button -->
+                    <div class="card-header d-flex justify-content-between align-items-center py-3 table-header-custom">
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="material-symbols-outlined">music_note</span>
+                            <h4 class="mb-0">Kūrinių Sąrašas</h4>
+                        </div>
+                        {% if request.user.role != "narys" %}
+                            <a href="{% url 'pieces_add' %}"
+                               class="btn badge-ansamblis d-flex align-items-center action-btn">
+                                <span class="material-symbols-outlined me-2">add</span> Pridėti
+                            </a>
+                        {% endif %}
+                    </div>
+
+
+                    <!-- Search Input -->
+                    <div class="d-flex justify-content-start mt-3 ms-2">
+                        <div class="input-group w-25">
+                        <span class="input-group-text">
+                            <span class="material-symbols-outlined">search</span>
+                        </span>
+                            <input type="text" id="searchInput" class="form-control"
+                                   placeholder="Ieškoti pagal pavadinimą...">
+                        </div>
+                    </div>
+                    <form method="get" class="row g-2 px-2 mb-1 pt-2">
+                        <div class="col-md">
+                            <select name="type" class="form-select">
+                                <option value="">– Tipas –</option>
+                                {% for key, label in types %}
+                                    <option value="{{ key }}"
+                                            {% if filters.type == key %}selected{% endif %}>{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md">
+                            <select name="region" class="form-select">
+                                <option value="">– Regionas –</option>
+                                {% for key, label in regions %}
+                                    <option value="{{ key }}"
+                                            {% if filters.region == key %}selected{% endif %}>{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md">
+                            <select name="speed" class="form-select">
+                                <option value="">– Greitumas –</option>
+                                {% for key, label in speed %}
+                                    <option value="{{ key }}"
+                                            {% if filters.speed == key %}selected{% endif %}>{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md">
+                            <select name="preparation" class="form-select">
+                                <option value="">– Paruošimas –</option>
+                                {% for key, label in preparation %}
+                                    <option value="{{ key }}"
+                                            {% if filters.preparation == key %}selected{% endif %}>{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md">
+                            <select name="features" class="form-select">
+                                <option value="">– Požymis –</option>
+                                {% for p in features %}
+                                    <option value="{{ p.id }}"
+                                            {% if filters.features == p.id|stringformat:"s" %}selected{% endif %}>{{ p.title }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-auto">
+                            <button type="submit" class="btn table-header-custom w-100">Filtruoti</button>
+                        </div>
+                    </form>
+
+                    <!-- Table Content -->
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-striped align-middle">
+                                <thead class="thead-dark">
+                                <tr>
+                                    <th class="text-end">#</th>
+                                    <th class="text-start">
+                                        <a href="?{% for k,v in request.GET.items %}{% if k != 'sort' and k != 'page' %}{{ k }}={{ v|urlencode }}&{% endif %}{% endfor %}sort={% if sort_param == 'title' %}-title{% else %}title{% endif %}"
+                                           class="text-decoration-none text-dark d-flex align-items-center gap-1">
+                                            Pavadinimas
+                                            {% if sort_param == 'title' %}
+                                                <span class="material-symbols-outlined">arrow_drop_up</span>
+                                            {% elif sort_param == '-title' %}
+                                                <span class="material-symbols-outlined">arrow_drop_down</span>
+                                            {% endif %}
+                                        </a>
+                                    </th>
+
+                                    <th class="text-center">Tipas</th>
+                                    <th class="text-center">
+                                        <a href="?{% for k,v in request.GET.items %}{% if k != 'sort' and k != 'page' %}{{ k }}={{ v|urlencode }}&{% endif %}{% endfor %}sort={% if sort_param == 'duration' %}-duration{% else %}duration{% endif %}"
+                                           class="text-decoration-none text-dark d-flex justify-content-center align-items-center gap-1">
+                                            Trukmė
+                                            {% if sort_param == 'duration' %}
+                                                <span class="material-symbols-outlined">arrow_drop_up</span>
+                                            {% elif sort_param == '-duration' %}
+                                                <span class="material-symbols-outlined">arrow_drop_down</span>
+                                            {% endif %}
+                                        </a>
+                                    </th>
+                                    <th class="text-center">Ansamblis</th>
+                                    <th class="text-center">Regionas</th>
+                                    <th class="text-center">Vieta</th>
+                                    <th class="text-center">Greitumas</th>
+                                    <th class="text-center">Paruošimas</th>
+                                    <th class="text-center">Požymiai</th>
+                                    <th class="text-center">Peržiūra</th>
+                                    {% if request.user.role != "narys" %}
+                                        <th class="text-center">Valdyti</th>
+                                    {% endif %}
+                                </tr>
+                                </thead>
+                                <tbody id="table-body">
+                                {% for piece in pieces %}
+                                    <tr data-video="{{ piece.youtube_url }}">
+                                        <td class="align-middle text-end">
+                                            {{ forloop.counter }}
+                                        </td>
+                                        <td class="align-middle text-start fw-bold kurinys-name">{{ piece.title }}</td>
+                                        <td class="align-middle text-center">{{ piece.type }}</td>
+                                        <td class="align-middle text-center">
+                                            {{ piece.duration|default:"⏳ Loading..." }}
+                                        </td>
+                                        <td class="align-middle text-center">
+                                            {% for ensemble in piece.ensembles.all %}
+                                                {{ ensemble.title }}{% if not forloop.last %}, {% endif %}
+                                            {% empty %}
+                                                <span class="text-muted">—</span>
+                                            {% endfor %}
+                                        </td>
+                                        <td class="align-middle text-center">{{ piece.region|default:"—" }}</td>
+                                        <td class="align-middle text-center">{{ piece.place|default:"—" }}</td>
+                                        <td class="align-middle text-center">{{ piece.speed|default:"—" }}</td>
+                                        <td class="align-middle text-center">{{ piece.preparation|default:"—" }}</td>
+                                        <td class="align-middle text-center">
+                                            {% if piece.features.all %}
+                                                {% for poz in piece.features.all %}
+                                                    {{ poz.title }}{% if not forloop.last %}, {% endif %}
+                                                {% endfor %}
+                                            {% else %}
+                                                <span class="text-muted">—</span>
+                                            {% endif %}
+                                        </td>
+
+
+                                        <td class="align-middle text-center">
+                                            <div class="dropdown d-inline-block">
+                                                <button class="btn btn-sm badge-ansamblis dropdown-toggle d-flex align-items-center justify-content-center px-3"
+                                                        type="button" id="perziuraDropdown_{{ piece.id }}"
+                                                        data-bs-toggle="dropdown" aria-expanded="false"
+                                                        data-id="{{ piece.id }}">
+                                                    <span class="material-symbols-outlined me-1">visibility</span>
+                                                    Peržiūra
+                                                </button>
+                                                <ul class="dropdown-menu dropdown-menu-end text-center dynamic-details"
+                                                    data-loaded="false" data-id="{{ piece.id }}"
+                                                    aria-labelledby="perziuraDropdown_{{ piece.id }}">
+                                                    <li><span
+                                                            class="dropdown-item disabled text-muted">Kraunama...</span>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                        <!-- Edit/Delete Actions -->
+                                        {% if request.user.role != "narys" %}
+                                            <td class="align-middle text-center">
+                                                <div class="dropdown d-inline-block">
+                                                    <button class="btn btn-sm badge-ansamblis dropdown-toggle d-flex align-items-center justify-content-center px-3"
+                                                            type="button" id="valdytiDropdown_{{ piece.id }}"
+                                                            data-bs-toggle="dropdown" aria-expanded="false">
+                                                        <span class="material-symbols-outlined me-1">manage_accounts</span>
+                                                        Valdyti
+                                                    </button>
+                                                    <ul class="dropdown-menu text-center"
+                                                        aria-labelledby="valdytiDropdown_{{ piece.id }}">
+                                                        <li>
+                                                            <a class="dropdown-item d-flex align-items-center gap-2 py-2"
+                                                               href="{% url 'pieces_edit' piece.id %}">
+                                                                <span class="material-symbols-outlined">edit</span>
+                                                                Redaguoti
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <button class="dropdown-item d-flex align-items-center gap-2 py-2 text-danger"
+                                                                    onclick="setDeleteUrl({{ piece.id }}, '{{ piece.title }}');"
+                                                                    data-bs-toggle="modal"
+                                                                    data-bs-target="#deleteModal">
+                                                                <span class="material-symbols-outlined">delete_forever</span>
+                                                                Ištrinti
+                                                            </button>
+                                                        </li>
+                                                    </ul>
+
+                                                </div>
+                                            </td>
+                                        {% endif %}
+
+                                    </tr>
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="12" class="text-center text-muted">Nėra sukurtų kūrinių.</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                            <div class="d-flex justify-content-center mt-3">
+                                <nav>
+                                    <ul class="pagination"></ul>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Image Modal -->
+                <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" style="max-width: unset; margin: auto;">
+                        <div class="modal-content shadow-lg border-0 bg-light p-2" style="display: inline-block;">
+                            <!-- Modal Header -->
+                            <div class="modal-header bg-dark text-white rounded-top-3 py-2 px-3">
+                                <h5 class="modal-title d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">image</span>
+                                    <span id="imageModalTitle">Kūrinio Natos</span>
+                                </h5>
+                                <button type="button" class="btn-close btn-close-white"
+                                        data-bs-dismiss="modal"></button>
+                            </div>
+
+                            <!-- Modal Body -->
+                            <div class="modal-body bg-light p-2 d-flex justify-content-center align-items-center">
+                                <img id="imageViewer" src="" class="rounded shadow"
+                                     style="display: block; max-width: 70vw; max-height: 75vh; object-fit: contain;"
+                                     alt="">
+                            </div>
+
+                            <!-- Modal Footer -->
+                            <div class="modal-footer bg-light border-0 d-flex justify-content-between px-4 py-2">
+                                <a id="downloadImageBtn" class="btn btn-success d-flex align-items-center px-3 py-1"
+                                   download>
+                                    <span class="material-symbols-outlined me-1">download</span> Atsisiųsti
+                                </a>
+                                <button type="button" class="btn btn-outline-dark d-flex align-items-center px-3 py-1"
+                                        data-bs-dismiss="modal">
+                                    <span class="material-symbols-outlined me-1">close</span> Uždaryti
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- PDF Modal -->
+                <div class="modal fade" id="pdfModal" tabindex="-1" aria-labelledby="pdfModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-xl modal-dialog-centered" style="max-width: 95vw; height: 95vh;">
+                        <div class="modal-content shadow-lg border-0 rounded-4"
+                             style="height: 100%; display: flex; flex-direction: column;">
+                            <!-- Modal Header -->
+                            <div class="modal-header bg-dark text-white rounded-top-4">
+                                <h5 class="modal-title d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">picture_as_pdf</span>
+                                    <span id="pdfModalTitle">Kūrinio PDF</span>
+                                </h5>
+                                <button type="button" class="btn-close btn-close-white"
+                                        data-bs-dismiss="modal"></button>
+                            </div>
+
+
+                            <!-- Modal Body -->
+                            <div class="modal-body p-0" style="flex: 1; overflow: hidden;">
+                                <iframe id="pdfViewer" src="" width="100%" height="100%" frameborder="0"
+                                        style="border-radius: 0 0 1rem 1rem;"></iframe>
+                            </div>
+
+                            <!-- Modal Footer -->
+                            <div class="modal-footer d-flex justify-content-center border-0 pb-4">
+                                <button type="button" class="btn btn-outline-dark px-4 py-2 d-flex align-items-center"
+                                        data-bs-dismiss="modal">
+                                    <span class="material-symbols-outlined me-2">close</span> Uždaryti
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Delete Confirmation Modal -->
+                <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content shadow-lg border-0 rounded-4">
+                            <div class="modal-header bg-danger text-white">
+                                <h5 class="modal-title d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">warning</span> Patvirtinti ištrynimą
+                                </h5>
+                                <button type="button" class="btn-close btn-close-white"
+                                        data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body text-center py-4">
+                                <p class="fs-5">Ar tikrai norite ištrinti <strong id="kurinysName"></strong>?</p>
+                                <p class="text-muted">Šio veiksmo nebegalėsite atšaukti.</p>
+                            </div>
+                            <div class="modal-footer d-flex justify-content-center border-0 pb-4">
+                                <button type="button" class="btn btn-light px-4 py-2 btn-outline-dark"
+                                        data-bs-dismiss="modal">
+                                    <span class="material-symbols-outlined me-2">close</span> Grįžti
+                                </button>
+                                <form id="deleteForm" method="post" onsubmit="delete_piece(event)">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger px-4 py-2 d-flex align-items-center">
+                                        <span class="material-symbols-outlined me-2">delete_forever</span> Ištrinti
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lyrics Modal -->
+                <div class="modal fade" id="lyricsModal" tabindex="-1" aria-labelledby="lyricsModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content shadow-lg border-0 rounded-4">
+                            <div class="modal-header bg-info text-white">
+                                <h5 class="modal-title d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">library_books</span> Dainos Žodžiai
+                                </h5>
+                                <button type="button" class="btn-close btn-close-white"
+                                        data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body text-center py-4">
+                                <h5 class="fw-bold" id="lyricsTitle"></h5>
+                                <hr>
+                                <pre id="lyricsText" class="text-wrap text-break text-center"
+                                     style="white-space: pre-line; font-size: 1.1rem;"></pre>
+                            </div>
+                            <div class="modal-footer d-flex justify-content-center border-0 pb-4">
+                                <button type="button" class="btn btn-outline-dark px-4 py-2 d-flex align-items-center"
+                                        data-bs-dismiss="modal">
+                                    <span class="material-symbols-outlined me-2">close</span> Uždaryti
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Description Modal -->
+                <div class="modal fade" id="descriptionModal" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content shadow-lg border-0 rounded-4">
+                            <div class="modal-header bg-secondary text-white">
+                                <h5 class="modal-title d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">description</span> Kūrinio Aprašymas
+                                </h5>
+                                <button type="button" class="btn-close btn-close-white"
+                                        data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body text-center py-4">
+                                <h5 class="fw-bold" id="descriptionTitle"></h5>
+                                <hr>
+                                <pre id="descriptionText" class="text-wrap text-break text-center"
+                                     style="white-space: pre-line; font-size: 1.1rem;"></pre>
+                            </div>
+                            <div class="modal-footer d-flex justify-content-center border-0 pb-4">
+                                <button type="button" class="btn btn-outline-dark px-4 py-2 d-flex align-items-center"
+                                        data-bs-dismiss="modal">
+                                    <span class="material-symbols-outlined me-2">close</span> Uždaryti
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Toast -->
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1055;">
+        <div id="toastSuccess" class="toast align-items-center text-white bg-success border-0" role="alert"
+             aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">Kūrinys sėkmingai atnaujintas!</div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto"
+                        data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Modal handling
+        function setDeleteUrl(id, name) {
+            document.getElementById("kurinysName").innerText = name;
+            document.getElementById("deleteForm").action = `/kuriniai/${id}/delete/`;
+        }
+
+        function showLyrics(title, text) {
+            document.getElementById("lyricsTitle").innerText = title;
+            document.getElementById("lyricsText").innerText = text || "Žodžių nėra.";
+            new bootstrap.Modal(document.getElementById("lyricsModal")).show();
+        }
+
+        function showDescription(title, text) {
+            document.getElementById("descriptionTitle").innerText = title;
+            document.getElementById("descriptionText").innerText = text || "Aprašymo nėra.";
+            new bootstrap.Modal(document.getElementById("descriptionModal")).show();
+        }
+
+        function showPDF(title, pdfUrl) {
+            document.getElementById("pdfModalTitle").innerText = title;
+            document.getElementById("pdfViewer").src = pdfUrl;
+            new bootstrap.Modal(document.getElementById("pdfModal")).show();
+        }
+
+        // Delete submission
+        async function delete_piece(event) {
+            event.preventDefault();
+            const form = document.getElementById("deleteForm");
+            const res = await fetch(form.action, {
+                method: "POST",
+                headers: {"X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value},
+            });
+            if (res.ok) {
+                bootstrap.Modal.getInstance(document.getElementById("deleteModal")).hide();
+                setTimeout(() => location.reload(), 500);
+            } else {
+                alert("Klaida: Nepavyko ištrinti kūrinio!");
+            }
+        }
+
+        function paginateTable(rows, perPage = 15) {
+            const tableBody = document.querySelector("#table-body");
+            const pagination = document.querySelector(".pagination");
+            const total = rows.length;
+            const pages = Math.ceil(total / perPage);
+
+            // Clear existing
+            tableBody.innerHTML = "";
+            pagination.innerHTML = "";
+
+            function renderPage(page) {
+                tableBody.innerHTML = "";
+                const start = (page - 1) * perPage;
+                const end = start + perPage;
+                rows.slice(start, end).forEach((row, index) => {
+                    row.querySelector("td.text-end").innerText = start + index + 1;
+                    tableBody.appendChild(row);
+                });
+
+                // update pagination UI
+                pagination.innerHTML = "";
+                for (let i = 1; i <= pages; i++) {
+                    const li = document.createElement("li");
+                    li.className = "page-item" + (i === page ? " active" : "");
+                    li.innerHTML = `<a class="page-link" href="#">${i}</a>`;
+                    li.onclick = () => renderPage(i);
+                    pagination.appendChild(li);
+                }
+            }
+
+            renderPage(1);
+        }
+
+        // Show toast if redirected with success param
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const url = new URL(window.location.href);
+            history.replaceState(null, "", url.toString());
+
+            const searchInput = document.getElementById("searchInput");
+            const tableBody = document.getElementById("table-body");
+            const pagination = document.querySelector(".pagination");
+
+            const allRows = Array.from(tableBody.querySelectorAll("tr"));
+            const perPage = 15;
+            let filteredRows = [...allRows];
+
+            document.querySelectorAll(".dynamic-details").forEach(ul => {
+                const id = ul.dataset.id;
+                const button = document.querySelector(`#perziuraDropdown_${id}`);
+
+                button.addEventListener("click", async () => {
+                    if (ul.dataset.loaded === "true") return;
+
+                    ul.innerHTML = '<li><span class="dropdown-item disabled text-muted">Kraunama...</span></li>';
+
+                    const res = await fetch(`/kuriniai/${id}/details/`);
+                    if (!res.ok) {
+                        ul.innerHTML = '<li><span class="dropdown-item text-danger">Klaida kraunant duomenis</span></li>';
+                        return;
+                    }
+
+                    const data = await res.json();
+                    ul.innerHTML = "";  // Clear
+
+                    if (data.youtube_url) {
+                        ul.innerHTML += `
+                <li>
+                    <a class="dropdown-item d-flex align-items-center justify-content-center gap-2 py-2"
+                       href="${data.youtube_url}" target="_blank">
+                        <span class="material-symbols-outlined">ondemand_video</span> Video
+                    </a>
+                </li>`;
+                    }
+
+                    if (data.tipas === "Daina" && data.lyrics) {
+                        ul.innerHTML += `
+                <li>
+                    <button class="dropdown-item d-flex align-items-center justify-content-center gap-2 py-2"
+                            onclick="showLyrics('${data.pavadinimas}', \`${data.lyrics}\`)">
+                        <span class="material-symbols-outlined">library_books</span> Žodžiai
+                    </button>
+                </li>`;
+                    }
+
+                    if (data.description) {
+                        ul.innerHTML += `
+                <li>
+                    <button class="dropdown-item d-flex align-items-center justify-content-center gap-2 py-2"
+                            onclick="showDescription('${data.pavadinimas}', \`${data.description}\`)">
+                        <span class="material-symbols-outlined">description</span> Aprašymas
+                    </button>
+                </li>`;
+                    }
+
+                    if (data.pdf_url) {
+                        ul.innerHTML += `
+                <li>
+                    <button class="dropdown-item d-flex align-items-center justify-content-center gap-2 py-2"
+                            onclick="showPDF('${data.pavadinimas}', '${data.pdf_url}')">
+                        <span class="material-symbols-outlined">picture_as_pdf</span> PDF
+                    </button>
+                </li>`;
+                    }
+
+                    if (data.image_url) {
+                        ul.innerHTML += `
+                <li>
+                    <button class="dropdown-item d-flex align-items-center justify-content-center gap-2 py-2"
+                            onclick="showImage('${data.pavadinimas}', '${data.image_url}')">
+                        <span class="material-symbols-outlined">image</span> Paveikslėlis
+                    </button>
+                </li>`;
+                    }
+
+                    if (!ul.innerHTML.trim()) {
+                        ul.innerHTML = '<li><span class="dropdown-item disabled text-muted">Nėra turinio</span></li>';
+                    }
+
+                    ul.dataset.loaded = "true";
+                });
+            });
+
+
+            function renderPage(page) {
+                tableBody.innerHTML = "";
+                const start = (page - 1) * perPage;
+                const end = start + perPage;
+                const rowsToShow = filteredRows.slice(start, end);
+
+                rowsToShow.forEach((row, index) => {
+                    row.querySelector("td.text-end").innerText = start + index + 1;
+                    tableBody.appendChild(row);
+                });
+
+                pagination.innerHTML = "";
+                if (filteredRows.length <= perPage) {
+                    pagination.classList.add("d-none");
+                    return;
+                }
+
+                pagination.classList.remove("d-none");
+                const totalPages = Math.ceil(filteredRows.length / perPage);
+                for (let i = 1; i <= totalPages; i++) {
+                    const li = document.createElement("li");
+                    li.className = "page-item" + (i === page ? " active" : "");
+                    li.innerHTML = `<a class="page-link" href="#">${i}</a>`;
+                    li.addEventListener("click", function (e) {
+                        e.preventDefault();
+                        renderPage(i);
+                    });
+                    pagination.appendChild(li);
+                }
+            }
+
+            function applySearch() {
+                const query = searchInput.value.toLowerCase().trim();
+                if (query === "") {
+                    filteredRows = [...allRows]; // Reset to all rows
+                } else {
+                    filteredRows = allRows.filter(row => {
+                        const name = row.querySelector(".kurinys-name")?.textContent.toLowerCase() || "";
+                        return name.includes(query);
+                    });
+                }
+
+                renderPage(1);
+            }
+
+            searchInput.addEventListener("input", applySearch);
+            renderPage(1); // Initial render
+        });
+
+        function showImage(title, imageUrl) {
+            document.getElementById("imageModalTitle").innerText = title;
+            document.getElementById("imageViewer").src = imageUrl;
+
+            // Set download button
+            const downloadBtn = document.getElementById("downloadImageBtn");
+            downloadBtn.href = imageUrl;
+            downloadBtn.setAttribute("download", title + ".jpg");
+
+            new bootstrap.Modal(document.getElementById("imageModal")).show();
+        }
+    </script>
+
+{% endblock content %}

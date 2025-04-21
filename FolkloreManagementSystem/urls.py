@@ -30,16 +30,16 @@ urlpatterns = [
     path('', CustomLoginView.as_view(template_name='login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(next_page='/'), name='logout'),  # Logout pag
     path('', include('Initial.urls')),
-    path('ansambliai/', include('Ansambliai.urls')),
-    path('nariai/', include('Nariai.urls')),
-    path('renginiai/', include('Renginiai.urls')),
-    path('kuriniai/', include('Kuriniai.urls')),
-    path('programos/', include('Programos.urls')),
-    path('instrumentai/', include('Instrumentai.urls')),
-    path('padaliniai/', include('Padaliniai.urls')),
-    path('paskyra/', include('Paskyra.urls')),
-    path('repeticijos/', include('Repeticijos.urls')),
-    path('kalendorius/', include('Kalendorius.urls')),
+    path('ansambliai/', include('Ensembles.urls')),
+    path('nariai/', include('Users.urls')),
+    path('renginiai/', include('Events.urls')),
+    path('kuriniai/', include('Pieces.urls')),
+    path('programos/', include('Programs.urls')),
+    path('instrumentai/', include('Instruments.urls')),
+    path('padaliniai/', include('Departments.urls')),
+    path('paskyra/', include('Users.urls')),
+    path('repeticijos/', include('Rehearsals.urls')),
+    path('kalendorius/', include('Calendar.urls')),
 
 ] + debug_toolbar_urls()
 

@@ -36,7 +36,7 @@ if not SECRET_KEY:
     raise ValueError("Missing DJANGO_SECRET_KEY environment variable")
 
 # Debug mode (should be False in production)
-DEBUG = False
+DEBUG = True
 
 INTERNAL_IPS = [
     # ...
@@ -99,12 +99,16 @@ CSRF_TRUSTED_ORIGINS = ["https://folklore.azurewebsites.net"]
 # OAuth2 settings
 OAUTH2_PROVIDER = {
     "ACCESS_TOKEN_EXPIRE_SECONDS": 3600,
-    "APPLICATION_MODEL": "oauth2_provider.Application",
     "SCOPES": {"read": "Read scope", "write": "Write scope"},
     "OAUTH2_VALIDATOR_CLASS": "Initial.validators.CustomOAuth2Validator",
 }
 
-AUTH_USER_MODEL = "Initial.User"
+OAUTH2_PROVIDER_ACCESS_TOKEN_MODEL = "oauth2_provider.AccessToken"
+OAUTH2_PROVIDER_APPLICATION_MODEL = "oauth2_provider.Application"
+OAUTH2_PROVIDER_ID_TOKEN_MODEL = "oauth2_provider.IDToken"
+OAUTH2_PROVIDER_REFRESH_TOKEN_MODEL = "oauth2_provider.RefreshToken"
+OAUTH2_PROVIDER_GRANT_MODEL = "oauth2_provider.Grant"
+AUTH_USER_MODEL="Initial.User"
 
 # Django REST Framework configuration
 REST_FRAMEWORK = {
@@ -133,15 +137,15 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "oauth2_provider",
-    "Padaliniai",
-    "Programos",
-    "Kuriniai",
-    "Renginiai",
-    "Ansambliai",
-    "Instrumentai",
-    "Nariai",
-    "Repeticijos",
-    "Kalendorius",
+    "Departments",
+    "Programs",
+    "Pieces",
+    "Events",
+    "Ensembles",
+    "Instruments",
+    "Users",
+    "Rehearsals",
+    "Calendar",
     "mainPage",
     "debug_toolbar",
 ]

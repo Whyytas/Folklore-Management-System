@@ -1,0 +1,70 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Redaguoti Ansamblį {% endblock %}
+
+{% block content %}
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow">
+                    <div class="card-header d-flex align-items-center gap-2 py-3 table-header-custom">
+                        <span class="material-symbols-outlined">edit</span>
+                        <h4 class="mb-0">Redaguoti Ansamblį</h4>
+                    </div>
+
+                    <div class="card-body">
+                        <form method="post" id="editAnsamblisForm">
+                            {% csrf_token %}
+
+                            <!-- Title -->
+                            <div class="mb-4">
+                                <label for="title" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">music_note</span> Pavadinimas
+                                </label>
+                                <input type="text" name="title" id="title" class="form-control"
+                                       value="{{ form.title.value|default_if_none:'' }}" required>
+                            </div>
+
+                            <!-- City Input -->
+                            <div class="mb-4">
+                                <label for="city" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">location_city</span> Miestas
+                                </label>
+                                <input type="text" name="city" id="city" class="form-control"
+                                       value="{{ form.city.value|default_if_none:'' }}" required>
+                            </div>
+
+                            <!-- Department Dropdown -->
+                            <div class="mb-4">
+                                <label for="department" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">apartment</span> Padalinys
+                                </label>
+                                <select id="department" name="department" class="form-select">
+                                    <option value="">Pasirinkite padalinį</option>
+                                    {% for department in departments %}
+                                        <option value="{{ department.id }}"
+                                                {% if form.department.value|stringformat:"s" == department.id|stringformat:"s" %}selected{% endif %}>
+                                            {{ department.title }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+
+                            <!-- Buttons -->
+                            <div class="d-flex justify-content-between mt-4">
+                                <a href="{% url 'ansambliai_list' %}"
+                                   class="btn btn-outline-secondary d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-1">arrow_back</span> Grįžti
+                                </a>
+                                <button type="submit" class="btn primary-background d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-1">save</span> Išsaugoti ansamblį
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

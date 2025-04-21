@@ -1,0 +1,292 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Redaguoti Vartotoją {% endblock %}
+
+{% block content %}
+
+    <style>
+        .ensemble-btn {
+            border: 1px solid black !important;
+            background-color: white;
+            color: black;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .ensemble-btn.selected {
+            background-color: #225932 !important;
+            color: white !important;
+        }
+
+        .ensemble-btn.disabled {
+            background-color: #ffc107 !important; /* Yellow for "Visi" */
+            color: black !important;
+            cursor: not-allowed;
+        }
+    </style>
+
+
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 col-md-12">
+                <div class="card shadow">
+                    <div class="card-header py-3 table-header-custom d-flex justify-content-left align-items-center">
+                        <h4 class="mb-0 d-flex align-items-center">
+                            <span class="material-symbols-outlined me-2">edit</span>
+                            Redaguoti vartotoją: {{ user.username }}
+                        </h4>
+                    </div>
+
+                    <div class="card-body">
+
+                        <!-- Display Success & Error Messages -->
+{#                        {% if messages %}#}
+{#                            <div class="alert alert-dismissible fade show" role="alert">#}
+{#                                {% for message in messages %}#}
+{#                                    <div class="alert {% if message.tags == 'success' %}alert-success{% else %}alert-danger{% endif %}">#}
+{#                                        {{ message }}#}
+{#                                    </div>#}
+{#                                {% endfor %}#}
+{#                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>#}
+{#                            </div>#}
+{#                        {% endif %}#}
+
+                        <form method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" name="which_form" value="info">  <!--  REQUIRED -->
+                            <!-- First Name Field (Vardas) -->
+                            <div class="mb-4">
+                                <label for="id_name" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">badge</span> Vardas
+                                </label>
+                                <input type="text" class="form-control" id="id_name" name="name"
+                                       value="{{ user.name }}" required>
+                            </div>
+
+                            <!-- Last Name Field (Pavarde) -->
+                            <div class="mb-4">
+                                <label for="id_surname" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">badge</span> Pavardė
+                                </label>
+                                <input type="text" class="form-control" id="id_surname" name="surname"
+                                       value="{{ user.surname }}" required>
+                            </div>
+
+
+                            <!-- Username Field -->
+                            <div class="mb-4">
+                                <label for="id_username" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">person</span> Vartotojo name
+                                </label>
+                                <input type="text" class="form-control" id="id_username" name="username"
+                                       value="{{ user.username }}" required>
+                            </div>
+
+                            <!-- Email Field -->
+                            <div class="mb-4">
+                                <label for="id_email" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">email</span> El. paštas
+                                </label>
+                                <input type="email" class="form-control" id="id_email" name="email"
+                                       value="{{ user.email }}" required>
+                            </div>
+
+                            <!-- Phone Number Field -->
+                            <div class="mb-4">
+                                <label for="id_phone_number" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">phone</span> Telefono numeris
+                                </label>
+                                <input type="text" class="form-control" id="id_phone_number" name="phone_number"
+                                       value="{{ user.phone_number|default:'' }}">
+                            </div>
+
+                            <!-- Role Dropdown -->
+                            <div class="mb-4">
+                                <label for="id_role" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">category</span> Rolė
+                                </label>
+                                <select class="form-select" id="id_role" name="role" required>
+                                    {% for value, label in user.ROLE_CHOICES %}
+                                        <option value="{{ value }}" {% if user.role == value %}selected{% endif %}>
+                                            {{ label }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <!--  Ansambliai Selection -->
+                            <div class="mb-4" id="ensembles-section">
+                                <label class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">groups</span> Priskirti ansamblius
+                                </label>
+                                <div id="ensembles-container" class="d-flex flex-column gap-2">
+                                    {% for ensemble in all_ensembles %}
+                                        {% if ensemble.title == "Visi" %}
+                                            <input type="checkbox" class="btn-check" id="ensemble_{{ ensemble.id }}"
+                                                   checked disabled>
+                                            <label class="btn w-100 py-2 d-flex justify-content-between align-items-center fs-5 ensemble-btn disabled"
+                                                   for="ensemble_{{ ensemble.id }}">
+                                                <span>{{ ensemble.title }}</span>
+                                                <span class="material-symbols-outlined">lock</span>
+                                            </label>
+                                        {% else %}
+                                            <input type="checkbox" class="btn-check" name="ensembles"
+                                                   id="ensemble_{{ ensemble.id }}" value="{{ ensemble.id }}"
+                                                   {% if ensemble in user.ensembles.all %}checked{% endif %}>
+                                            <label class="btn w-100 py-2 d-flex justify-content-between align-items-center fs-5 ensemble-btn
+               {% if ensemble in user.ensembles.all %}selected{% endif %}"
+                                                   for="ensemble_{{ ensemble.id }}">
+                                                <span>{{ ensemble.title }}</span>
+                                                <span class="material-symbols-outlined">
+                {% if ensemble in user.ensembles.all %}check{% else %}add{% endif %}
+            </span>
+                                            </label>
+                                        {% endif %}
+                                    {% endfor %}
+
+                                </div>
+                            </div>
+
+                            <!-- Form Actions -->
+                            <div class="d-flex justify-content-between mt-4">
+                                <a href="{% url 'nariai' %}"
+                                   class="btn btn-outline-secondary d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-1">arrow_back</span> Grįžti
+                                </a>
+                                <button type="submit" class="btn primary-background d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-1">save</span> Atnaujinti vartotoją
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="col-lg-6 col-md-12">
+                <div class="card shadow">
+                    <div class="card-header py-3 table-header-custom">
+                        <h4 class="mb-0 d-flex align-items-center">
+                            <span class="material-symbols-outlined me-2">lock</span> Keisti Slaptažodį
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <form method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="which_form" value="password">
+                            <input type="hidden" name="user_id" value="{{ user.id }}">
+
+                            {% if password_error %}
+                                <div class="alert alert-danger d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">error</span> {{ password_error }}
+                                </div>
+                            {% endif %}
+
+                            {% if password_updated %}
+                                <div class="alert alert-success d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">check_circle</span> Slaptažodis
+                                    atnaujintas!
+                                </div>
+                            {% endif %}
+
+                            <!-- Naujas slaptažodis -->
+                            <div class="mb-3">
+                                <label for="new_password1" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">lock</span> Naujas slaptažodis
+                                </label>
+                                <input type="password" name="new_password1" id="new_password1" class="form-control"
+                                       required>
+                            </div>
+
+                            <!-- Pakartoti slaptažodį -->
+                            <div class="mb-3">
+                                <label for="new_password2" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">lock</span> Pakartoti slaptažodį
+                                </label>
+                                <input type="password" name="new_password2" id="new_password2" class="form-control"
+                                       required>
+                            </div>
+
+                            <div class="d-flex justify-content-end mt-4">
+                                <button type="submit" class="btn primary-background d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-1">lock_reset</span> Atnaujinti Slaptažodį
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    <!--  Toast Container -->
+<div aria-live="polite" aria-atomic="true" class="position-fixed bottom-0 end-0 p-3" style="z-index: 1100;">
+  {% for message in messages %}
+    <div class="toast align-items-center text-white bg-{{ message.tags }} border-0 mb-2" role="alert" data-bs-delay="4000" data-bs-autohide="true">
+      <div class="d-flex">
+        <div class="toast-body">
+          {{ message }}
+        </div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+
+
+
+
+    </div>
+
+<!--  Activate Toasts -->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const toastElList = [].slice.call(document.querySelectorAll('.toast'));
+    toastElList.forEach(function (toastEl) {
+      const toast = new bootstrap.Toast(toastEl);
+      toast.show();
+    });
+  });
+</script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const roleDropdown = document.getElementById("id_role");
+            const ensemblesSection = document.getElementById("ensembles-section");
+            const ensemblesCheckboxes = document.querySelectorAll(".btn-check");
+
+            function toggleAnsambliai() {
+                if (roleDropdown.value === "administratorius") {
+                    ensemblesSection.style.display = "none";
+                    ensemblesCheckboxes.forEach(box => box.disabled = true);
+                } else {
+                    ensemblesSection.style.display = "block";
+                    ensemblesCheckboxes.forEach(box => box.disabled = false);
+                }
+            }
+
+            //  Run on page load
+            toggleAnsambliai();
+
+            //  Run on role change
+            roleDropdown.addEventListener("change", toggleAnsambliai);
+
+            //  Ansambliai Selection Behavior
+            document.querySelectorAll(".btn-check").forEach(button => {
+                let label = document.querySelector(`label[for="${button.id}"]`);
+                if (button.checked) {
+                    label.classList.add("selected");
+                    label.querySelector("span.material-symbols-outlined").innerText = "check";
+                }
+
+                button.addEventListener("change", function () {
+                    label.classList.toggle("selected", this.checked);
+                    label.querySelector("span.material-symbols-outlined").innerText =
+                        this.checked ? "check" : "add";
+                });
+            });
+        });
+    </script>
+
+
+
+{% endblock %}

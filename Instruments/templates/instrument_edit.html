@@ -1,0 +1,110 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Redaguoti Instrumentą {% endblock %}
+
+{% block content %}
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow">
+                    <div class="card-header d-flex justify-content-between align-items-center py-3 table-header-custom">
+                        <h4 class="mb-0">Redaguoti Instrumentą</h4>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" enctype="multipart/form-data" id="editInstrumentasForm">
+                            {% csrf_token %}
+
+                            <!-- Pavadinimas -->
+                            <div class="mb-4">
+                                <label for="title" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">music_note</span> Pavadinimas
+                                </label>
+                                <input type="text" name="title" id="title" class="form-control"
+                                       value="{{ instrument.title }}" required>
+                            </div>
+
+                            <!-- Nuotrauka (File Upload) -->
+                            <div class="mb-4">
+                                <label for="photo" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">image</span> Nuotrauka
+                                </label>
+                                <input type="file" name="photo" id="photo" class="form-control"
+                                       accept="image/*" onchange="previewImage(event)">
+
+                                <!-- Image Preview -->
+                                <div class="mt-3 text-center">
+                                    {% if instrument.photo %}
+                                        <img id="imagePreview" src="{{ instrument.photo.url }}"
+                                             class="img-fluid rounded shadow-sm"
+                                             style="max-width: 100%; height: auto; max-height: 250px;">
+                                    {% else %}
+                                        <img id="imagePreview" src="#" class="img-fluid rounded shadow-sm d-none"
+                                             style="max-width: 100%; height: auto; max-height: 250px;">
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <!-- Ansamblis Dropdown -->
+                            <div class="mb-4">
+                                <label for="ensembleDropdown" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">group</span> Ansamblis
+                                </label>
+                                <div class="dropdown">
+                                    <button class="btn btn-outline-secondary dropdown-toggle w-100" type="button"
+                                            id="ensembleDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                        {{ instrument.ensemble.title }}
+                                    </button>
+                                    <ul class="dropdown-menu w-100" id="ensembleDropdownMenu">
+                                        {% for ensemble in ensembles %}
+                                            <li><a class="dropdown-item" href="#"
+                                                   onclick="selectAnsamblis('{{ ensemble.id }}', '{{ ensemble.title }}')">
+                                                {{ ensemble.title }}
+                                            </a></li>
+                                        {% endfor %}
+                                    </ul>
+                                    <input type="hidden" id="ensembleInput" name="ensemble"
+                                           value="{{ instrument.ensemble.id }}">
+                                </div>
+                            </div>
+
+                            <!-- Buttons -->
+                            <div class="d-flex justify-content-between mt-4">
+                                <a href="{% url 'instrumentai_list' %}" class="btn btn-outline-secondary d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-1">arrow_back</span> Grįžti
+                                </a>
+                                <button type="submit" class="btn btn-outline-dark d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-1">save</span> Išsaugoti instrumentą
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript for Image Preview & Dropdown -->
+    <script>
+        function selectAnsamblis(value, label) {
+            document.getElementById("ensembleDropdown").innerText = label;
+            document.getElementById("ensembleInput").value = value;
+        }
+
+        function previewImage(event) {
+            var input = event.target;
+            var preview = document.getElementById("imagePreview");
+
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    preview.src = e.target.result;
+                    preview.classList.remove("d-none");
+                };
+
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
+
+{% endblock content %}

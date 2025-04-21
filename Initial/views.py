@@ -22,7 +22,7 @@ User = get_user_model()
 resend.api_key = settings.RESEND_API_KEY
 
 @login_required
-def paskyra_page(request):
+def account_page(request):
     user = request.user
 
     if request.method == 'POST':
@@ -44,13 +44,13 @@ def paskyra_page(request):
         messages.success(request, 'Your profile has been updated successfully.')
         return redirect('paskyra')
 
-    return render(request, 'paskyra.html', {'user': user})
+    return render(request, 'account.html', {'user': user})
 
 class CustomLoginView(auth_views.LoginView):
     """ Redirect already logged-in users to /main """
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
-            return redirect('main')  # ✅ Redirect to /main if already logged in
+            return redirect('main')  #  Redirect to /main if already logged in
         return super().dispatch(request, *args, **kwargs)
 
 class ForgotPasswordView(PasswordResetView):

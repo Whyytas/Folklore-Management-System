@@ -38,26 +38,24 @@
                                 <tbody>
                                 {% for event in events %}
                                     <tr>
-                                        <td>{{ event.pavadinimas }}</td>
+                                        <td>{{ event.title }}</td>
                                         <td>
-                                            {% if event.data_laikas %}
-                                                {{ event.data_laikas|date:"Y-m-d H:i" }}
-                                            {% elif event.data %}
-                                                {{ event.data|date:"Y-m-d H:i" }}
+                                            {% if event.date %}
+                                                {{ event.date|date:"Y-m-d H:i" }}
                                             {% else %}
                                                 -
                                             {% endif %}
                                         </td>
                                         <td>
-                                            {% if event.programa %}
-                                                {{ event.programa.pavadinimas }}
+                                            {% if event.program %}
+                                                {{ event.program.title }}
                                             {% else %}
                                                 -
                                             {% endif %}
                                         </td>
                                         <td>
-                                            {% if event.ansamblis %}
-                                                <span class="badge badge-ansamblis">{{ event.ansamblis.pavadinimas }}</span>
+                                            {% if event.ensemble %}
+                                                <span class="badge badge-ansamblis">{{ event.ensemble.title }}</span>
                                             {% else %}
                                                 <span class="text-muted">-</span>
                                             {% endif %}
@@ -93,13 +91,13 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                {% for kurinys in kuriniai %}
+                                {% for piece in pieces %}
                                     <tr>
-                                        <td>{{ kurinys.pavadinimas }}</td>
-                                        <td>{{ kurinys.tipas }}</td>
+                                        <td>{{ piece.title }}</td>
+                                        <td>{{ piece.type }}</td>
                                         <td>
-                                            {% for a in kurinys.ansambliai.all %}
-                                               <span class="badge badge-ansamblis">{{ a.pavadinimas }}</span>
+                                            {% for a in piece.ensembles.all %}
+                                               <span class="badge badge-ansamblis">{{ a.title }}</span>
                                             {% empty %}
                                                 <span class="text-muted">-</span>
                                             {% endfor %}
@@ -132,11 +130,11 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                {% for instr in instrumentai %}
+                                {% for instrument in instruments %}
                                     <tr>
-                                        <td>{{ instr.pavadinimas }}</td>
+                                        <td>{{ instrument.title }}</td>
                                         <td>
-                                            <span class="badge badge-ansamblis">{{ instr.ansamblis.pavadinimas }}</span>
+                                            <span class="badge badge-ansamblis">{{ instrument.ensemble.title }}</span>
                                         </td>
                                     </tr>
                                 {% endfor %}
@@ -179,14 +177,14 @@
                         {% else %}
                             {% if user.ansambliai.all %}
                                 <div class="row g-2 mt-2">
-                                    {% for ansamblis in user.ansambliai.all %}
+                                    {% for ensemble in user.ensembles.all %}
                                         <div class="col-12 col-sm-6">
                                             <div class="border rounded p-2 h-100">
                                                 <div class="fw-semibold">
                                                     <span class="material-icons text-primary me-1 align-middle">music_note</span>
-                                                    {{ ansamblis.pavadinimas }}
+                                                    {{ ensemble.title }}
                                                 </div>
-                                                <div class="text-muted small ms-4">{{ ansamblis.miestas }}</div>
+                                                <div class="text-muted small ms-4">{{ ensemble.city }}</div>
                                             </div>
                                         </div>
                                     {% endfor %}

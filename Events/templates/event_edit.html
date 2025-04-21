@@ -1,0 +1,191 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Redaguoti Renginį {% endblock %}
+
+{% block content %}
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow">
+                    <div class="card-header d-flex justify-content-between align-items-center py-3 table-header-custom">
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="material-symbols-outlined">edit_calendar</span>
+                            <h4 class="mb-0">Redaguoti Renginį</h4>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <form method="post" id="editRenginysForm">
+                            {% csrf_token %}
+
+                            <!--  Ansamblis Dropdown -->
+                            <div class="mb-4">
+                                <label for="ensembleDropdown" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">group</span> Ansamblis
+                                </label>
+                                <div class="dropdown">
+                                    <button class="btn btn-outline-secondary dropdown-toggle w-100" type="button"
+                                            id="ensembleDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Pasirinkti ansamblį
+                                    </button>
+                                    <ul class="dropdown-menu w-100" id="ensembleDropdownMenu">
+                                        {% for ensemble in ensembles %}
+                                            <li><a class="dropdown-item" href="#"
+                                                   onclick="selectAnsamblis('{{ ensemble.id }}', '{{ ensemble.title }}')">
+                                                {{ ensemble.title }}
+                                            </a></li>
+                                        {% endfor %}
+                                    </ul>
+                                    <input type="hidden" id="ensembleInput" name="ensemble"
+                                           value="{{ event.ensemble.id }}">
+                                </div>
+                            </div>
+
+                            <!--  Pavadinimas -->
+                            <div class="mb-4">
+                                <label for="title" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">event</span> Pavadinimas
+                                </label>
+                                <input type="text" name="title" id="title" class="form-control"
+                                       value="{{ event.title }}" required>
+                            </div>
+
+                            <!--  Adresas -->
+                            <div class="mb-4">
+                                <label for="address" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">location_on</span> Adresas
+                                </label>
+                                <input type="text" name="address" id="address" class="form-control"
+                                       value="{{ event.address }}" required>
+                            </div>
+
+                            <!--  Data ir Laikas Input (Flatpickr for Calendar UI) -->
+                            <div class="mb-4">
+                                <label for="id_date" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">schedule</span> Data ir laikas
+                                </label>
+                                <input type="text" class="form-control" id="id_date" name="date"
+                                       value="{{ event.date }}" required autocomplete="off">
+                            </div>
+
+
+                            <!--  Programa Dropdown -->
+                            <div class="mb-4">
+                                <label for="programDropdown" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">playlist_add</span> Programa
+                                </label>
+                                <div class="dropdown">
+                                    <button class="btn btn-outline-secondary dropdown-toggle w-100" type="button"
+                                            id="programDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                        {% if event.program %}
+                                            {{ event.program.title }}
+                                        {% else %}
+                                            Pasirinkti programą...
+                                        {% endif %}
+                                    </button>
+                                    <ul class="dropdown-menu w-100" id="programDropdownMenu">
+                                        {% for program in programs %}
+                                            <li><a class="dropdown-item" href="#"
+                                                   onclick="selectPrograma('{{ program.id }}', '{{ program.title }}')">
+                                                {{ program.title }}
+                                            </a></li>
+                                        {% endfor %}
+                                    </ul>
+                                    <input type="hidden" id="programInput" name="program"
+                                           value="{% if event.program %}{{ event.program.id }}{% endif %}">
+                                </div>
+                            </div>
+
+                            <!--  Buttons -->
+                            <div class="d-flex justify-content-between mt-4">
+                                <a href="{% url 'renginiai' %}"
+                                   class="btn btn-outline-secondary d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-1">arrow_back</span> Grįžti
+                                </a>
+                                <button type="submit" class="btn primary-background d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-1">save</span> Išsaugoti renginį
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+    // Set initial ensemble title
+    const selectedAnsamblisId = document.getElementById("ensembleInput").value;
+    const selectedItem = document.querySelector(`#ensembleDropdownMenu a[onclick*="'${selectedAnsamblisId}'"]`);
+    if (selectedItem) {
+        document.getElementById("ensembleDropdown").innerText = selectedItem.innerText.trim();
+    }
+
+    flatpickr("#id_date", {
+        enableTime: true,
+        dateFormat: "Y-m-d H:i",
+        time_24hr: true,
+        minDate: "today",
+        locale: flatpickr.l10ns.lt,
+        onClose: function (selectedDates, dateStr, instance) {
+            let localDate = selectedDates[0];
+            if (localDate) {
+                let formattedDate = localDate.getFullYear() + "-" +
+                    String(localDate.getMonth() + 1).padStart(2, '0') + "-" +
+                    String(localDate.getDate()).padStart(2, '0') + " " +
+                    String(localDate.getHours()).padStart(2, '0') + ":" +
+                    String(localDate.getMinutes()).padStart(2, '0');
+                instance.input.value = formattedDate;
+            }
+        }
+    });
+});
+
+    </script>
+
+    <script>
+        function selectAnsamblis(id, title) {
+            document.getElementById("ensembleDropdown").innerText = title;
+            document.getElementById("ensembleInput").value = id;
+        }
+
+        function selectPrograma(id, title) {
+            document.getElementById("programDropdown").innerText = title;
+            document.getElementById("programInput").value = id;
+        }
+    </script>
+
+    <script>
+        function selectAnsamblis(id, title) {
+            document.getElementById("ensembleDropdown").innerText = title;
+            document.getElementById("ensembleInput").value = id;
+
+            fetch(`/programos/${id}/`)
+                .then(res => res.json())
+                .then(data => {
+                    const menu = document.getElementById("programDropdownMenu");
+                    menu.innerHTML = "";
+                    data.forEach(p => {
+                        const li = document.createElement("li");
+                        li.innerHTML = `<a class="dropdown-item" href="#" onclick="selectPrograma('${p.id}', '${p.title}')">${p.title}</a>`;
+                        menu.appendChild(li);
+                    });
+
+                    // Reset current selection
+                    document.getElementById("programDropdown").innerText = "Pasirinkti programą...";
+                    document.getElementById("programInput").value = "";
+                })
+                .catch(err => {
+                    console.error("Nepavyko gauti programų:", err);
+                });
+        }
+
+        function selectPrograma(id, title) {
+            document.getElementById("programDropdown").innerText = title;
+            document.getElementById("programInput").value = id;
+        }
+    </script>
+
+
+{% endblock content %}

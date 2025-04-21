@@ -1,0 +1,365 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Redaguoti Kūrinį {% endblock %}
+
+{% block content %}
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card shadow">
+                    <div class="card-header text-center table-header-custom text-white py-3">
+                        <div class="d-flex justify-content-center align-items-center gap-2">
+                            <span class="material-symbols-outlined">edit</span>
+                            <h4 class="mb-0">Redaguoti Kūrinį</h4>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="errorAlert" class="alert alert-danger d-none" role="alert"></div>
+
+                        <form method="post" id="editPieceForm" enctype="multipart/form-data">
+                            {% csrf_token %}
+
+                            <!-- Pavadinimas -->
+                            <div class="mb-4">
+                                <label for="title" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">music_note</span> Pavadinimas
+                                </label>
+                                <input type="text" name="title" id="title" class="form-control"
+                                       value="{{ piece.title }}" required>
+                            </div>
+
+                            <!-- Tipas -->
+                            <div class="mb-4">
+                                <label for="type" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">category</span> Tipas
+                                </label>
+                                <select name="type" id="type" class="form-control" required>
+                                    {% for value, label in piece.TYPE_CHOICES %}
+                                        <option value="{{ value }}" {% if piece.type == value %}selected{% endif %}>
+                                            {{ label }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <!-- Greitumas -->
+                            <div class="mb-4">
+                                <label for="speed" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">bar_chart</span> Greitumas
+                                </label>
+                                <select name="speed" id="speed" class="form-control">
+                                    <option value="">—</option>
+                                    {% for value, label in piece.SPEED_CHOICES %}
+                                        <option value="{{ value }}"
+                                                {% if piece.speed == value %}selected{% endif %}>
+                                            {{ label }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <!-- Paruosimas -->
+                            <div class="mb-4">
+                                <label for="preparation" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">bar_chart</span> Paruošimas
+                                </label>
+                                <select name="preparation" id="preparation" class="form-control">
+                                    <option value="">—</option>
+                                    {% for value, label in piece.PREPARATION_CHOICES %}
+                                        <option value="{{ value }}"
+                                                {% if piece.preparation == value %}selected{% endif %}>
+                                            {{ label }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <!-- Požymiai -->
+                            <div class="mb-4">
+                                <label class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">label</span> Pasirinkti požymius
+                                </label>
+                                <div class="row">
+                                    {% for feature in features %}
+                                        <div class="col-md-6 mb-2">
+                                            <input type="checkbox" class="btn-check" name="features"
+                                                   id="feature_{{ feature.id }}"
+                                                   value="{{ feature.id }}"
+                                                   {% if feature in piece.features.all %}checked{% endif %}>
+
+                                            <label class="btn w-100 py-2 d-flex justify-content-between align-items-center fs-5 btn-outline-secondary {% if feature in piece.features.all %}btn-success{% endif %}"
+                                                   for="feature_{{ feature.id }}">
+                                                <span>{{ feature.title }}</span>
+                                                <span class="material-symbols-outlined">
+                        {% if feature in piece.features.all %}check{% else %}add{% endif %}
+                    </span>
+                                            </label>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+
+                            <!-- YouTube URL -->
+                            <div class="mb-4">
+                                <label for="youtube_url" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">link</span> YouTube Nuoroda
+                                </label>
+                                <input type="url" name="youtube_url" id="youtube_url" class="form-control"
+                                       value="{{ piece.youtube_url|default_if_none:'' }}"
+                                       placeholder="Įveskite YouTube nuorodą" autocomplete="off" spellcheck="false">
+                            </div>
+
+                            <!-- Trukmė (Duration MM:SS) -->
+                            <div class="mb-4">
+                                <label class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">schedule</span> Trukmė
+                                </label>
+                                <div class="input-group">
+                                    <input type="number" id="minutes" class="form-control text-center" placeholder="mm"
+                                           min="0" step="1" style="max-width: 100px;">
+                                    <span class="input-group-text px-2">:</span>
+                                    <input type="number" id="seconds" class="form-control text-center" placeholder="ss"
+                                           min="0" max="59" step="1" style="max-width: 100px;">
+                                </div>
+                                <input type="hidden" name="duration" id="duration">
+                            </div>
+
+
+                            <!-- Upload PDF Natos -->
+                            <div class="mb-4">
+                                <label for="notes" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">upload_file</span> Įkelti natas (PDF)
+                                </label>
+                                <input type="file" class="form-control" id="notes" name="notes"
+                                       accept="application/pdf">
+                                <div id="notesError" class="text-danger mt-2 d-none">Leidžiami tik PDF failai.</div>
+                                <div id="notesFileName" class="mt-2 text-muted">
+                                    {% if piece.notes %}
+                                        Pasirinktas failas: {{ piece.notes.name|slice:"6:" }}
+                                    {% endif %}
+                                </div>
+
+                            </div>
+
+
+                            <!-- Lyrics -->
+                            <div class="mb-4" id="lyricsContainer"
+                                 style="display: {% if piece.type == 'Daina' %}block{% else %}none{% endif %};">
+                                <label for="lyrics" class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">library_books</span> Žodžiai
+                                </label>
+                                <textarea class="form-control" id="lyrics" name="lyrics" rows="5"
+                                          placeholder="Įveskite dainos žodžius">{{ piece.lyrics }}</textarea>
+                            </div>
+
+                            <!-- Ansambliai -->
+                            <div class="mb-4">
+                                <label class="form-label d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">groups</span> Pasirinkti ansamblius
+                                </label>
+                                <div class="d-flex flex-column gap-2">
+                                    {% for ensemble in ensembles %}
+                                        <input type="checkbox" class="btn-check" name="ensembles"
+                                               id="ensemble_{{ ensemble.id }}" value="{{ ensemble.id }}"
+                                               {% if ensemble in piece.ensembles.all %}checked{% endif %}>
+                                        <label class="btn w-100 py-2 d-flex justify-content-between align-items-center fs-5 ansamblis-btn {% if ensemble in piece.ensembles.all %}btn-success{% else %}btn-outline-dark{% endif %}"
+                                               for="ensemble_{{ ensemble.id }}">
+                                            <span>{{ ensemble.title }}</span>
+                                            <span class="material-symbols-outlined">
+                                            {% if ensemble in piece.ensembles.all %}check{% else %}add{% endif %}
+                                        </span>
+                                        </label>
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                            <!-- Regionas, Vieta, Aprašymas -->
+                            <div class="mb-4">
+                                <div class="card border rounded-3">
+                                    <div class="card-header bg-light">
+                                        <h5 class="mb-0 d-flex align-items-center">
+                                            <span class="material-symbols-outlined me-2">map</span> Metrika
+                                        </h5>
+                                    </div>
+                                    <div class="card-body d-flex flex-column gap-3">
+                                        <div>
+                                            <label for="region" class="form-label">Regionas</label>
+                                            <select class="form-select" id="region" name="region">
+                                                <option value="">Pasirinkite regioną (nebūtina)</option>
+                                                {% for value, label in form.fields.region.choices %}
+                                                    {% if value %}
+                                                        <option value="{{ value }}"
+                                                                {% if form.region.value == value %}selected{% endif %}>
+                                                            {{ label }}
+                                                        </option>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+
+                                        <div>
+                                            <label for="place" class="form-label">Vieta</label>
+                                            <input type="text" class="form-control" id="place" name="place"
+                                                   placeholder="Įveskite vietą (nebūtina)"
+                                                   value="{{ form.place.value|default_if_none:'' }}">
+                                        </div>
+
+                                        <div>
+                                            <label for="id_description" class="form-label d-flex align-items-center">
+                                                <span class="material-symbols-outlined me-2">description</span>
+                                                Aprašymas
+                                            </label>
+                                            <textarea class="form-control" id="id_description" name="description" rows="5"
+                                                      placeholder="Įveskite aprašymą (nebūtina)">{{ piece.description|default_if_none:'' }}</textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Form Actions -->
+                            <div class="d-flex justify-content-between mt-4">
+                                <a href="{% url 'pieces' %}"
+                                   class="btn btn-outline-secondary d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-1">arrow_back</span> Grįžti
+                                </a>
+                                <button type="submit" class="btn primary-background d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-1">save</span> Išsaugoti kūrinį
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Message -->
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1055;">
+        <div id="toastSuccess" class="toast align-items-center text-white bg-success border-0" role="alert"
+             aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">Kūrinys sėkmingai atnaujintas!</div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto"
+                        data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const form = document.getElementById("editPieceForm");
+            const tipasSelect = document.getElementById("type");
+            const lyricsContainer = document.getElementById("lyricsContainer");
+            const errorAlert = document.getElementById("errorAlert");
+            const youtubeInput = document.getElementById("youtube_url");
+            const minutesInput = document.getElementById("minutes");
+            const secondsInput = document.getElementById("seconds");
+            const trukmeInput = document.getElementById("duration");
+
+            // Custom Lithuanian validation for YouTube URL
+            youtubeInput.addEventListener("invalid", function (event) {
+                event.preventDefault();
+                if (this.value.trim() !== "") {
+                    this.setCustomValidity("Įveskite teisingą YouTube nuorodą.");
+                } else {
+                    this.setCustomValidity("");
+                }
+                this.reportValidity();
+            });
+            youtubeInput.addEventListener("input", () => youtubeInput.setCustomValidity(""));
+
+            function updateDurationField() {
+                const mm = String(minutesInput.value).padStart(2, '0') || "00";
+                let ss = String(secondsInput.value).padStart(2, '0') || "00";
+                if (parseInt(ss) > 59) ss = "59";
+                trukmeInput.value = `${mm}:${ss}`;
+            }
+
+            const original = "{{ piece.duration|default_if_none:'' }}";
+            if (original) {
+                const parts = original.split(':');
+                if (parts.length === 2) {
+                    minutesInput.value = parseInt(parts[0]);
+                    secondsInput.value = parseInt(parts[1]);
+                } else if (parts.length === 3) {
+                    minutesInput.value = parseInt(parts[1]);
+                    secondsInput.value = parseInt(parts[2]);
+                }
+                updateDurationField();
+            }
+
+            minutesInput.addEventListener("input", updateDurationField);
+            secondsInput.addEventListener("input", updateDurationField);
+
+            // Toggle ansambliai button styles
+            document.querySelectorAll(".btn-check").forEach(button => {
+                const label = document.querySelector(`label[for="${button.id}"]`);
+                button.addEventListener("change", function () {
+                    const icon = label.querySelector("span.material-symbols-outlined");
+                    if (this.checked) {
+                        label.classList.add("btn-success");
+                        label.classList.remove("btn-outline-dark");
+                        icon.innerText = "check";
+                    } else {
+                        label.classList.remove("btn-success");
+                        label.classList.add("btn-outline-dark");
+                        icon.innerText = "add";
+                    }
+                });
+            });
+
+            // Toggle lyrics box visibility
+            tipasSelect.addEventListener("change", function () {
+                lyricsContainer.style.display = (this.value === "Daina") ? "block" : "none";
+            });
+
+            // AJAX submission
+            form.addEventListener("submit", async function (event) {
+                event.preventDefault();
+                const formData = new FormData(form);
+                const kurinysId = "{{ piece.id }}";
+
+                const response = await fetch(`/kuriniai/${kurinysId}/edit/`, {
+    method: "POST",
+    body: formData,
+    headers: {
+        "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value
+    }
+});
+
+if (!response.ok || !response.headers.get("content-type")?.includes("application/json")) {
+    throw new Error("Server error: " + response.status);
+}
+
+const data = await response.json();
+
+if (data.success) {
+    window.location.href = "/kuriniai/?success=true";
+} else {
+    errorAlert.textContent = "Klaida: " + data.error;
+    errorAlert.classList.remove("d-none");
+}
+
+            });
+
+        });
+        document.getElementById("notes").addEventListener("change", function () {
+            const fileInput = this;
+            const file = fileInput.files[0];
+            const errorDiv = document.getElementById("notesError");
+            const fileNameDiv = document.getElementById("notesFileName");
+
+            if (file && file.type !== "application/pdf") {
+                errorDiv.classList.remove("d-none");
+                fileNameDiv.innerText = "";
+                fileInput.value = "";
+            } else {
+                errorDiv.classList.add("d-none");
+                fileNameDiv.innerText = file ? `Pasirinktas failas: ${file.name}` : "";
+            }
+        });
+
+
+    </script>
+{% endblock content %}

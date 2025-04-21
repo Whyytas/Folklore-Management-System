@@ -1,0 +1,344 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Nariai Sąrašas {% endblock %}
+
+{% block content %}
+    <div class="container-fluid mt-4">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="card shadow">
+                    <div class="card-header d-flex justify-content-between align-items-center py-3 table-header-custom">
+                        <h4 class="mb-0 d-flex align-items-center">
+                            <span class="material-symbols-outlined me-2">group</span>
+                            Visų Narių Sąrašas
+                        </h4>
+                        <a href="{% url 'nariai_add' %}"
+                           class="btn badge-ansamblis d-flex align-items-center action-btn">
+                            <span class="material-symbols-outlined me-2">add</span> Pridėti
+                        </a>
+                    </div>
+
+
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <div class="d-flex gap-3 px-2 mb-4 w-100">
+                                <!-- 🔍 Search Input -->
+                                <div class="flex-fill">
+                                    <div class="input-group w-100">
+            <span class="input-group-text">
+                <span class="material-symbols-outlined">search</span>
+            </span>
+                                        <input type="text" id="searchInput" class="form-control"
+                                               placeholder="Ieškoti pagal vardą ar vartotojo vardą..."
+                                               value="{{ search_query }}">
+                                    </div>
+                                </div>
+
+                                <!-- 🔽 Role Filter -->
+                                <form method="get" class="flex-fill">
+                                    <input type="hidden" name="search" id="searchInputHidden"
+                                           value="{{ search_query }}">
+                                    <select name="role" class="form-select h-100" onchange="this.form.submit()">
+                                        <option value="">– Rolė –</option>
+                                        <option value="narys" {% if role_filter == 'narys' %}selected{% endif %}>Narys
+                                        </option>
+                                        <option value="vadovas" {% if role_filter == 'vadovas' %}selected{% endif %}>
+                                            Vadovas
+                                        </option>
+                                        <option value="administratorius"
+                                                {% if role_filter == 'administratorius' %}selected{% endif %}>
+                                            Administratorius
+                                        </option>
+                                    </select>
+                                </form>
+                            </div>
+
+
+                            <table class="table table-hover table-striped align-middle">
+                                <thead class="thead-dark">
+                                <tr>
+                                    <th class="text-end">#</th>
+                                    <th class="text-start">
+                                        <a href="?{% for k,v in request.GET.items %}
+            {% if k != 'sort' and k != 'page' %}
+                {{ k }}={{ v|urlencode }}&
+            {% endif %}
+        {% endfor %}
+        sort={% if sort_param == 'username' %}-username{% else %}username{% endif %}"
+                                           class="text-decoration-none text-dark d-flex align-items-center gap-1">
+                                            Prisijungimo vardas
+                                            {% if sort_param == 'username' %}
+                                                <span class="material-symbols-outlined">arrow_drop_up</span>
+                                            {% elif sort_param == '-username' %}
+                                                <span class="material-symbols-outlined">arrow_drop_down</span>
+                                            {% endif %}
+                                        </a>
+                                    </th>
+
+                                    <th class="text-start">
+                                        <a href="?{% for k,v in request.GET.items %}
+            {% if k != 'sort' and k != 'page' %}
+                {{ k }}={{ v|urlencode }}&
+            {% endif %}
+        {% endfor %}
+        sort={% if sort_param == 'name' %}-name{% else %}name{% endif %}"
+                                           class="text-decoration-none text-dark d-flex align-items-center gap-1">
+                                            Vardas ir Pavardė
+                                            {% if sort_param == 'name' %}
+                                                <span class="material-symbols-outlined">arrow_drop_up</span>
+                                            {% elif sort_param == '-name' %}
+                                                <span class="material-symbols-outlined">arrow_drop_down</span>
+                                            {% endif %}
+                                        </a>
+                                    </th>
+
+                                    <th class="text-start">
+                                        <a href="?{% for k,v in request.GET.items %}
+            {% if k != 'sort' and k != 'page' %}
+                {{ k }}={{ v|urlencode }}&
+            {% endif %}
+        {% endfor %}
+        sort={% if sort_param == 'role' %}-role{% else %}role{% endif %}"
+                                           class="text-decoration-none text-dark d-flex align-items-center gap-1">
+                                            Rolė
+                                            {% if sort_param == 'role' %}
+                                                <span class="material-symbols-outlined">arrow_drop_up</span>
+                                            {% elif sort_param == '-role' %}
+                                                <span class="material-symbols-outlined">arrow_drop_down</span>
+                                            {% endif %}
+                                        </a>
+                                    </th>
+
+                                    <th class="text-center">Ansambliai</th>
+                                    <th class="text-center">Veiksmai</th>
+                                </tr>
+                                </thead>
+
+                                <tbody id="table-body">
+                                {% for user in users %}
+                                    <tr>
+                                        <td class="align-middle text-end">{{ forloop.counter }}</td>
+                                        <td class="align-middle text-start fw-bold">{{ user.username }}</td>
+                                        <!--  Show Username -->
+                                        <td class="align-middle text-start">
+                                            {% if user.name and user.surname %}
+                                                {{ user.name }} {{ user.surname }}
+                                            {% else %}
+                                                <span class="text-muted">Nenurodyta</span>
+                                            {% endif %}
+                                        </td>  <!--  Show Full Name -->
+
+                                        <td class="align-middle text-center">{{ user.get_role_display }}</td>
+
+                                        <!--  Display User's Ansambliai -->
+                                        <td class="align-middle text-center">
+                                            {% if user.role == "administratorius" %}
+                                                <span class="badge primary-background">Visi</span>
+                                            {% else %}
+                                                {% if user.ensembles.all %}
+                                                    {% for ensemble in user.ensembles.all %}
+                                                        <span class="badge badge-ansamblis">{{ ensemble.title }}</span>
+                                                    {% endfor %}
+                                                {% else %}
+                                                    <span class="text-muted">—</span>
+                                                {% endif %}
+                                            {% endif %}
+                                        </td>
+
+                                        <td class="align-middle text-center">
+                                            <div class="d-flex justify-content-center gap-2 flex-nowrap">
+                                                <a href="{% url 'nariai_view' user.id %}"
+                                                   class="btn btn-sm badge-ansamblis d-flex align-items-center justify-content-center px-2 py-1">
+                                                    <span class="material-symbols-outlined me-2">visibility</span>
+                                                    Peržiūrėti
+                                                </a>
+                                                <div class="dropdown d-inline-block">
+                                                    <button class="btn btn-sm badge-ansamblis dropdown-toggle d-flex align-items-center justify-content-center px-2 py-1"
+                                                            type="button" id="valdytiDropdown_{{ user.id }}"
+                                                            data-bs-toggle="dropdown" aria-expanded="false">
+                                                        <span class="material-symbols-outlined me-1">manage_accounts</span>
+                                                        Valdyti
+                                                    </button>
+                                                    <ul class="dropdown-menu text-center"
+                                                        aria-labelledby="valdytiDropdown_{{ user.id }}">
+                                                        <li>
+                                                            <a class="dropdown-item d-flex align-items-center justify-content-center gap-2 py-2"
+                                                               href="{% url 'nariai_edit' user.id %}">
+                                                                <span class="material-symbols-outlined">edit</span>
+                                                                Redaguoti
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <button class="dropdown-item d-flex align-items-center justify-content-center gap-2 py-2 text-danger"
+                                                                    onclick="setDeleteUrl({{ user.id }}, '{{ user.username }}')"
+                                                                    data-bs-toggle="modal"
+                                                                    data-bs-target="#deleteModal">
+                                                                <span class="material-symbols-outlined">delete_forever</span>
+                                                                Ištrinti
+                                                            </button>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </td>
+
+
+                                    </tr>
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="6" class="text-center text-muted">Nėra registruotų vartotojų.</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                            <nav class="d-flex justify-content-center mt-4">
+    <ul class="pagination" id="pagination"></ul>
+</nav>
+
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DELETE CONFIRMATION MODAL -->
+                <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content shadow-lg border-0 rounded-4">
+
+                            <div class="modal-header bg-danger text-white">
+                                <h5 class="modal-title d-flex align-items-center">
+                                    <span class="material-symbols-outlined me-2">warning</span> Patvirtinti ištrynimą
+                                </h5>
+                                <button type="button" class="btn-close btn-close-white"
+                                        data-bs-dismiss="modal"></button>
+                            </div>
+
+                            <div class="modal-body text-center py-4">
+                                <p class="fs-5">Ar tikrai norite ištrinti <strong id="userName"></strong>?</p>
+                                <p class="text-muted">Šio veiksmo nebegalėsite atšaukti.</p>
+                            </div>
+
+                            <div class="modal-footer d-flex justify-content-center border-0 pb-4">
+                                <button type="button"
+                                        class="btn btn-light px-4 py-2 d-flex btn-outline-dark align-items-center justify-content-center"
+                                        data-bs-dismiss="modal">
+                                    <span class="material-symbols-outlined me-2">close</span> Grįžti
+                                </button>
+
+                                <form id="deleteForm" method="post" onsubmit="deleteUser(event)">
+                                    {% csrf_token %}
+                                    <button type="submit"
+                                            class="btn btn-danger px-4 py-2 d-flex align-items-center justify-content-center">
+                                        <span class="material-symbols-outlined me-2">delete_forever</span> Ištrinti
+                                    </button>
+                                </form>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function setDeleteUrl(userId, userName) {
+            document.getElementById("userName").innerText = userName;
+            document.getElementById("deleteForm").setAttribute("action", `{% url 'nariai_delete' 0 %}`.replace("0", userId));
+        }
+
+        async function deleteUser(event) {
+            event.preventDefault();
+            const deleteForm = document.getElementById("deleteForm");
+
+            try {
+                const response = await fetch(deleteForm.action, {
+                    method: "POST",
+                    headers: {
+                        "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value,
+                    }
+                });
+
+                if (response.ok) {
+                    bootstrap.Modal.getInstance(document.getElementById("deleteModal")).hide();
+                    setTimeout(() => window.location.reload(), 500);
+                } else {
+                    alert("Klaida: Nepavyko ištrinti vartotojo!");
+                }
+            } catch (error) {
+                console.error("Klaida ištrinant vartotoją:", error);
+            }
+        }
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const searchInput = document.getElementById("searchInput");
+            const tableBody = document.getElementById("table-body");
+            const pagination = document.querySelector(".pagination");
+            const allRows = Array.from(tableBody.querySelectorAll("tr"));
+            const rowsPerPage = 15;
+            let filteredRows = [...allRows];
+
+            function renderPage(page) {
+                tableBody.innerHTML = "";
+                const start = (page - 1) * rowsPerPage;
+                const end = start + rowsPerPage;
+                const pageRows = filteredRows.slice(start, end);
+
+                pageRows.forEach((row, index) => {
+                    const numberCell = row.querySelector("td.text-end");
+                    if (numberCell) numberCell.textContent = start + index + 1;
+                    tableBody.appendChild(row);
+                });
+
+                renderPagination(page);
+            }
+
+            function renderPagination(currentPage) {
+                pagination.innerHTML = "";
+                const totalPages = Math.ceil(filteredRows.length / rowsPerPage);
+
+                if (totalPages <= 1) {
+                    pagination.classList.add("d-none");
+                    return;
+                }
+
+                pagination.classList.remove("d-none");
+
+                for (let i = 1; i <= totalPages; i++) {
+                    const li = document.createElement("li");
+                    li.className = "page-item" + (i === currentPage ? " active" : "");
+                    const a = document.createElement("a");
+                    a.className = "page-link";
+                    a.href = "#";
+                    a.textContent = i;
+                    a.addEventListener("click", (e) => {
+                        e.preventDefault();
+                        renderPage(i);
+                    });
+                    li.appendChild(a);
+                    pagination.appendChild(li);
+                }
+            }
+
+            function applySearch() {
+                const query = searchInput.value.toLowerCase().trim();
+                filteredRows = allRows.filter(row => {
+                    const username = row.querySelector("td:nth-child(2)")?.textContent.toLowerCase() || "";
+                    const fullname = row.querySelector("td:nth-child(3)")?.textContent.toLowerCase() || "";
+                    return username.includes(query) || fullname.includes(query);
+                });
+
+                if (query === "") filteredRows = [...allRows];
+                renderPage(1);
+            }
+
+            searchInput.addEventListener("input", applySearch);
+            renderPage(1);
+        });
+    </script>
+
+
+
+{% endblock %}

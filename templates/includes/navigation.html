@@ -1,16 +1,17 @@
 <nav class="navbar navbar-expand-lg navbar-light navbar-custom">
     <div class="container-fluid px-4 d-flex align-items-center justify-content-between">
 
-        {% if user.get_role_display == "Administratorius" or user.ansambliai.count > 1 %}
+        {% if user.get_role_display == "Administratorius" or user.ensembles.count > 1 %}
             <!-- Ansamblis Dropdown -->
             <form method="get" action="{% url 'set_selected_ansamblis' %}" class="me-auto">
-                <select name="ansamblis_id" class="form-select form-select-lg" style="min-width: 240px;"
+                <select name="ensemble_id" class="form-select form-select-lg" style="min-width: 240px;"
                         onchange="this.form.submit()">
                     <option value="">Visi ansambliai</option>
-                    {% for ansamblis in all_ansambliai %}
-                        <option value="{{ ansamblis.id }}"
-                                {% if ansamblis.id|stringformat:"s" == request.session.selected_ansamblis_id %}selected{% endif %}>
-                            {{ ansamblis.pavadinimas }}
+                    {% for ensemble in all_ensembles %}
+                        <option value="{{ ensemble.id }}"
+                                {% if ensemble.id|stringformat:"s" == request.session.selected_ensemble_id|stringformat:"s" %}
+selected{% endif %}>
+                            {{ ensemble.title }}
                         </option>
                     {% endfor %}
                 </select>
