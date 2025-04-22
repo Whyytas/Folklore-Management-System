@@ -12578,3 +12578,243 @@ Traceback (most recent call last):
     response = wrapped_callback(request, *callback_args, **callback_kwargs)
 TypeError: users_for_event() got an unexpected keyword argument 'renginys_id'
 "GET /renginiai/1/nariai/ HTTP/1.1" 500 82673
+Internal Server Error: /
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+psycopg2.errors.UndefinedColumn: column Initial_user.name does not exist
+LINE 1: ..._user"."is_active", "Initial_user"."date_joined", "Initial_u...
+                                                             ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Initial\views.py", line 54, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\utils\decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\views\decorators\debug.py", line 143, in sensitive_post_parameters_wrapper
+    return view(request, *args, **kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\utils\decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\utils\decorators.py", line 188, in _view_wrapper
+    result = _process_exception(request, e)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\utils\decorators.py", line 186, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\utils\decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\views\decorators\cache.py", line 80, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\contrib\auth\views.py", line 88, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\views\generic\base.py", line 143, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\views\generic\edit.py", line 150, in post
+    if form.is_valid():
+       ~~~~~~~~~~~~~^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\forms\forms.py", line 197, in is_valid
+    return self.is_bound and not self.errors
+                                 ^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\forms\forms.py", line 192, in errors
+    self.full_clean()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\forms\forms.py", line 328, in full_clean
+    self._clean_form()
+    ~~~~~~~~~~~~~~~~^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\forms\forms.py", line 349, in _clean_form
+    cleaned_data = self.clean()
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\contrib\auth\forms.py", line 252, in clean
+    self.user_cache = authenticate(
+                      ~~~~~~~~~~~~^
+        self.request, username=username, password=password
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\views\decorators\debug.py", line 75, in sensitive_variables_wrapper
+    return func(*func_args, **func_kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\contrib\auth\__init__.py", line 79, in authenticate
+    user = backend.authenticate(request, **credentials)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\contrib\auth\backends.py", line 42, in authenticate
+    user = UserModel._default_manager.get_by_natural_key(username)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\contrib\auth\base_user.py", line 56, in get_by_natural_key
+    return self.get(**{self.model.USERNAME_FIELD: username})
+           ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 645, in get
+    num = len(clone)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 382, in __len__
+    self._fetch_all()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 1928, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+        chunked_fetch=self.chunked_fetch, chunk_size=self.chunk_size
+    )
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\compiler.py", line 1562, in execute_sql
+    cursor.execute(sql, params)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\debug_toolbar\panels\sql\tracking.py", line 235, in execute
+    return self._record(super().execute, sql, params)
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\debug_toolbar\panels\sql\tracking.py", line 160, in _record
+    return method(sql, params)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\backends\utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        sql, params, many=False, executor=self._execute
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+django.db.utils.ProgrammingError: column Initial_user.name does not exist
+LINE 1: ..._user"."is_active", "Initial_user"."date_joined", "Initial_u...
+                                                             ^
+
+"POST / HTTP/1.1" 500 263908
+Internal Server Error: /
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+psycopg2.errors.UndefinedColumn: column Initial_user.name does not exist
+LINE 1: ..._user"."is_active", "Initial_user"."date_joined", "Initial_u...
+                                                             ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\views\generic\base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\Initial\views.py", line 54, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\utils\decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\views\decorators\debug.py", line 143, in sensitive_post_parameters_wrapper
+    return view(request, *args, **kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\utils\decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\utils\decorators.py", line 188, in _view_wrapper
+    result = _process_exception(request, e)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\utils\decorators.py", line 186, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\utils\decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\views\decorators\cache.py", line 80, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\contrib\auth\views.py", line 88, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\views\generic\base.py", line 143, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\views\generic\edit.py", line 150, in post
+    if form.is_valid():
+       ~~~~~~~~~~~~~^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\forms\forms.py", line 197, in is_valid
+    return self.is_bound and not self.errors
+                                 ^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\forms\forms.py", line 192, in errors
+    self.full_clean()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\forms\forms.py", line 328, in full_clean
+    self._clean_form()
+    ~~~~~~~~~~~~~~~~^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\forms\forms.py", line 349, in _clean_form
+    cleaned_data = self.clean()
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\contrib\auth\forms.py", line 252, in clean
+    self.user_cache = authenticate(
+                      ~~~~~~~~~~~~^
+        self.request, username=username, password=password
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\views\decorators\debug.py", line 75, in sensitive_variables_wrapper
+    return func(*func_args, **func_kwargs)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\contrib\auth\__init__.py", line 79, in authenticate
+    user = backend.authenticate(request, **credentials)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\contrib\auth\backends.py", line 42, in authenticate
+    user = UserModel._default_manager.get_by_natural_key(username)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\contrib\auth\base_user.py", line 56, in get_by_natural_key
+    return self.get(**{self.model.USERNAME_FIELD: username})
+           ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 645, in get
+    num = len(clone)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 382, in __len__
+    self._fetch_all()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 1928, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+        chunked_fetch=self.chunked_fetch, chunk_size=self.chunk_size
+    )
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\models\sql\compiler.py", line 1562, in execute_sql
+    cursor.execute(sql, params)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\debug_toolbar\panels\sql\tracking.py", line 235, in execute
+    return self._record(super().execute, sql, params)
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\debug_toolbar\panels\sql\tracking.py", line 160, in _record
+    return method(sql, params)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\backends\utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        sql, params, many=False, executor=self._execute
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\KTU_PS\Bakalauras\FolklorasProj\venv1\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+django.db.utils.ProgrammingError: column Initial_user.name does not exist
+LINE 1: ..._user"."is_active", "Initial_user"."date_joined", "Initial_u...
+                                                             ^
+
+"POST / HTTP/1.1" 500 263868
