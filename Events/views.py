@@ -103,12 +103,12 @@ def events_edit(request, event_id):
         "programs": programs
     })
 
-def event_delete(request, renginys_id):
+def event_delete(request, event_id):
     if request.user.role == "narys":
         return HttpResponseForbidden("Jūs neturite teisės ištrinti renginių.")
 
     if request.method == "POST":
-        events = get_object_or_404(Event, id=renginys_id)
+        events = get_object_or_404(Event, id=event_id)
         events.delete()
         return redirect("renginiai")  #  Redirect to the renginiai list
 

@@ -12,8 +12,10 @@ from django.urls import reverse, reverse_lazy
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 from django.contrib.auth.views import (
-    PasswordResetView, PasswordResetDoneView,
-    PasswordResetConfirmView, PasswordResetCompleteView
+    PasswordResetView as DjangoPasswordResetView,
+    PasswordResetDoneView as DjangoPasswordResetDoneView,
+    PasswordResetConfirmView as DjangoPasswordResetConfirmView,
+    PasswordResetCompleteView as DjangoPasswordResetCompleteView
 )
 
 from Initial.forms import NoEmailPasswordResetForm
@@ -53,19 +55,19 @@ class CustomLoginView(auth_views.LoginView):
             return redirect('main')  #  Redirect to /main if already logged in
         return super().dispatch(request, *args, **kwargs)
 
-class ForgotPasswordView(PasswordResetView):
+class ForgotPasswordView(DjangoPasswordResetView):
     form_class = NoEmailPasswordResetForm
     template_name = 'forgot_password.html'
     success_url = reverse_lazy('password_reset_done')
 
-class PasswordResetDoneView(PasswordResetDoneView):
+class PasswordResetDoneView(DjangoPasswordResetDoneView):
     template_name = 'password_reset_done.html'
 
-# Step 3: Link Clicked – Set New Password
-class PasswordResetConfirmView(PasswordResetConfirmView):
+class PasswordResetConfirmView(DjangoPasswordResetConfirmView):
     template_name = 'password_reset_confirm.html'
-    success_url = reverse_lazy('password_reset_complete')
 
-# Step 4: Password Successfully Reset
-class PasswordResetCompleteView(PasswordResetCompleteView):
+    def get_success_url(self):
+        return reverse('password_reset_complete')
+
+class PasswordResetCompleteView(DjangoPasswordResetCompleteView):
     template_name = 'password_reset_complete.html'

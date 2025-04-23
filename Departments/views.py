@@ -7,7 +7,7 @@ from django.contrib import messages
 
 from Ensembles.models import Ensemble
 from .models import Department
-from .forms import UnitForm
+from .forms import DepartmentForm
 
 class DepartmentsListView(LoginRequiredMixin, ListView):
     model = Department
@@ -32,7 +32,7 @@ class DepartmentsListView(LoginRequiredMixin, ListView):
 
 class DepartmentCreateView(LoginRequiredMixin, CreateView):
     model = Department
-    form_class = UnitForm
+    form_class = DepartmentForm
     template_name = "departments_add.html"
 
     def dispatch(self, request, *args, **kwargs):

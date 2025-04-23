@@ -1,7 +1,7 @@
 from django import forms
 from .models import Department
 
-class UnitForm(forms.ModelForm):
+class DepartmentForm(forms.ModelForm):
     class Meta:
         model = Department
         fields = ["title", "address", "phone"]

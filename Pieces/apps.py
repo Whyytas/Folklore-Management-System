@@ -5,4 +5,4 @@ class PiecesConfig(AppConfig):
     name = 'Pieces'
 
     def ready(self):
-        import Pieces.signals  # 👈 Register signals
+        import Pieces.signals  # Register signals

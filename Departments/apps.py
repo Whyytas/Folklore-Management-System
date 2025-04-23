@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class Padaliniai2Config(AppConfig):
+class PadaliniaiConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'Departments'
