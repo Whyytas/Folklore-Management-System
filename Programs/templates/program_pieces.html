@@ -34,7 +34,7 @@
                                 {% if program_pieces %}
                                     {% for pk in program_pieces %}
                                         <tr>
-                                            <td class="align-middle text-end">{{ pk.queue|add:1 }}</td>
+                                            <td class="align-middle text-end">{{ forloop.counter }}</td>
                                             <td class="align-middle text-start fw-bold">{{ pk.piece.title }}</td>
                                             <td class="align-middle text-center">{{ pk.piece.type }}</td>
                                             <td class="align-middle text-center"

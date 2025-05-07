@@ -27,6 +27,15 @@
                                     {% endfor %}
                                 </select>
                             </div>
+                            <div class="mb-3" id="balfolk-wrapper" style="display:none;">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="include_balfolk"
+                                           name="include_balfolk" checked>
+                                    <label class="form-check-label" for="include_balfolk">
+                                        Įtraukti Balfolk kūrinius
+                                    </label>
+                                </div>
+                            </div>
                             <div class="mb-3" id="santykis-wrapper" style="display:none;">
                                 <label for="santykis" class="form-label">Kūrinio santykis
                                     (daina : šokis : instrumentalas)</label>
@@ -51,7 +60,8 @@
 
                             <div class="mb-3">
                                 <label for="description" class="form-label">Aprašymas</label>
-                                <textarea class="form-control" id="description" name="description" placeholder="Įveskite programos aprašymą" rows="3"></textarea>
+                                <textarea class="form-control" id="description" name="description"
+                                          placeholder="Įveskite programos aprašymą" rows="3"></textarea>
                             </div>
                             <div class="mb-3">
                                 <label for="ensemble" class="form-label">Ansamblis</label>
@@ -250,6 +260,8 @@
             const secondsInput = document.getElementById("seconds");
             const durationHidden = document.getElementById("duration");
 
+            const balfolkWrapper = document.getElementById("balfolk-wrapper");
+
             function syncTrukmeHidden() {
                 const mm = String(minutesInput.value).padStart(2, '0') || "00";
                 let ss = String(secondsInput.value).padStart(2, '0') || "00";
@@ -382,14 +394,20 @@
 
 
             typeSelect.addEventListener("change", function () {
-                const type = this.value;
-                if (type !== "Susidainavimams" && type !== "Vakaronei") {
-                    santykisWrapper.style.display = "block";
-                } else {
-                    santykisWrapper.style.display = "none";
-                    santykisInput.value = "";
-                }
-            });
+    const type = this.value;
+    if (type !== "Susidainavimams" && type !== "Vakaronei") {
+        santykisWrapper.style.display = "block";
+        balfolkWrapper.style.display = "none";
+    } else if (type === "Vakaronei") {
+        santykisWrapper.style.display = "none";
+        balfolkWrapper.style.display = "block";
+        santykisInput.value = "";
+    } else {
+        santykisWrapper.style.display = "none";
+        balfolkWrapper.style.display = "none";
+        santykisInput.value = "";
+    }
+});
 
             function clearKuriniaiUI() {
                 allKuriniaiEl.innerHTML = "";
@@ -413,18 +431,19 @@
                 loader.style.display = "block";
 
                 fetch(`/programos/generate-pieces/`, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "X-CSRFToken": csrfToken
-                    },
-                    body: JSON.stringify({
-                        feature: type,
-                        duration: durationVal,
-                        ensemble: parseInt(ensembleId),  // ensure int
-                        santykis: santykisInput?.value?.trim() || null
-                    })
-                })
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": csrfToken
+    },
+    body: JSON.stringify({
+        feature: type,
+        duration: durationVal,
+        ensemble: parseInt(ensembleId),
+        santykis: santykisInput?.value?.trim() || null,
+        include_balfolk: type === "Vakaronei" ? document.getElementById("include_balfolk").checked : true
+    })
+})
                     .then(async res => {
                         if (!res.ok) {
                             const msg = await res.text();

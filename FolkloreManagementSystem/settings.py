@@ -7,7 +7,7 @@ For more information, see:
 - https://docs.djangoproject.com/en/5.1/topics/settings/
 - https://docs.djangoproject.com/en/5.1/ref/settings/
 """
-
+import sys
 from pathlib import Path
 import os
 from dotenv import load_dotenv
@@ -36,11 +36,18 @@ if not SECRET_KEY:
     raise ValueError("Missing DJANGO_SECRET_KEY environment variable")
 
 # Debug mode (should be False in production)
-DEBUG = True
+DEBUG = False
+
+if "test" in sys.argv:
+    DEBUG = True
+    STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
+else:
+    STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 INTERNAL_IPS = [
     # ...
     "127.0.0.1",
+    "localhost",
     # ...
 ]
 # Allowed hosts
@@ -148,6 +155,7 @@ INSTALLED_APPS = [
     "Calendar",
     "mainPage",
     "debug_toolbar",
+    "UITests"
 ]
 
 # Middleware

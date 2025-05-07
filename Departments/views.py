@@ -33,7 +33,7 @@ class DepartmentsListView(LoginRequiredMixin, ListView):
 class DepartmentCreateView(LoginRequiredMixin, CreateView):
     model = Department
     form_class = DepartmentForm
-    template_name = "departments_add.html"
+    template_name = "department_add.html"
 
     def dispatch(self, request, *args, **kwargs):
         if request.user.role in ["narys", "vadovas"]:
@@ -57,7 +57,7 @@ def department_edit(request, pk):
         department.save()
         return redirect("padaliniai_list")
 
-    return render(request, "departments_edit.html", {
+    return render(request, "department_edit.html", {
         "department": department
     })
 

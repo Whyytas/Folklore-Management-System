@@ -92,22 +92,23 @@
                                         </a>
                                     </th>
 
-                                    <th class="text-start">
-                                        <a href="?{% for k,v in request.GET.items %}
-            {% if k != 'sort' and k != 'page' %}
-                {{ k }}={{ v|urlencode }}&
-            {% endif %}
-        {% endfor %}
-        sort={% if sort_param == 'role' %}-role{% else %}role{% endif %}"
-                                           class="text-decoration-none text-dark d-flex align-items-center gap-1">
-                                            Rolė
-                                            {% if sort_param == 'role' %}
-                                                <span class="material-symbols-outlined">arrow_drop_up</span>
-                                            {% elif sort_param == '-role' %}
-                                                <span class="material-symbols-outlined">arrow_drop_down</span>
-                                            {% endif %}
-                                        </a>
-                                    </th>
+                                    <th class="text-center align-middle">
+    <a href="?{% for k,v in request.GET.items %}
+        {% if k != 'sort' and k != 'page' %}
+            {{ k }}={{ v|urlencode }}&
+        {% endif %}
+    {% endfor %}
+    sort={% if sort_param == 'role' %}-role{% else %}role{% endif %}"
+       class="text-decoration-none text-dark d-flex justify-content-center align-items-center gap-1 mx-auto">
+        Rolė
+        {% if sort_param == 'role' %}
+            <span class="material-symbols-outlined">arrow_drop_up</span>
+        {% elif sort_param == '-role' %}
+            <span class="material-symbols-outlined">arrow_drop_down</span>
+        {% endif %}
+    </a>
+</th>
+
 
                                     <th class="text-center">Ansambliai</th>
                                     <th class="text-center">Veiksmai</th>

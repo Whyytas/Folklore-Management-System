@@ -16,8 +16,10 @@ from Ensembles.models import Ensemble  #  Import Ansamblis
 
 from django.core.paginator import Paginator
 
-@login_required
 def rehearsals_list(request):
+    user = request.user
+    is_admin = getattr(user, "role", "").lower() == "administratorius"
+
     selected_ensemble_id = request.session.get("selected_ensemble_id")
     sort_param = request.GET.get("sort", "date")
     show_all = request.GET.get("show", "") == "all"
@@ -25,24 +27,31 @@ def rehearsals_list(request):
     if sort_param not in ["date", "-date", "title", "-title"]:
         sort_param = "date"
 
+    # Determine allowed ensembles
+    allowed_ensembles = Ensemble.objects.all() if is_admin else Ensemble.objects.filter(members=user)
+
+    # Start with allowed rehearsals
     rehearsals = (
         Rehearsal.objects
         .select_related("ensemble")
-        .prefetch_related("pieces")  # preload M2M
-        .only("id", "title", "date", "ensemble__title")  # narrow field load
+        .prefetch_related("pieces")
+        .filter(ensemble__in=allowed_ensembles)
+        .only("id", "title", "date", "ensemble__title")
     )
 
+    # Apply future-date filter unless "show=all"
     if not show_all:
         rehearsals = rehearsals.filter(date__gte=now())
 
-    if selected_ensemble_id:
+    # Filter by selected ensemble only if it's allowed
+    if selected_ensemble_id and allowed_ensembles.filter(id=selected_ensemble_id).exists():
         rehearsals = rehearsals.filter(ensemble_id=selected_ensemble_id)
 
     rehearsals = rehearsals.order_by(sort_param)
 
     return render(request, 'rehearsals_list.html', {
         'rehearsals': rehearsals,
-        'all_ensembles': Ensemble.objects.only("id", "title"),
+        'all_ensembles': allowed_ensembles,
         'sort_param': sort_param,
         'show_all': show_all,
     })

@@ -175,13 +175,13 @@
                                 Jums priklauso visi ansambliai.
                             </div>
                         {% else %}
-                            {% if user.ansambliai.all %}
+                            {% if user.ensembles.all %}
                                 <div class="row g-2 mt-2">
                                     {% for ensemble in user.ensembles.all %}
                                         <div class="col-12 col-sm-6">
                                             <div class="border rounded p-2 h-100">
                                                 <div class="fw-semibold">
-                                                    <span class="material-icons text-primary me-1 align-middle">music_note</span>
+                                                    <span class="material-icons text-primary me-1 badge-ansamblis align-middle">music_note</span>
                                                     {{ ensemble.title }}
                                                 </div>
                                                 <div class="text-muted small ms-4">{{ ensemble.city }}</div>

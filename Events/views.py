@@ -21,17 +21,28 @@ from django.http import HttpResponseForbidden
 import datetime  #  Correct way to import datetime module
 
 def events_list(request):
+    user = request.user
+    is_admin = getattr(user, "role", "").lower() == "administratorius"
+
     selected_ensemble_id = request.GET.get('ensemble_id') or request.session.get("selected_ensemble_id")
     sort_field = request.GET.get("sort", "title")
     sort_dir = request.GET.get("dir", "asc")
     program_id = request.GET.get("program_id")
     search = request.GET.get("search", "").strip()
 
+    valid_sort_fields = ["title", "date", "program"]
+    if sort_field not in valid_sort_fields:
+        sort_field = "title"
+
     sort_order = sort_field if sort_dir == "asc" else f"-{sort_field}"
 
-    events = Event.objects.select_related("ensemble", "program").all().order_by(sort_order, "-id")
+    allowed_ensembles = Ensemble.objects.all() if is_admin else Ensemble.objects.filter(members=user)
 
-    if selected_ensemble_id:
+    events = Event.objects.select_related("ensemble", "program").filter(
+        ensemble__in=allowed_ensembles
+    ).order_by(sort_order, "-id")
+
+    if selected_ensemble_id and allowed_ensembles.filter(id=selected_ensemble_id).exists():
         events = events.filter(ensemble__id=selected_ensemble_id)
 
     if program_id:
@@ -50,13 +61,12 @@ def events_list(request):
         'program_id': program_id,
         'search': search,
         'programs': Program.objects.all(),
-        'ensembles': Ensemble.objects.all(),
-        'all_ensembles': Ensemble.objects.all(),  #  needed for navbar
+        'ensembles': allowed_ensembles,
+        'all_ensembles': allowed_ensembles,  # needed for navbar
         'selected_ensemble_id': selected_ensemble_id,
         'users': users,
         'selected_event': selected_event,
     })
-
 def events_add(request):
     if request.user.role == "narys":
         return HttpResponseForbidden("Jūs neturite teisės pridėti renginių.")

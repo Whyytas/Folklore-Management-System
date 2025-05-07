@@ -17,19 +17,26 @@ from django.core.paginator import Paginator
 
 
 def programs_list(request):
-    selected_ensemble_id = request.session.get("selected_description")
+    user = request.user
+    is_admin = getattr(user, "role", "").lower() == "administratorius"
+
+    selected_ensemble_id = request.GET.get("ensemble_id") or request.session.get("selected_ensemble_id")
     sort_field = request.GET.get("sort", "title")
     sort_dir = request.GET.get("dir", "asc")
     type_filter = request.GET.get("type")
 
+    valid_sort_fields = ["title", "duration", "type"]
+    if sort_field not in valid_sort_fields:
+        sort_field = "title"
     sort_order = sort_field if sort_dir == "asc" else f"-{sort_field}"
 
-    # Only fetch essential fields
+    allowed_ensembles = Ensemble.objects.all() if is_admin else Ensemble.objects.filter(members=user)
+
     programs_qs = Program.objects.select_related("ensemble").only(
         "id", "title", "type", "ensemble_id", "duration"
-    ).order_by(sort_order)
+    ).filter(ensemble__in=allowed_ensembles).order_by(sort_order)
 
-    if selected_ensemble_id:
+    if selected_ensemble_id and allowed_ensembles.filter(id=selected_ensemble_id).exists():
         programs_qs = programs_qs.filter(ensemble_id=selected_ensemble_id)
 
     if type_filter:
@@ -41,8 +48,8 @@ def programs_list(request):
         'sort_dir': sort_dir,
         'type_filter': type_filter,
         'types': Program.PROGRAM_TYPE,
+        'all_ensembles': allowed_ensembles,
     })
-
 
 def program_generate(request):
     if request.user.role == "narys":
@@ -97,7 +104,7 @@ def program_generate(request):
 
             ProgramPiece.objects.bulk_create(program_pieces)
 
-            return JsonResponse({"redirect": "/programs"}, status=201)
+            return JsonResponse({"redirect": "/programos"}, status=201)
 
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=400)
@@ -109,7 +116,6 @@ def program_generate(request):
         "type": types,
         "ensembles": ensembles
     })
-
 
 def program_create(request):
     if request.user.role == "narys":
@@ -232,7 +238,6 @@ def program_edit(request, pk):
     }
     return render(request, "program_edit.html", context)
 
-
 def program_delete(request, pk):
     if request.user.role == "narys":
         return HttpResponseForbidden("Jūs neturite teisės ištrinti programų.")
@@ -245,7 +250,6 @@ def program_delete(request, pk):
 
     return JsonResponse({"success": False, "error": "Invalid request"}, status=400)
 
-
 def programs_pieces_view(request, pk):
     program = get_object_or_404(Program, pk=pk)
 
@@ -257,7 +261,6 @@ def programs_pieces_view(request, pk):
         "program_pieces": program_pieces
     })
 
-
 def generate_pieces(request):
     try:
         data = json.loads(request.body)
@@ -265,6 +268,7 @@ def generate_pieces(request):
         duration = data.get("duration")
         ensemble_id = int(data.get("ensemble", 0))
         santykis = data.get("santykis", "")
+        include_balfolk = data.get("include_balfolk", True)
 
         if not feature or not duration or not ensemble_id:
             return JsonResponse({"error": "Trūksta duomenų."}, status=400)
@@ -288,6 +292,13 @@ def generate_pieces(request):
                 return JsonResponse([], safe=False)
 
             filtered = all_pieces.filter(features=feature).exclude(preparation__in=["Archyvas", "Naujas"])
+
+            # Check if we need to exclude Balfolk pieces
+            if not include_balfolk:
+                balfolk_feature = Feature.objects.filter(title__iexact="Balfolk").first()
+                if balfolk_feature:
+                    filtered = filtered.exclude(features=balfolk_feature)
+
             groups = {"Lėtas": [], "Vidutinis": [], "Greitas": []}
             for k in filtered:
                 if k.duration and k.speed and ":" in k.duration:
@@ -329,7 +340,7 @@ def generate_pieces(request):
                 None
             )
 
-            # 👇 fallback if santykis is missing or invalid
+            # fallback if santykis is missing or invalid
             if not santykis or ":" not in santykis:
                 return JsonResponse(_pieces_to_json([pradzia_piece] if pradzia_piece else []), safe=False)
 
@@ -340,15 +351,22 @@ def generate_pieces(request):
                     "error": "Neteisingas santykio formatas. Pvz: 3:2:1"
                 }, status=400)
 
+            feature_obj = Feature.objects.filter(title__iexact=feature).first()
+            if not feature_obj:
+                return JsonResponse({"error": f"Požymis '{feature}' nerastas."}, status=404)
+
             available = all_pieces.filter(
-                features__title__iexact=feature,
+                features=feature_obj,
                 duration__contains=":"
             ).exclude(preparation__in=["Archyvas", "Naujas"]).distinct()
+
+            print("🔍 available.count():", available.count())
+            print("🔍 available types:", available.values_list("type", flat=True).distinct())
 
             if pradzia_piece:
                 available = available.exclude(id=pradzia_piece.id)
 
-            groups = {"Daina": [], "Šokis": [], "Kapela": []}
+            groups = {"Daina": [], "Šokis": [], "Instrumentalas": []}
             for kur in available:
                 if kur.type in groups and ":" in kur.duration:
                     groups[kur.type].append(kur)
@@ -356,7 +374,7 @@ def generate_pieces(request):
             for g in groups:
                 random.shuffle(groups[g])
 
-            cycle = ["Daina"] * d + ["Šokis"] * s_ + ["Kapela"] * k
+            cycle = ["Daina"] * d + ["Šokis"] * s_ + ["Instrumentalas"] * k
             total_result = []
             total_time = 0
 
@@ -411,7 +429,7 @@ def generate_pieces(request):
                 total_result.extend([k for k, _ in group])
                 total_time += group_time
 
-            sort_order = {"Daina": 1, "Kapela": 2, "Šokis": 3}
+            sort_order = {"Daina": 1, "Instrumentalas": 2, "Šokis": 3}
             sorted_result = sorted(total_result, key=lambda x: sort_order.get(x.type, 99))
 
             final_result = []

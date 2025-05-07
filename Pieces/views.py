@@ -23,7 +23,9 @@ YOUTUBE_API_KEY = settings.YOUTUBE_API_KEY  # ⚠️ Replace with your actual AP
 
 
 def pieces_list(request):
-    selected_ensemble_id = request.GET.get('ensemble_id') or request.session.get("selected_ensemble_id")
+    user = request.user
+
+    selected_ensemble_id = request.GET.get("ensemble_id") or request.session.get("selected_ensemble_id")
     sort_param = request.GET.get("sort", "title")
 
     valid_sorts = ["title", "-title", "duration", "-duration"]
@@ -31,36 +33,48 @@ def pieces_list(request):
         sort_param = "title"
 
     filters = {
-        'type': request.GET.get('type'),
-        'region': request.GET.get('region'),
-        'speed': request.GET.get('speed'),
-        'preparation': request.GET.get('preparation'),
-        'features': request.GET.get('features'),
+        "type": request.GET.get("type"),
+        "region": request.GET.get("region"),
+        "speed": request.GET.get("speed"),
+        "preparation": request.GET.get("preparation"),
+        "features": request.GET.get("features"),
     }
 
-    # Optimized QuerySet with prefetch
-    pieces = Piece.objects.prefetch_related("ensembles", "features")
+    # Check role — exact match, case-insensitive
+    is_admin = getattr(user, "role", "").lower() == "administratorius"
 
-    if selected_ensemble_id:
+    if is_admin:
+        # Admin sees all ensembles and all pieces
+        allowed_ensembles = Ensemble.objects.all()
+        pieces = Piece.objects.prefetch_related("ensembles", "features")
+    else:
+        allowed_ensembles = Ensemble.objects.filter(members=user)
+        pieces = Piece.objects.prefetch_related("ensembles", "features").filter(
+            ensembles__in=allowed_ensembles
+        )
+
+    # If selected ensemble exists in allowed ensembles, filter
+    if selected_ensemble_id and allowed_ensembles.filter(id=selected_ensemble_id).exists():
         pieces = pieces.filter(ensembles__id=selected_ensemble_id)
 
-    if filters['type']:
-        pieces = pieces.filter(type=filters['type'])
-    if filters['region']:
-        pieces = pieces.filter(region=filters['region'])
-    if filters['speed']:
-        pieces = pieces.filter(speed=filters['speed'])
-    if filters['preparation']:
-        pieces = pieces.filter(preparation=filters['preparation'])
-    if filters['features']:
-        pieces = pieces.filter(features__id=filters['features'])
+    # Filters
+    if filters["type"]:
+        pieces = pieces.filter(type=filters["type"])
+    if filters["region"]:
+        pieces = pieces.filter(region=filters["region"])
+    if filters["speed"]:
+        pieces = pieces.filter(speed=filters["speed"])
+    if filters["preparation"]:
+        pieces = pieces.filter(preparation=filters["preparation"])
+    if filters["features"]:
+        pieces = pieces.filter(features__id=filters["features"])
 
     pieces = pieces.order_by(sort_param)
 
     return render(request, "pieces_list.html", {
         "page_obj": None,
         "pieces": pieces,
-        "ensembles": Ensemble.objects.all(),
+        "ensembles": allowed_ensembles,
         "features": Feature.objects.all(),
         "filters": filters,
         "types": Piece.TYPE_CHOICES,
@@ -68,8 +82,8 @@ def pieces_list(request):
         "preparation": Piece.PREPARATION_CHOICES,
         "regions": Piece._meta.get_field("region").choices,
         "sort_param": sort_param,
-        "all_ensembles": Ensemble.objects.all(),  #  Needed for navbar dropdown
-        "selected_ensemble_id": selected_ensemble_id,  #  Needed for <option selected>
+        "all_ensembles": allowed_ensembles,
+        "selected_ensemble_id": selected_ensemble_id,
     })
 
 def piece_add(request):
@@ -97,7 +111,7 @@ def piece_add(request):
             piece.features.set(request.POST.getlist("features"))
 
             if 'notes' in request.FILES:
-                handle_pdf_conversion(piece)
+                handle_pdf_conversion(piece.notes.read(), piece)
                 piece.save()
 
             return redirect('/kuriniai/?success=true')
@@ -227,7 +241,6 @@ def extract_video_id(url):
     match = re.search(r'(?:youtu\.be/|youtube\.com/(?:.*v=|.*\/|.*embed\/))([\w-]{11})', url)
     return match.group(1) if match else None
 
-
 def get_video_duration(video_id):
     """ Fetch and format video duration from YouTube API """
     url = f"https://www.googleapis.com/youtube/v3/videos?id={video_id}&part=contentDetails&key={YOUTUBE_API_KEY}"
@@ -241,7 +254,6 @@ def get_video_duration(video_id):
     logger.warning(f"Failed to fetch duration for video ID: {video_id}")
     return None  # Return None if API fails
 
-
 def format_duration(duration):
     """ Convert YouTube ISO 8601 duration to HH:MM:SS or MM:SS format with zero padding """
     match = re.match(r'PT(\d+H)?(\d+M)?(\d+S)?', duration)
@@ -253,7 +265,6 @@ def format_duration(duration):
     if hours > 0:
         return f"{hours:02}:{minutes:02}:{seconds:02}"  #  Show HH:MM:SS if hours exist
     return f"{minutes:02}:{seconds:02}"  #  Show MM:SS if no hours
-
 
 @csrf_exempt
 def refresh_duration(request):
@@ -270,7 +281,6 @@ def refresh_duration(request):
                 updated_count += 1
 
     return JsonResponse({"success": True, "updated": updated_count})
-
 
 def fetch_duration(request):
     """API: Fetch YouTube duration based on URL"""

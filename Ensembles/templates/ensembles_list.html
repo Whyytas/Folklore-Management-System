@@ -1,6 +1,6 @@
 {% extends "layouts/base.html" %}
 
-{% block title %} Ansambliai Sąrašas {% endblock %}
+{% block title %} Ansambliai {% endblock %}
 
 {% block content %}
     <div class="container-fluid mt-4">
@@ -31,15 +31,15 @@
                                            value="{{ search_query|default_if_none:'' }}">
                                 </div>
 
-                                <!-- Miestas Dropdown Filter -->
+                                <!-- city Dropdown Filter -->
                                 <form method="get" id="filterForm" class="w-100">
                                     <input type="hidden" name="search" id="hiddenSearchInput"/>
-                                    <select name="miestas" id="miestas" class="form-select h-100"
+                                    <select name="city" id="city" class="form-select h-100"
                                             onchange="this.form.submit()">
                                         <option value="">– Visi miestai –</option>
-                                        {% for miestas in all_cities %}
-                                            <option value="{{ miestas }}"
-                                                    {% if miestas == miestas_filter %}selected{% endif %}>{{ miestas }}</option>
+                                        {% for city in all_cities %}
+                                            <option value="{{ city }}"
+                                                    {% if city == city_filter %}selected{% endif %}>{{ city }}</option>
                                         {% endfor %}
                                     </select>
                                 </form>

@@ -124,7 +124,7 @@ def user_add(request):
     else:
         form = CustomUserCreationForm()
 
-    return render(request, 'users_add.html', {'form': form, 'all_ensembles': all_ensembles})
+    return render(request, 'user_add.html', {'form': form, 'all_ensembles': all_ensembles})
 
 
 
@@ -224,7 +224,7 @@ def user_edit(request, user_id):
 
             return redirect("nariai_edit", user_id=user.id)
 
-    return render(request, "users_edit.html", {
+    return render(request, "user_edit.html", {
         "user": user,
         "all_ensembles": all_ensembles
     })
