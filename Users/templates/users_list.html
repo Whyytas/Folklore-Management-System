@@ -29,7 +29,7 @@
                 <span class="material-symbols-outlined">search</span>
             </span>
                                         <input type="text" id="searchInput" class="form-control"
-                                               placeholder="Ieškoti pagal vardą ar vartotojo vardą..."
+                                               placeholder="Ieškoti pagal vardą ar naudotojo vardą..."
                                                value="{{ search_query }}">
                                     </div>
                                 </div>
@@ -187,7 +187,7 @@
                                     </tr>
                                 {% empty %}
                                     <tr>
-                                        <td colspan="6" class="text-center text-muted">Nėra registruotų vartotojų.</td>
+                                        <td colspan="6" class="text-center text-muted">Nėra registruotų naudotojų.</td>
                                     </tr>
                                 {% endfor %}
                                 </tbody>
@@ -265,10 +265,10 @@
                     bootstrap.Modal.getInstance(document.getElementById("deleteModal")).hide();
                     setTimeout(() => window.location.reload(), 500);
                 } else {
-                    alert("Klaida: Nepavyko ištrinti vartotojo!");
+                    alert("Klaida: Nepavyko ištrinti naudotojo!");
                 }
             } catch (error) {
-                console.error("Klaida ištrinant vartotoją:", error);
+                console.error("Klaida ištrinant naudotoją:", error);
             }
         }
     </script>

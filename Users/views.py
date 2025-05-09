@@ -118,7 +118,7 @@ def user_add(request):
                 selected_ensembles = selected_ensembles.filter(id__in=request.user.ensembles.values_list('id', flat=True))
 
             user.ensembles.set(selected_ensembles)
-            messages.success(request, "Naujas vartotojas sėkmingai pridėtas!")
+            messages.success(request, "Naujas naudotojas sėkmingai pridėtas!")
             return redirect('nariai')
 
     else:
@@ -204,7 +204,7 @@ def user_edit(request, user_id):
 
             user.ensembles.set(selected)
             user.save()
-            messages.success(request, "Vartotojo duomenys atnaujinti sėkmingai.")
+            messages.success(request, "Naudotojo duomenys atnaujinti sėkmingai.")
             return redirect("nariai_edit", user_id=user.id)
 
         elif form_type == "password":
@@ -241,10 +241,10 @@ def user_delete(request, user_id):
 
     if request.method == "POST":
         user.delete()
-        messages.success(request, "Vartotojas sėkmingai ištrintas.")
+        messages.success(request, "Naudotojas sėkmingai ištrintas.")
         return redirect('nariai')
 
-    messages.error(request, "Negalima ištrinti vartotojo.")
+    messages.error(request, "Negalima ištrinti naudotojo.")
     return redirect('nariai')
 
 

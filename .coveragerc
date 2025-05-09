@@ -1,28 +1,19 @@
+# .coveragerc
 [run]
-source =
-    Departments
-    Ensembles
-parallel = True
-concurrency = multiprocessing
-data_file = .coverage
+source = .
 omit =
+    */UITests/*
+    */scripts/*
+    */venv*
     */migrations/*
-    */venv1/*
-    */__pycache__/*
-    manage.py
     */settings.py
-    */asgi.py
     */wsgi.py
-    */tests.py
-    */test_*.py
-    */coverage_ui_tests.py
-    */middleware.py
-    */middlewares/*.py
-    */storages.py
-    */storage/*.py
+    */asgi.py
+    manage.py
 
 [report]
 exclude_lines =
     pragma: no cover
     def __repr__
     raise NotImplementedError
+    if __name__ == "__main__":

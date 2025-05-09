@@ -2,7 +2,7 @@ from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.auth import get_user_model
 from Ensembles.models import Ensemble
-from Pieces.models import Piece
+from Pieces.models import Piece, Feature
 from Programs.models import Program, ProgramPiece
 import json
 
@@ -70,3 +70,48 @@ class ProgramViewsTestCase(TestCase):
         response = self.client.get(reverse('programos_kuriniai', args=[program.id]))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Piece 1')
+
+    def test_program_generate_missing_fields(self):
+        self.client.login(username='admin', password='adminpass')
+        response = self.client.post(reverse('program_generate'), data=json.dumps({}), content_type='application/json')
+        self.assertEqual(response.status_code, 400)
+
+    def test_program_generate_forbidden_for_member(self):
+        self.client.login(username='member', password='memberpass')
+        response = self.client.post(reverse('program_generate'), content_type='application/json')
+        self.assertEqual(response.status_code, 403)
+
+    def test_generate_pieces_invalid_duration(self):
+        self.client.login(username='admin', password='adminpass')
+        Feature.objects.create(title='Daina')
+        data = {
+            "feature": "Daina",
+            "duration": "invalid",
+            "ensemble": self.ensemble.id,
+            "santykis": "1:1:1"
+        }
+        response = self.client.post(reverse('generate_kuriniai'), data=json.dumps(data), content_type='application/json')
+        self.assertEqual(response.status_code, 400)
+
+    def test_get_programs_by_ensemble(self):
+        self.client.login(username='admin', password='adminpass')
+        program = Program.objects.create(title='Fetchable', type='Adventui', ensemble=self.ensemble)
+        response = self.client.get(reverse('get_programs_by_ensemble', args=[self.ensemble.id]))
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(response.content, [{"id": program.id, "title": "Fetchable"}])
+
+    def test_generate_program_invalid_payload(self):
+        self.client.login(username='admin', password='adminpass')
+        response = self.client.post(
+            reverse('program_generate'),
+            data=json.dumps({"title": "Incomplete"}),
+            content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 400)
+
+    def test_program_delete_invalid_method(self):
+        self.client.login(username='admin', password='adminpass')
+        program = Program.objects.create(title='ToDelete', type='Adventui', ensemble=self.ensemble)
+        response = self.client.get(reverse('program_delete', args=[program.id]))
+        self.assertEqual(response.status_code, 400)
+

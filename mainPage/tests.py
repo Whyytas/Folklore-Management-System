@@ -13,9 +13,16 @@ User = get_user_model()
 class MainPageViewsTestCase(TestCase):
     def setUp(self):
         self.client = Client()
+
+        self.user = User.objects.create_user(username='admin', password='adminpass', role='administratorius')
+        self.client.login(username='admin', password='adminpass')
+
         self.ensemble = Ensemble.objects.create(title='Ansamblis A')
+        self.ensemble.members.add(self.user)  # if the model uses many-to-many to User
+
         self.event = Event.objects.create(title='Renginys', date=now() + timedelta(days=1), ensemble=self.ensemble)
-        self.rehearsal = Rehearsal.objects.create(title='Repeticija', date=now() + timedelta(days=2), ensemble=self.ensemble)
+        self.rehearsal = Rehearsal.objects.create(title='Repeticija', date=now() + timedelta(days=2),
+                                                  ensemble=self.ensemble)
         self.instrument = Instrument.objects.create(title='Kanklės', ensemble=self.ensemble)
         self.piece = Piece.objects.create(title='Kūrinys 1', type='Daina')
         self.piece.ensembles.add(self.ensemble)

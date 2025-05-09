@@ -48,8 +48,8 @@
         {% csrf_token %}
 
         <div class="form-floating mb-3">
-            <input type="text" name="username" id="id_username" class="form-control" placeholder="Vartotojo vardas">
-            <label for="id_username">Vartotojo vardas</label>
+            <input type="text" name="username" id="id_username" class="form-control" placeholder="Naudotojo vardas">
+            <label for="id_username">Naudotojo vardas</label>
             {% if form.username.errors %}
                 <small class="text-danger">{{ form.username.errors.0 }}</small>
             {% endif %}

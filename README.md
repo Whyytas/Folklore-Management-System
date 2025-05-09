@@ -58,7 +58,7 @@ https://www.figma.com/design/t4uqSTTv1HeBZqXIYHUpqX/Folklore?node-id=0-1&t=RRy9p
 
 ## Išvados:
 -   Sistema sėkmingai realizuota su **Django** framework'u.
--   **OAuth2** autentifikacijos dėka užtikrintas saugus prisijungimas ir vartotojų rolės valdymas.
+-   **OAuth2** autentifikacijos dėka užtikrintas saugus prisijungimas ir naudotojų rolės valdymas.
 -   Naudotojo sąsaja yra pritaikyta **mobiliesiems įrenginiams** ir optimizuota patogiam valdymui.
 -   Administratorius turi pilną prieigą prie duomenų valdymo, o naudotojams ir moderatoriams suteikti riboti leidimai.
 -   Sukurtas lengvai plečiamas ir palaikomas projektas.
